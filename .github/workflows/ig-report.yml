@@ -1,0 +1,27 @@
+name: 인스타 현황 수집
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: 수집
+        env:
+          IG_USER_ID: ${{ secrets.IG_USER_ID }}
+          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+        run: python tools/ig_report.py
+      - name: 저장
+        run: |
+          git config user.name "cardnews-bot"
+          git config user.email "cardnews-bot@users.noreply.github.com"
+          git add reports
+          git diff --cached --quiet || (git commit -m "인스타 현황 수집 [skip ci]" && for i in 1 2 3; do git pull --rebase -q origin main && git push && break; sleep 5; done)
