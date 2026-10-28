@@ -27,6 +27,8 @@ env:
   DISCLOSURE_FILE: picks/disclosure.txt
   DISCLOSURE_BOTTOM: "1"
   YT_PAID_PROMO: "1"
+  LINKS_FILE: picks/links.json
+  LINKS_PAGE: https://yet933781-creator.github.io/cardnews/picks/
   YT_CATEGORY: "26"
 
 jobs:

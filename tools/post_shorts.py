@@ -87,7 +87,7 @@ def main():
         rec_path = os.path.join(d, "posted.json")
         rec = json.load(open(rec_path)) if os.path.exists(rec_path) else {}
         cfg = json.load(open(os.path.join(d, "script.json"), encoding="utf-8"))
-        caption = IG.build_caption(cfg["caption"])
+        caption = IG.build_caption(cfg["caption"], cfg.get("link_no"))
         changed = False
         if "instagram" not in rec:
             rec["instagram"] = ig_reel(d, caption); changed = True

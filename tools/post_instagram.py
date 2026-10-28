@@ -60,8 +60,28 @@ FOOTER_FILE = os.environ.get("FOOTER_FILE", "shop_footer.txt")
 DISCLOSURE_FILE = os.environ.get("DISCLOSURE_FILE", "")  # 쿠팡 파트너스 등 대가성 문구 (있으면 무조건 첫 줄)
 
 
-def build_caption(body):
-    """[대가성 문구] + 본문 + 꼬리말(매장 안내 등) + 해시태그 순으로 캡션 조립."""
+LINKS_FILE = os.environ.get("LINKS_FILE", "")  # 꿀템: 상품 번호 -> 쿠팡 파트너스 링크
+LINKS_PAGE = os.environ.get("LINKS_PAGE", "")
+
+
+def link_block(link_no):
+    """오늘 상품 바로가기 + 전체 모음 페이지 안내 (꿀템 계정)."""
+    if not (LINKS_FILE and link_no):
+        return ""
+    items = {i["no"]: i for i in json.load(open(LINKS_FILE, encoding="utf-8")).get("items", [])}
+    it = items.get(int(link_no))
+    if not it:
+        fail(f"links.json 에 {link_no}번 링크가 없습니다")
+    if not it["url"].startswith("https://link.coupang.com/"):
+        fail(f"{link_no}번 링크가 쿠팡 파트너스 링크가 아닙니다")
+    lines = [f"🛒 {link_no}번 {it['name']} 바로가기 (복사해서 열기)", it["url"]]
+    if LINKS_PAGE:
+        lines += ["", "📋 지금까지 소개한 꿀템 전체 보기 (프로필 링크와 같은 페이지)", LINKS_PAGE]
+    return "\n".join(lines)
+
+
+def build_caption(body, link_no=None):
+    """[대가성 문구] + 본문 + [상품 링크] + 꼬리말(매장 안내 등) + 해시태그 순으로 캡션 조립."""
     paras = body.strip().split("\n\n")
     tags = paras.pop() if paras and paras[-1].lstrip().startswith("#") else ""
     footer = open(FOOTER_FILE, encoding="utf-8").read().strip() if FOOTER_FILE and os.path.exists(FOOTER_FILE) else ""
@@ -76,7 +96,7 @@ def build_caption(body):
         if disclosure in body_text:  # 중복 방지: 본문에 이미 있으면 빼고 맨 앞에 다시 둔다
             paras = [x for x in paras if x.strip() != disclosure]
     bottom = disclosure if os.environ.get("DISCLOSURE_BOTTOM") == "1" else ""  # 본문 맨 아래에도 한 번 더
-    caption = "\n\n".join(p for p in [disclosure, "\n\n".join(paras), footer, tags, bottom] if p)
+    caption = "\n\n".join(p for p in [disclosure, "\n\n".join(paras), link_block(link_no), footer, tags, bottom] if p)
     if len(caption) > 2200:
         fail(f"캡션이 인스타 한도(2200자)를 넘습니다: {len(caption)}자")
     if caption.count("#") > 30:
@@ -88,7 +108,9 @@ def post(folder):
     imgs = sorted(glob.glob(os.path.join(folder, "card_*.jpg")))
     if not 2 <= len(imgs) <= 10:
         fail(f"{folder}: 캐러셀은 이미지 2~10장이 필요합니다 (현재 {len(imgs)}장)")
-    caption = build_caption(open(os.path.join(folder, "caption.txt"), encoding="utf-8").read())
+    cj = os.path.join(folder, "content.json")
+    link_no = json.load(open(cj, encoding="utf-8")).get("link_no") if os.path.exists(cj) else None
+    caption = build_caption(open(os.path.join(folder, "caption.txt"), encoding="utf-8").read(), link_no)
 
     children = []
     for p in imgs:
