@@ -1,0 +1,45 @@
+name: 쇼츠 게시 (릴스 + 유튜브)
+
+on:
+  push:
+    branches: [main]
+    paths: ["shorts/approved/**"]
+  workflow_dispatch:
+  schedule:
+    - cron: "7,22,37,52 * * * *"   # 15분마다 예약 시각이 된 쇼츠 확인
+
+permissions:
+  contents: write
+
+concurrency:
+  group: instagram-post
+  cancel-in-progress: false
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: 최신 게시 기록 받아오기 (중복 게시 방지)
+        run: |
+          git fetch --depth=1 origin main
+          git reset --hard origin/main
+          echo "POST_SHA=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: 승인된 쇼츠 게시
+        env:
+          IG_USER_ID: ${{ secrets.IG_USER_ID }}
+          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+        run: python tools/post_shorts.py
+      - name: 게시 기록 저장
+        if: always()
+        run: |
+          git config user.name "cardnews-bot"
+          git config user.email "cardnews-bot@users.noreply.github.com"
+          git add shorts/approved/*/posted.json 2>/dev/null || true
+          git diff --cached --quiet || (git commit -m "쇼츠 게시 기록 [skip ci]" && git push)

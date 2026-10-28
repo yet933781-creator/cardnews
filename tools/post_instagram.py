@@ -106,7 +106,7 @@ def is_due(folder):
     return due
 
 
-def main():
+def main_setup():
     global USER_ID
     if not USER_ID or not TOKEN:
         fail("IG_USER_ID 또는 IG_ACCESS_TOKEN 비밀값이 비어 있습니다")
@@ -114,6 +114,10 @@ def main():
     real_id = str(me.get("user_id") or me.get("id"))
     print("토큰 계정:", me.get("username"), "| ID 일치:", real_id == USER_ID)
     USER_ID = real_id  # 토큰에서 조회한 정확한 ID 사용
+
+
+def main():
+    main_setup()
     todo = [d for d in sorted(glob.glob("approved/*/"))
             if not os.path.exists(os.path.join(d, "posted.json")) and is_due(d)]
     if not todo:
