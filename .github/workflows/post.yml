@@ -1,0 +1,34 @@
+name: 인스타그램 게시
+
+on:
+  push:
+    branches: [main]
+    paths: ["approved/**"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: instagram-post
+  cancel-in-progress: false
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: 승인된 카드뉴스 게시
+        env:
+          IG_USER_ID: ${{ secrets.IG_USER_ID }}
+          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+        run: python tools/post_instagram.py
+      - name: 게시 기록 저장
+        run: |
+          git config user.name "cardnews-bot"
+          git config user.email "cardnews-bot@users.noreply.github.com"
+          git add approved/*/posted.json 2>/dev/null || true
+          git diff --cached --quiet || (git commit -m "게시 기록 저장 [skip ci]" && git push)
