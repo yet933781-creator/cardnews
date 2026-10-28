@@ -21,3 +21,6 @@
 
 카카오톡 채널
 http://pf.kakao.com/_WxixbDn
+
+📄 판매점 사전승낙서 확인 (승낙 ID PRE0000195730)
+https://ictmarket.or.kr:8443/precon/pop_CertIcon.do?PRECON_REQ_ID=PRE0000195730&YN=1
