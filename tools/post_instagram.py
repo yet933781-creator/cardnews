@@ -6,8 +6,15 @@
 """
 import glob, json, os, sys, time, urllib.parse, urllib.request
 
-USER_ID = os.environ["IG_USER_ID"].strip()
-TOKEN = os.environ["IG_ACCESS_TOKEN"].strip()
+
+def fail(msg):
+    # GitHub 요약(annotation)에 오류가 바로 보이도록 출력 (토큰 값은 포함되지 않음)
+    print("::error::" + str(msg).replace("\n", " "))
+    sys.exit(1)
+
+
+USER_ID = os.environ.get("IG_USER_ID", "").strip()
+TOKEN = os.environ.get("IG_ACCESS_TOKEN", "").strip()
 REPO = os.environ["GITHUB_REPOSITORY"]          # 예: yet933781-creator/cardnews
 SHA = os.environ["GITHUB_SHA"]
 # 인스타그램 로그인 방식 토큰(IGAA...)은 graph.instagram.com, 페이스북 방식은 graph.facebook.com
@@ -29,7 +36,7 @@ def api(method, path, **params):
             return json.load(r)
     except urllib.error.HTTPError as e:
         body = e.read().decode(errors="replace")
-        sys.exit(f"API 오류 {e.code} ({path}): {body}")
+        fail(f"API 오류 {e.code} ({path}): {body}")
 
 
 def wait_ready(cid):
@@ -38,9 +45,9 @@ def wait_ready(cid):
         if st.get("status_code") == "FINISHED":
             return
         if st.get("status_code") == "ERROR":
-            sys.exit(f"미디어 처리 실패: {st}")
+            fail(f"미디어 처리 실패: {st}")
         time.sleep(5)
-    sys.exit(f"미디어 처리 시간 초과: {cid}")
+    fail(f"미디어 처리 시간 초과: {cid}")
 
 
 def public_url(path):
@@ -51,7 +58,7 @@ def public_url(path):
 def post(folder):
     imgs = sorted(glob.glob(os.path.join(folder, "card_*.jpg")))
     if not 2 <= len(imgs) <= 10:
-        sys.exit(f"{folder}: 캐러셀은 이미지 2~10장이 필요합니다 (현재 {len(imgs)}장)")
+        fail(f"{folder}: 캐러셀은 이미지 2~10장이 필요합니다 (현재 {len(imgs)}장)")
     caption = open(os.path.join(folder, "caption.txt"), encoding="utf-8").read().strip()
 
     children = []
@@ -72,6 +79,9 @@ def post(folder):
 
 
 def main():
+    if not USER_ID or not TOKEN:
+        fail("IG_USER_ID 또는 IG_ACCESS_TOKEN 비밀값이 비어 있습니다")
+    print("사용 서버:", HOST, "| 사용자 ID 길이:", len(USER_ID))
     todo = [d for d in sorted(glob.glob("approved/*/"))
             if not os.path.exists(os.path.join(d, "posted.json"))]
     if not todo:
