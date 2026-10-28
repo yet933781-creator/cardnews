@@ -1,0 +1,15 @@
+name: 꿀템 인스타 연결 시험
+
+on:
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: 연결 확인 (게시 없음)
+        env:
+          IG_USER_ID: ${{ secrets.IG2_USER_ID }}
+          IG_ACCESS_TOKEN: ${{ secrets.IG2_ACCESS_TOKEN }}
+        run: python3 tools/check_instagram.py
