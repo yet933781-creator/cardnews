@@ -53,6 +53,8 @@ def yt_short(folder, cfg, description):
     meta = {"snippet": {"title": title[:100], "description": description[:4900],
                         "tags": cfg.get("yt_tags", []), "categoryId": os.environ.get("YT_CATEGORY", "28"), "defaultLanguage": "ko"},
             "status": {"privacyStatus": "public", "selfDeclaredMadeForKids": False}}
+    if any(sc.get("clip") for sc in cfg.get("scenes", [])):  # AI 생성 영상 장면 포함 → 합성 콘텐츠 표시
+        meta["status"]["containsSyntheticMedia"] = True
     path = os.path.join(folder, "short.mp4")
     size = os.path.getsize(path)
     hdr = {"Authorization": f"Bearer {token}", "Content-Type": "application/json; charset=UTF-8",
@@ -68,6 +70,14 @@ def yt_short(folder, cfg, description):
                 h = dict(r.headers)
         except urllib.error.HTTPError as e:
             print("::warning::유료 프로모션 표시를 API로 못 넣었습니다(스튜디오에서 직접 체크 필요):", e.code, e.read().decode(errors="replace")[:300])
+    if h is None and meta["status"].get("containsSyntheticMedia"):
+        req = urllib.request.Request(base + "snippet,status", data=json.dumps(meta).encode(), method="POST", headers=hdr)
+        try:
+            with urllib.request.urlopen(req, timeout=300) as r:
+                h = dict(r.headers)
+        except urllib.error.HTTPError as e:
+            print("::warning::AI 합성 표시를 API로 못 넣었습니다(스튜디오에서 직접 체크 필요):", e.code, e.read().decode(errors="replace")[:300])
+            meta["status"].pop("containsSyntheticMedia")
     if h is None:
         _, h, _ = http("POST", base + "snippet,status", json.dumps(meta).encode(), hdr)
     loc = h.get("Location") or h.get("location")
