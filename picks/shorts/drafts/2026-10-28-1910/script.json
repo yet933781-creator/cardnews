@@ -15,19 +15,10 @@
       "caption": "겨울 결로 물기 고민이라면",
       "narration": "광고 포함 영상입니다. 겨울 아침마다 창틀에 물이 흥건하다면 주목하세요!",
       "visual": {
-        "kind": "big",
-        "text": "물방울",
-        "sub": "아침마다 창틀 닦기",
-        "color": [
-          120,
-          190,
-          255
-        ],
-        "glow": [
-          120,
-          190,
-          255
-        ]
+        "kind": "photo",
+        "card": true,
+        "src": "picks/shorts/drafts/2026-10-28-1910/p_window.jpg",
+        "size": 560
       }
     },
     {
@@ -35,10 +26,10 @@
       "caption": "결로 물흡수 테이프",
       "narration": "창틀 아래에 붙이는 결로 물흡수 테이프예요.",
       "visual": {
-        "kind": "tag",
-        "kicker": "오늘의 꿀템 3번",
-        "name": "결로 물흡수 테이프",
-        "point": "창틀 아래 붙여서\n맺힌 물기 흡수에 도움"
+        "kind": "photo",
+        "card": true,
+        "src": "picks/shorts/drafts/2026-10-28-1910/p_rolls.jpg",
+        "size": 640
       }
     },
     {
@@ -46,19 +37,10 @@
       "caption": "결로를 막는 건 아니에요",
       "narration": "흘러내린 물기를 흡수하는 데 도움이 돼요. 결로 자체를 막는 건 아니니 환기도 함께 해 주세요.",
       "visual": {
-        "kind": "big",
-        "text": "흡수",
-        "sub": "창틀 아래에 붙이기",
-        "color": [
-          92,
-          214,
-          196
-        ],
-        "glow": [
-          92,
-          214,
-          196
-        ]
+        "kind": "photo",
+        "card": true,
+        "src": "picks/shorts/drafts/2026-10-28-1910/p_attached.jpg",
+        "size": 620
       }
     },
     {
@@ -66,19 +48,10 @@
       "caption": "닦고 말린 뒤 잘라 붙이기",
       "narration": "붙일 자리는 먼지와 물기를 닦고 말린 뒤, 창 길이에 맞춰 잘라 붙이세요.",
       "visual": {
-        "kind": "big",
-        "text": "TIP",
-        "sub": "닦고 말린 뒤 부착",
-        "color": [
-          255,
-          214,
-          120
-        ],
-        "glow": [
-          92,
-          214,
-          196
-        ]
+        "kind": "photo",
+        "card": true,
+        "src": "picks/shorts/drafts/2026-10-28-1910/p_steps.jpg",
+        "size": 600
       }
     },
     {
