@@ -142,7 +142,7 @@ def build(folder):
     out = os.path.join(folder, "short.mp4")
     sh("ffmpeg", "-y", "-i", voice_mp4, "-stream_loop", "-1", "-i", bgm, "-filter_complex",
        f"[1:a]volume={cfg.get('bgm_volume', 0.13)},afade=t=out:st={max(0, total - 1.5):.2f}:d=1.5[b];"
-       "[0:a][b]amix=inputs=2:duration=first:dropout_transition=0,volume=2[a]",
+       "[0:a][b]amix=inputs=2:duration=first:dropout_transition=0,loudnorm=I=-14:TP=-1.5:LRA=11[a]",
        "-map", "0:v", "-map", "[a]", "-c:v", "copy", "-c:a", "aac", "-b:a", "160k",
        "-movflags", "+faststart", "-t", f"{total:.2f}", out)
     # 표지(첫 장면) 이미지
