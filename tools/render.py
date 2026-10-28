@@ -289,9 +289,55 @@ def stage(img, top=0, bottom=760, glow_col=None):
     glow(img, W // 2, bottom - 40, 300, (180, 120, 255), 70)
 
 
+BASE_DIR = "."
+
+
+def photo(img, v):
+    """사용자가 준 사진을 위쪽에 가로 띠로 배치하고 아래를 배경에 녹인다. overlay 가 있으면 큰 글자를 얹는다."""
+    src = Image.open(os.path.join(BASE_DIR, v["src"])).convert("RGB")
+    top = v.get("top", 120)
+    maxh = v.get("max_h", 700)
+    w = W
+    h = int(src.height * w / src.width)
+    if h > maxh:  # 너무 세로로 길면 가운데를 잘라낸다
+        src = src.crop((0, (src.height - int(maxh * src.width / w)) // 2, src.width,
+                        (src.height + int(maxh * src.width / w)) // 2))
+        h = maxh
+    p = src.resize((w, h), Image.LANCZOS)
+    if v.get("overlay"):
+        p = Image.blend(p, Image.new("RGB", p.size, (6, 8, 20)), 0.45)
+    mask = Image.new("L", (w, h), 255)
+    md = ImageDraw.Draw(mask)
+    fade = min(260, h // 2)
+    for yy in range(h - fade, h):
+        md.line([(0, yy), (w, yy)], fill=int(255 * (h - yy) / fade))
+    for yy in range(0, 40):
+        md.line([(0, yy), (w, yy)], fill=int(255 * yy / 40))
+    img.paste(p, (0, top), mask)
+    o = v.get("overlay")
+    if o:
+        d = ImageDraw.Draw(img)
+        f = font("black", o.get("size", 190))
+        t = o["text"]; tw = d.textlength(t, font=f)
+        if tw > W - 120:
+            f = font("black", int(f.size * (W - 120) / tw)); tw = d.textlength(t, font=f)
+        cy = top + h // 2 - 40
+        col = tuple(o.get("color", C["accent"]))
+        for dx, dy in ((4, 4), (3, 3)):
+            d.text(((W - tw) / 2 + dx, cy - f.size * 0.62 + dy), t, font=f, fill=(0, 0, 0))
+        d.text(((W - tw) / 2, cy - f.size * 0.62), t, font=f, fill=col)
+        if o.get("sub"):
+            fs = font("bold", 46)
+            sw = d.textlength(o["sub"], font=fs); sy = cy + f.size * 0.62
+            d.rounded_rectangle([(W - sw) / 2 - 22, sy - 8, (W + sw) / 2 + 22, sy + 66], 20, fill=(6, 8, 20))
+            d.text(((W - sw) / 2, sy), o["sub"], font=fs, fill=C["text"])
+
+
 def visual(img, v):
-    """v: {"kind": "phones"|"phone"|"big"|"badges"|"sms", ...}"""
+    """v: {"kind": "phones"|"phone"|"big"|"badges"|"sms"|"photo", ...}"""
     k = v.get("kind", "big")
+    if k == "photo":
+        return photo(img, v)
     d = ImageDraw.Draw(img)
     if k == "phones":
         cols = [tuple(c) for c in v.get("colors", [[40, 42, 48], [235, 190, 180], [90, 130, 220], [190, 170, 230], [235, 236, 240]])]
@@ -423,7 +469,9 @@ R3 = {"hero": render_hero, "point": render_point, "follow": render_follow}
 
 
 def main(cfg_path, out):
+    global BASE_DIR
     cfg = json.load(open(cfg_path, encoding="utf-8"))
+    BASE_DIR = os.path.dirname(os.path.abspath(cfg_path))
     os.makedirs(out, exist_ok=True)
     slides = cfg["slides"]
     for f in os.listdir(out):
