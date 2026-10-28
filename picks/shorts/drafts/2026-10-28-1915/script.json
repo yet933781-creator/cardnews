@@ -35,10 +35,10 @@
       "caption": "신발 건조기",
       "narration": "신발 속에 넣어 쓰는 신발 건조기예요.",
       "visual": {
-        "kind": "tag",
-        "kicker": "오늘의 꿀템 4번",
-        "name": "신발 건조기",
-        "point": "신발 속에 넣어 두면\n안쪽 습기 말리는 데 도움"
+        "kind": "photo",
+        "card": true,
+        "src": "picks/shorts/drafts/2026-10-28-1915/p_colors.jpg",
+        "size": 580
       }
     },
     {
@@ -46,19 +46,10 @@
       "caption": "드라이기 들고 있지 않아도 OK",
       "narration": "신발 안쪽에 넣고 켜 두면 안쪽 습기를 말리는 데 도움이 돼요.",
       "visual": {
-        "kind": "big",
-        "text": "쏙",
-        "sub": "신발 안쪽에 넣고 켜기",
-        "color": [
-          255,
-          130,
-          110
-        ],
-        "glow": [
-          255,
-          130,
-          110
-        ]
+        "kind": "photo",
+        "card": true,
+        "src": "picks/shorts/drafts/2026-10-28-1915/p_sneaker.jpg",
+        "size": 620
       }
     },
     {
@@ -66,19 +57,10 @@
       "caption": "소재 확인 · 외출 시 전원 끄기",
       "narration": "가죽이나 기능성 소재는 사용 가능한지 먼저 확인하고, 외출할 땐 전원을 꺼 주세요.",
       "visual": {
-        "kind": "big",
-        "text": "TIP",
-        "sub": "소재 확인 · 전원 끄기",
-        "color": [
-          255,
-          214,
-          120
-        ],
-        "glow": [
-          255,
-          130,
-          110
-        ]
+        "kind": "photo",
+        "card": true,
+        "src": "picks/shorts/drafts/2026-10-28-1915/p_single.jpg",
+        "size": 560
       }
     },
     {
