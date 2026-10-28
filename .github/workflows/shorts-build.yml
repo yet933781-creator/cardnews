@@ -24,10 +24,11 @@ jobs:
       - name: 도구 설치 (한글 글꼴, 영상, AI 음성)
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y -qq fonts-noto-cjk ffmpeg > /dev/null
+          sudo apt-get install -y -qq fonts-noto-cjk fonts-noto-cjk-extra ffmpeg > /dev/null
           pip install -q pillow edge-tts
       - name: 바뀐 대본만 영상으로 제작
-        run: python tools/make_short.py --changed
+        run: python tools/make_short.py --changed 2>&1 | tee build.log; s=${PIPESTATUS[0]}; [ $s -eq 0 ] || { echo "::error::$(tail -c 900 build.log | tr '\n' ' ')"; exit $s; }
+        shell: bash
       - name: 영상 저장
         run: |
           git config user.name "cardnews-bot"
