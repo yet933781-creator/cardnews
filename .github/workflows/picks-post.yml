@@ -26,6 +26,7 @@ env:
   FOOTER_FILE: picks/footer.txt
   DISCLOSURE_FILE: picks/disclosure.txt
   DISCLOSURE_BOTTOM: "1"
+  YT_PAID_PROMO: "1"
   YT_CATEGORY: "26"
 
 jobs:

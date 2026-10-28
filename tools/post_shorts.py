@@ -55,11 +55,21 @@ def yt_short(folder, cfg, description):
             "status": {"privacyStatus": "public", "selfDeclaredMadeForKids": False}}
     path = os.path.join(folder, "short.mp4")
     size = os.path.getsize(path)
-    _, h, _ = http("POST", "https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status",
-                   json.dumps(meta).encode(), {"Authorization": f"Bearer {token}",
-                                               "Content-Type": "application/json; charset=UTF-8",
-                                               "X-Upload-Content-Type": "video/mp4",
-                                               "X-Upload-Content-Length": str(size)})
+    hdr = {"Authorization": f"Bearer {token}", "Content-Type": "application/json; charset=UTF-8",
+           "X-Upload-Content-Type": "video/mp4", "X-Upload-Content-Length": str(size)}
+    base = "https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part="
+    h = None
+    if os.environ.get("YT_PAID_PROMO") == "1":  # 쿠팡 파트너스 등 대가성 콘텐츠: '유료 프로모션 포함' 표시
+        m2 = dict(meta, paidProductPlacementDetails={"hasPaidProductPlacement": True})
+        req = urllib.request.Request(base + "snippet,status,paidProductPlacementDetails", data=json.dumps(m2).encode(),
+                                     method="POST", headers=hdr)
+        try:
+            with urllib.request.urlopen(req, timeout=300) as r:
+                h = dict(r.headers)
+        except urllib.error.HTTPError as e:
+            print("::warning::유료 프로모션 표시를 API로 못 넣었습니다(스튜디오에서 직접 체크 필요):", e.code, e.read().decode(errors="replace")[:300])
+    if h is None:
+        _, h, _ = http("POST", base + "snippet,status", json.dumps(meta).encode(), hdr)
     loc = h.get("Location") or h.get("location")
     _, _, body = http("PUT", loc, open(path, "rb").read(), {"Content-Type": "video/mp4", "Content-Length": str(size)})
     vid = json.loads(body)["id"]
