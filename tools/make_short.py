@@ -102,7 +102,7 @@ def scene_image(sc, idx, total, cfg, out, text=True):
         R.glow(img, W // 2, 760, 560, gl, 120)
         p, _ = R.owner_photo(W)
         img.paste(p, (0, 170))
-        R.ai_pill(ImageDraw.Draw(img), 40, 170 + p.height - 64)
+        R.ai_pill(ImageDraw.Draw(img), 40, 170 + p.height - 140)  # 자막 박스에 가리지 않게 위로
     # 비주얼: 카드뉴스용 그림을 만들어 상단에 배치
     if sc.get("visual") and not clip and not sc.get("owner"):
         v = Image.new("RGB", (1080, 1350))
