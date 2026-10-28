@@ -247,7 +247,8 @@ def build(folder):
     shutil.rmtree(work)
     import hashlib
     sha = hashlib.sha1(open(os.path.join(folder, "script.json"), "rb").read()).hexdigest()
-    info = {"engine": engine, "seconds": round(total, 1), "ai_voice": voiced, "size_mb": round(os.path.getsize(out) / 1e6, 2), "script_sha": sha}
+    info = {"engine": engine, "seconds": round(total, 1), "ai_voice": voiced, "size_mb": round(os.path.getsize(out) / 1e6, 2), "script_sha": sha,
+            "owner_end": bool(scenes and scenes[-1].get("owner"))}
     json.dump(info, open(os.path.join(folder, "build.json"), "w"), ensure_ascii=False, indent=2)
     print("완성:", out, info)
 
