@@ -1,0 +1,16 @@
+name: 꿀템 유튜브 연결 시험
+
+on:
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: 토큰 발급 확인 (업로드 없음)
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT2_REFRESH_TOKEN }}
+        run: python3 tools/check_youtube.py
