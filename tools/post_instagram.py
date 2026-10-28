@@ -16,7 +16,7 @@ def fail(msg):
 USER_ID = os.environ.get("IG_USER_ID", "").strip()
 TOKEN = os.environ.get("IG_ACCESS_TOKEN", "").strip()
 REPO = os.environ["GITHUB_REPOSITORY"]          # 예: yet933781-creator/cardnews
-SHA = os.environ["GITHUB_SHA"]
+SHA = os.environ.get("POST_SHA") or os.environ["GITHUB_SHA"]
 # 인스타그램 로그인 방식 토큰(IGAA...)은 graph.instagram.com, 페이스북 방식은 graph.facebook.com
 HOST = "https://graph.instagram.com" if TOKEN.startswith("IG") else "https://graph.facebook.com"
 VER = os.environ.get("GRAPH_VERSION", "").strip()
@@ -91,6 +91,21 @@ def post(folder):
               ensure_ascii=False, indent=2)
 
 
+def is_due(folder):
+    """content.json 의 post_at(예: 2026-10-29T09:00:00+09:00) 시각이 지났는지 확인. 없으면 바로 게시."""
+    from datetime import datetime, timezone
+    try:
+        at = json.load(open(os.path.join(folder, "content.json"), encoding="utf-8")).get("post_at")
+    except FileNotFoundError:
+        return True
+    if not at:
+        return True
+    due = datetime.fromisoformat(at) <= datetime.now(timezone.utc)
+    if not due:
+        print("예약 대기:", folder, at)
+    return due
+
+
 def main():
     global USER_ID
     if not USER_ID or not TOKEN:
@@ -100,7 +115,7 @@ def main():
     print("토큰 계정:", me.get("username"), "| ID 일치:", real_id == USER_ID)
     USER_ID = real_id  # 토큰에서 조회한 정확한 ID 사용
     todo = [d for d in sorted(glob.glob("approved/*/"))
-            if not os.path.exists(os.path.join(d, "posted.json"))]
+            if not os.path.exists(os.path.join(d, "posted.json")) and is_due(d)]
     if not todo:
         print("게시할 새 카드뉴스가 없습니다.")
         return
