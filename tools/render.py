@@ -344,11 +344,25 @@ def photo(img, v):
             d.text(((W - sw) / 2, sy), o["sub"], font=fs, fill=C["text"])
 
 
+def credit(img, v):
+    """사진 출처를 사진 오른쪽 아래에 작게 표시한다 (visual.credit)."""
+    t = v.get("credit")
+    if not t:
+        return
+    d = ImageDraw.Draw(img)
+    f = font("regular", 24)
+    tw = d.textlength(t, font=f)
+    y = v.get("credit_y", 780)
+    d.text((W - 48 - tw + 2, y + 2), t, font=f, fill=(0, 0, 0))
+    d.text((W - 48 - tw, y), t, font=f, fill=(225, 230, 240))
+
+
 def visual(img, v):
     """v: {"kind": "phones"|"phone"|"big"|"badges"|"sms"|"photo", ...}"""
     k = v.get("kind", "big")
     if k == "photo":
-        return photo(img, v)
+        photo(img, v)
+        return credit(img, v)
     if k == "tag":  # 상품 이름표: 사진 없이 상품을 보여줄 때
         stage(img, glow_col=C["accent"])
         d = ImageDraw.Draw(img)
