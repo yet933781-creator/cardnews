@@ -53,7 +53,9 @@ def yt_short(folder, cfg, description):
     meta = {"snippet": {"title": title[:100], "description": description[:4900],
                         "tags": cfg.get("yt_tags", []), "categoryId": os.environ.get("YT_CATEGORY", "28"), "defaultLanguage": "ko"},
             "status": {"privacyStatus": "public", "selfDeclaredMadeForKids": False}}
-    if any(sc.get("clip") for sc in cfg.get("scenes", [])):  # AI 생성 영상 장면 포함 → 합성 콘텐츠 표시
+    owner = (cfg.get("store_tag", ["방학", "폰 성지"]) == ["방학", "폰 성지"] and cfg.get("owner_end", True)
+             and "picks" not in os.path.abspath(folder).split(os.sep))  # make_short.owner_enabled 와 같은 조건
+    if any(sc.get("clip") for sc in cfg.get("scenes", [])) or owner:  # AI 생성 영상·사장님 AI 사진 포함 → 합성 콘텐츠 표시
         meta["status"]["containsSyntheticMedia"] = True
     path = os.path.join(folder, "short.mp4")
     size = os.path.getsize(path)

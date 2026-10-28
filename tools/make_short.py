@@ -65,6 +65,22 @@ def make_bgm(path, secs=70, bpm=88):
         w.setnchannels(1); w.setsampwidth(2); w.setframerate(sr); w.writeframes(bytes(frames))
 
 
+# ---------- 사장님 마무리 장면 (방학 폰 성지 쇼츠, 2026-10-28 추가) ----------
+def owner_enabled(cfg, folder):
+    """방학 폰 성지 쇼츠면 마지막 장면을 사장님 사진으로 바꾼다 (picks 등 다른 계정 제외, script.json 의 owner_end:false 로 끔)."""
+    return (cfg.get("store_tag", ["방학", "폰 성지"]) == ["방학", "폰 성지"]
+            and "picks" not in os.path.abspath(folder).split(os.sep) and cfg.get("owner_end", True))
+
+
+def apply_owner(cfg, folder):
+    if owner_enabled(cfg, folder) and cfg.get("scenes"):
+        last = cfg["scenes"][-1]
+        last["owner"] = True
+        last["headline"] = ""  # 사진 안에 '구매 상담은 방학 폰 성지' 제목이 있으므로 겹치지 않게 비운다
+        last.setdefault("caption", "DM·카톡 편하게 문의 주세요")
+        last.pop("visual", None)
+
+
 # ---------- 장면 이미지 ----------
 def scene_image(sc, idx, total, cfg, out, text=True):
     clip = sc.get("clip")
@@ -80,8 +96,15 @@ def scene_image(sc, idx, total, cfg, out, text=True):
     else:
         img = Image.new("RGB", (W, H))
         R.gradient(img, (6, 8, 20), (16, 20, 48), 0, H)
+    if sc.get("owner"):  # 사장님 사진: 얼굴은 그대로, 배경색만 게시물마다 바뀐다
+        top, bottom, gl = R.owner_theme(cfg.get("post_at") or cfg.get("title", ""))
+        R.gradient(img, top, bottom, 0, H)
+        R.glow(img, W // 2, 760, 560, gl, 120)
+        p, _ = R.owner_photo(W)
+        img.paste(p, (0, 170))
+        R.ai_pill(ImageDraw.Draw(img), 40, 170 + p.height - 64)
     # 비주얼: 카드뉴스용 그림을 만들어 상단에 배치
-    if sc.get("visual") and not clip:
+    if sc.get("visual") and not clip and not sc.get("owner"):
         v = Image.new("RGB", (1080, 1350))
         R.gradient(v, (6, 8, 20), (10, 13, 32), 0, 1350)
         R.visual(v, sc["visual"])
@@ -163,6 +186,7 @@ def build(folder):
     cfg = json.load(open(os.path.join(folder, "script.json"), encoding="utf-8"))
     work = os.path.join(folder, "_work"); os.makedirs(work, exist_ok=True)
     voice = cfg.get("voice", "ko-KR-SunHiNeural"); rate = cfg.get("rate", "+12%")
+    apply_owner(cfg, folder)
     scenes = cfg["scenes"]; clips = []; voiced = True
     engine = "ffmpeg"
     if os.environ.get("SHORTS_ENGINE") == "remotion" and os.path.isdir(os.path.join(ROOT, "remotion", "node_modules")):

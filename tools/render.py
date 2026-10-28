@@ -531,9 +531,67 @@ def render_follow(s, i, n, brand, cfg):
     return img
 
 
+# ---------- 사장님 마무리 장 (방학 폰 성지 카드뉴스·쇼츠 공통, 2026-10-28 추가) ----------
+OWNER_IMG = "assets/owner_end.jpg"  # 인물 얼굴은 절대 바꾸지 않는다: 이 사진 픽셀을 그대로 쓰고 주변 배경만 바꾼다
+OWNER_THEMES = [  # (위 색, 아래 색, 빛 번짐 색) — 게시물마다 하나씩 돌아가며 쓴다
+    ((8, 10, 28), (22, 28, 70), (96, 170, 255)),
+    ((10, 8, 24), (48, 18, 60), (255, 112, 160)),
+    ((6, 16, 22), (12, 52, 60), (80, 226, 186)),
+    ((14, 12, 8), (60, 44, 12), (255, 212, 56)),
+    ((10, 10, 14), (34, 34, 44), (180, 120, 255)),
+    ((18, 8, 8), (64, 18, 22), (255, 112, 102)),
+]
+
+
+def owner_theme(seed):
+    import hashlib
+    return OWNER_THEMES[int(hashlib.md5(str(seed).encode()).hexdigest(), 16) % len(OWNER_THEMES)]
+
+
+def owner_photo(width, radius=0):
+    src = Image.open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), OWNER_IMG)).convert("RGB")
+    p = src.resize((width, int(src.height * width / src.width)), Image.LANCZOS)
+    if radius:
+        m = Image.new("L", p.size, 0)
+        ImageDraw.Draw(m).rounded_rectangle([0, 0, p.width - 1, p.height - 1], radius, fill=255)
+        return p, m
+    return p, None
+
+
+def ai_pill(d, x, y):
+    pill(d, x, y, "AI 생성 이미지", font("bold", 24), (255, 255, 255), (16, 18, 30), padx=14)
+
+
+def render_owner(s, i, n, brand, cfg):
+    top, bottom, gl = owner_theme(cfg.get("post_at") or cfg.get("slides", [{}])[0].get("title", ""))
+    img = Image.new("RGB", (W, H))
+    gradient(img, top, bottom, 0, H)
+    glow(img, W // 2, 560, 520, gl, 120)
+    p, m = owner_photo(980, 34)
+    x0, y0 = (W - p.width) // 2, 50
+    d = ImageDraw.Draw(img)
+    d.rounded_rectangle([x0 - 6, y0 - 6, x0 + p.width + 5, y0 + p.height + 5], 40, fill=gl)
+    img.paste(p, (x0, y0), m)
+    d = ImageDraw.Draw(img)
+    ai_pill(d, x0 + 20, y0 + p.height - 64)
+    y = y0 + p.height + 46
+    f = font("black", 70)
+    a, b = "DM·카톡 ", "편하게 문의 주세요"
+    tw = d.textlength(a + b, font=f)
+    x = (W - tw) / 2
+    d.text((x, y), a, font=f, fill=(255, 232, 0), stroke_width=4, stroke_fill=(0, 0, 0))
+    d.text((x + d.textlength(a, font=f), y), b, font=f, fill=(70, 232, 100), stroke_width=4, stroke_fill=(0, 0, 0))
+    footer(d, i, n, brand)
+    return img
+
+
+def owner_enabled_card(cfg):
+    return cfg.get("brand") == "@bpj0901" and cfg.get("owner_end", True)
+
+
 R = {"cover": render_cover, "list": render_list, "timeline": render_timeline,
      "compare": render_compare, "checklist": render_checklist}
-R3 = {"hero": render_hero, "point": render_point, "follow": render_follow}
+R3 = {"hero": render_hero, "point": render_point, "follow": render_follow, "owner": render_owner}
 
 
 def main(cfg_path, out):
@@ -544,6 +602,8 @@ def main(cfg_path, out):
     BASE_DIR = os.path.dirname(os.path.abspath(cfg_path))
     os.makedirs(out, exist_ok=True)
     slides = cfg["slides"]
+    if owner_enabled_card(cfg) and not any(x.get("type") == "owner" for x in slides):
+        slides = slides + [{"type": "owner"}]  # 방학 폰 성지 카드뉴스: 마지막 장에 사장님 사진 자동 추가
     for f in os.listdir(out):
         if f.startswith("card_") and f.endswith(".jpg"):
             os.remove(os.path.join(out, f))
