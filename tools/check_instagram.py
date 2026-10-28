@@ -5,3 +5,6 @@ import post_instagram as IG
 IG.main_setup()
 a = IG.api("GET", IG.USER_ID, fields="username,account_type,followers_count,media_count")
 print(f"::notice::인스타 연결 성공: @{a.get('username')} ({a.get('account_type')}) 팔로워 {a.get('followers_count')} · 게시물 {a.get('media_count')}")
+# 최근 게시물 5개 (중복 확인용)
+for m in IG.api("GET", f"{IG.USER_ID}/media", fields="id,media_type,timestamp,permalink", limit="5").get("data", []):
+    print(f"::notice::최근 게시물 {m.get('timestamp')} {m.get('media_type')} {m.get('permalink')}")
