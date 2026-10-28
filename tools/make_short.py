@@ -92,6 +92,8 @@ def scene_image(sc, idx, total, cfg, out):
     for k in range(total):
         d.rounded_rectangle([60 + k * bw + 4, 140, 60 + (k + 1) * bw - 4, 148], 4,
                             fill=R.C["accent"] if k <= idx else (50, 60, 100))
+    if cfg.get("ad_label"):  # 대가성 표시: 모든 장면 오른쪽 위
+        R.pill(d, W - 60, 62, cfg["ad_label"], R.font("black", 30), (255, 255, 255), (16, 18, 30), padx=18, anchor_right=True)
     y = 1190
     if sc.get("headline"):
         y = R.text_block(d, 70, y, sc["headline"], R.font("black", 86), R.C["text"], W - 140, 1.18) + 30
@@ -167,7 +169,7 @@ def needs_build(folder):
 if __name__ == "__main__":
     if sys.argv[1] == "--changed":
         import glob
-        for f in sorted(glob.glob("shorts/drafts/*/script.json")):
+        for f in sorted(glob.glob("shorts/drafts/*/script.json") + glob.glob("picks/shorts/drafts/*/script.json")):
             d = os.path.dirname(f)
             if needs_build(d):
                 build(d)

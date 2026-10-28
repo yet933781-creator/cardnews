@@ -55,12 +55,25 @@ def public_url(path):
     return f"https://cdn.jsdelivr.net/gh/{REPO}@{SHA}/{path}"
 
 
+CARDS_DIR = os.environ.get("CARDS_DIR", "approved")
+FOOTER_FILE = os.environ.get("FOOTER_FILE", "shop_footer.txt")
+DISCLOSURE_FILE = os.environ.get("DISCLOSURE_FILE", "")  # 쿠팡 파트너스 등 대가성 문구 (있으면 무조건 첫 줄)
+
+
 def build_caption(body):
-    """본문 + 매장 안내(shop_footer.txt) + 해시태그 순으로 캡션 조립."""
+    """[대가성 문구] + 본문 + 꼬리말(매장 안내 등) + 해시태그 순으로 캡션 조립."""
     paras = body.strip().split("\n\n")
     tags = paras.pop() if paras and paras[-1].lstrip().startswith("#") else ""
-    footer = open("shop_footer.txt", encoding="utf-8").read().strip() if os.path.exists("shop_footer.txt") else ""
-    caption = "\n\n".join(p for p in ["\n\n".join(paras), footer, tags] if p)
+    footer = open(FOOTER_FILE, encoding="utf-8").read().strip() if FOOTER_FILE and os.path.exists(FOOTER_FILE) else ""
+    disclosure = ""
+    if DISCLOSURE_FILE:
+        if not os.path.exists(DISCLOSURE_FILE):
+            fail(f"대가성 문구 파일이 없습니다: {DISCLOSURE_FILE}")
+        disclosure = open(DISCLOSURE_FILE, encoding="utf-8").read().strip()
+        body_text = "\n\n".join(paras)
+        if disclosure in body_text:  # 중복 방지: 본문에 이미 있으면 빼고 맨 앞에 다시 둔다
+            paras = [x for x in paras if x.strip() != disclosure]
+    caption = "\n\n".join(p for p in [disclosure, "\n\n".join(paras), footer, tags] if p)
     if len(caption) > 2200:
         fail(f"캡션이 인스타 한도(2200자)를 넘습니다: {len(caption)}자")
     if caption.count("#") > 30:
@@ -118,7 +131,7 @@ def main_setup():
 
 def main():
     main_setup()
-    todo = [d for d in sorted(glob.glob("approved/*/"))
+    todo = [d for d in sorted(glob.glob(f"{CARDS_DIR}/*/"))
             if not os.path.exists(os.path.join(d, "posted.json")) and is_due(d)]
     if not todo:
         print("게시할 새 카드뉴스가 없습니다.")

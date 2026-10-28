@@ -1,0 +1,62 @@
+name: 꿀템 계정 게시 (카드뉴스 + 릴스·쇼츠)
+
+on:
+  push:
+    branches: [main]
+    paths: ["picks/approved/**", "picks/shorts/approved/**"]
+  workflow_dispatch:
+  schedule:
+    - cron: "4,19,34,49 * * * *"   # 15분마다 예약 시각이 된 게시물 확인
+
+permissions:
+  contents: write
+
+concurrency:
+  group: picks-post
+  cancel-in-progress: false
+
+env:
+  IG_USER_ID: ${{ secrets.IG2_USER_ID }}
+  IG_ACCESS_TOKEN: ${{ secrets.IG2_ACCESS_TOKEN }}
+  YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+  YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+  YT_REFRESH_TOKEN: ${{ secrets.YT2_REFRESH_TOKEN }}
+  CARDS_DIR: picks/approved
+  SHORTS_DIR: picks/shorts/approved
+  FOOTER_FILE: picks/footer.txt
+  DISCLOSURE_FILE: picks/disclosure.txt
+  YT_CATEGORY: "26"
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 새 계정 연결 여부 확인
+        id: ready
+        run: |
+          if [ -z "$IG_ACCESS_TOKEN" ]; then echo "::notice::IG2 비밀값이 아직 없어 건너뜁니다."; echo "ok=false" >> "$GITHUB_OUTPUT"; else echo "ok=true" >> "$GITHUB_OUTPUT"; fi
+      - uses: actions/checkout@v4
+        if: steps.ready.outputs.ok == 'true'
+      - name: 최신 게시 기록 받아오기 (중복 게시 방지)
+        if: steps.ready.outputs.ok == 'true'
+        run: |
+          git fetch --depth=1 origin main
+          git reset --hard origin/main
+          echo "POST_SHA=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+      - uses: actions/setup-python@v5
+        if: steps.ready.outputs.ok == 'true'
+        with:
+          python-version: "3.12"
+      - name: 카드뉴스 게시
+        if: steps.ready.outputs.ok == 'true'
+        run: python tools/post_instagram.py
+      - name: 릴스·쇼츠 게시
+        if: steps.ready.outputs.ok == 'true'
+        run: python tools/post_shorts.py
+      - name: 게시 기록 저장
+        if: always() && steps.ready.outputs.ok == 'true'
+        run: |
+          git config user.name "cardnews-bot"
+          git config user.email "cardnews-bot@users.noreply.github.com"
+          git add picks/approved/*/posted.json picks/shorts/approved/*/posted.json 2>/dev/null || true
+          git diff --cached --quiet || (git commit -m "꿀템 게시 기록 [skip ci]" && git push)

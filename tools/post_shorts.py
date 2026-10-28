@@ -51,7 +51,7 @@ def yt_short(folder, cfg, description):
     if "#shorts" not in title.lower():
         title = (title + " #Shorts")
     meta = {"snippet": {"title": title[:100], "description": description[:4900],
-                        "tags": cfg.get("yt_tags", []), "categoryId": "28", "defaultLanguage": "ko"},
+                        "tags": cfg.get("yt_tags", []), "categoryId": os.environ.get("YT_CATEGORY", "28"), "defaultLanguage": "ko"},
             "status": {"privacyStatus": "public", "selfDeclaredMadeForKids": False}}
     path = os.path.join(folder, "short.mp4")
     size = os.path.getsize(path)
@@ -70,7 +70,7 @@ def yt_short(folder, cfg, description):
 
 def main():
     IG.main_setup()
-    for d in sorted(glob.glob("shorts/approved/*/")):
+    for d in sorted(glob.glob(os.environ.get("SHORTS_DIR", "shorts/approved") + "/*/")):
         d = d.rstrip("/")
         if not due(d):
             continue

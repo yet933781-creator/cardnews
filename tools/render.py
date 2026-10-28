@@ -338,6 +338,18 @@ def visual(img, v):
     k = v.get("kind", "big")
     if k == "photo":
         return photo(img, v)
+    if k == "tag":  # 상품 이름표: 사진 없이 상품을 보여줄 때
+        stage(img, glow_col=C["accent"])
+        d = ImageDraw.Draw(img)
+        x0, y0, x1, y1 = 150, 170, W - 150, 640
+        d.rounded_rectangle([x0, y0, x1, y1], 44, fill=(255, 251, 245))
+        d.ellipse([x0 + 40, y0 + 40, x0 + 76, y0 + 76], outline=C["accent"], width=8)
+        d.text((x0 + 96, y0 + 34), v.get("kicker", "오늘의 꿀템"), font=font("bold", 34), fill=C["accent"])
+        yy = text_block(d, x0 + 48, y0 + 120, v["name"], font("black", 64), (30, 24, 20), x1 - x0 - 96, 1.2) + 20
+        if v.get("point"):
+            text_block(d, x0 + 48, yy, v["point"], font("medium", 38), (110, 98, 88), x1 - x0 - 96, 1.4)
+        return
+    d = ImageDraw.Draw(img)
     d = ImageDraw.Draw(img)
     if k == "phones":
         cols = [tuple(c) for c in v.get("colors", [[40, 42, 48], [235, 190, 180], [90, 130, 220], [190, 170, 230], [235, 236, 240]])]
@@ -388,7 +400,7 @@ def bottom_shade(img, y0=700):
 
 def dark_frame():
     img = Image.new("RGB", (W, H))
-    gradient(img, (6, 8, 20), (14, 18, 42))
+    gradient(img, C.get("frame1", (6, 8, 20)), C.get("frame2", (14, 18, 42)))
     return img
 
 
@@ -471,6 +483,8 @@ R3 = {"hero": render_hero, "point": render_point, "follow": render_follow}
 def main(cfg_path, out):
     global BASE_DIR
     cfg = json.load(open(cfg_path, encoding="utf-8"))
+    for k, v in (cfg.get("theme") or {}).items():  # 계정별 색 테마 (예: 꿀템 계정)
+        C[k] = tuple(v)
     BASE_DIR = os.path.dirname(os.path.abspath(cfg_path))
     os.makedirs(out, exist_ok=True)
     slides = cfg["slides"]
@@ -480,6 +494,8 @@ def main(cfg_path, out):
     for i, s in enumerate(slides, 1):
         t = s.get("type", "list")
         img = R3[t](s, i, len(slides), cfg["brand"], cfg) if t in R3 else R[t](s, i, len(slides), cfg["brand"])
+        if cfg.get("ad_label"):  # 대가성 표시: 모든 장 왼쪽 위
+            pill(ImageDraw.Draw(img), 50, 44, cfg["ad_label"], font("black", 28), (255, 255, 255), (16, 18, 30), padx=18)
         p = os.path.join(out, f"card_{i:02d}.jpg")
         img.save(p, "JPEG", quality=92)
         print(p)
