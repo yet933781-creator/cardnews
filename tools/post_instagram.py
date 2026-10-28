@@ -73,7 +73,8 @@ def build_caption(body):
         body_text = "\n\n".join(paras)
         if disclosure in body_text:  # 중복 방지: 본문에 이미 있으면 빼고 맨 앞에 다시 둔다
             paras = [x for x in paras if x.strip() != disclosure]
-    caption = "\n\n".join(p for p in [disclosure, "\n\n".join(paras), footer, tags] if p)
+    bottom = disclosure if os.environ.get("DISCLOSURE_BOTTOM") == "1" else ""  # 본문 맨 아래에도 한 번 더
+    caption = "\n\n".join(p for p in [disclosure, "\n\n".join(paras), footer, tags, bottom] if p)
     if len(caption) > 2200:
         fail(f"캡션이 인스타 한도(2200자)를 넘습니다: {len(caption)}자")
     if caption.count("#") > 30:

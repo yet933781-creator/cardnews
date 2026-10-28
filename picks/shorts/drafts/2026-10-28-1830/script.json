@@ -34,10 +34,10 @@
       "caption": "틈새 외풍 줄이는 문풍지",
       "narration": "이럴 땐 틈새에 붙이는 문풍지로 외풍을 줄여 보세요.",
       "visual": {
-        "kind": "tag",
-        "kicker": "오늘의 꿀템 1번",
-        "name": "외풍 차단 문풍지",
-        "point": "창틀·문틀 틈새에 붙여\n외풍 줄이기"
+        "kind": "photo",
+        "card": true,
+        "src": "picks/shorts/drafts/2026-10-28-1830/p_shape.jpg",
+        "size": 560
       }
     },
     {
@@ -45,14 +45,10 @@
       "caption": "길이 맞춰 자르고 붙이기",
       "narration": "틈 길이에 맞춰 자른 다음, 뒷면 테이프를 떼고 창틀이나 문틀에 붙이면 끝이에요.",
       "visual": {
-        "kind": "big",
-        "text": "간편 설치",
-        "sub": "자르고 붙이면 끝",
-        "color": [
-          255,
-          212,
-          56
-        ]
+        "kind": "photo",
+        "card": true,
+        "src": "picks/shorts/drafts/2026-10-28-1830/p_install.jpg",
+        "size": 600
       }
     },
     {
@@ -60,12 +56,10 @@
       "caption": "창문 · 방문 · 베란다 샷시",
       "narration": "창문, 방문, 베란다 샷시처럼 바람이 새는 틈에 붙일 수 있어요.",
       "visual": {
-        "kind": "badges",
-        "items": [
-          "창문",
-          "방문",
-          "베란다 샷시"
-        ]
+        "kind": "photo",
+        "card": true,
+        "src": "picks/shorts/drafts/2026-10-28-1830/p_places.jpg",
+        "size": 580
       }
     },
     {
@@ -93,19 +87,10 @@
       "caption": "겨울 준비할 때 보려고 저장!",
       "narration": "제품은 프로필 링크 1번에서 확인하세요. 가격은 링크에서 확인하시고, 겨울 준비할 때 보려고 저장해 두세요.",
       "visual": {
-        "kind": "big",
-        "text": "1번",
-        "sub": "프로필 링크",
-        "color": [
-          255,
-          138,
-          76
-        ],
-        "glow": [
-          255,
-          138,
-          76
-        ]
+        "kind": "photo",
+        "card": true,
+        "src": "picks/shorts/drafts/2026-10-28-1830/p_roll.jpg",
+        "size": 560
       }
     }
   ],

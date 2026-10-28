@@ -25,6 +25,7 @@ env:
   SHORTS_DIR: picks/shorts/approved
   FOOTER_FILE: picks/footer.txt
   DISCLOSURE_FILE: picks/disclosure.txt
+  DISCLOSURE_BOTTOM: "1"
   YT_CATEGORY: "26"
 
 jobs:

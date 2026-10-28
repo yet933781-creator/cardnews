@@ -295,6 +295,17 @@ BASE_DIR = "."
 def photo(img, v):
     """사용자가 준 사진을 위쪽에 가로 띠로 배치하고 아래를 배경에 녹인다. overlay 가 있으면 큰 글자를 얹는다."""
     src = Image.open(os.path.join(BASE_DIR, v["src"])).convert("RGB")
+    if v.get("card"):  # 작은 상품 사진: 늘려서 흐려지지 않게 흰 카드 위에 적당한 크기로 둔다
+        side = v.get("size", 600)
+        sc = min(side / src.width, side / src.height)
+        p = src.resize((int(src.width * sc), int(src.height * sc)), Image.LANCZOS)
+        pad = 34
+        cw, ch = p.width + pad * 2, p.height + pad * 2
+        x0, y0 = (W - cw) // 2, v.get("top", 150)
+        d = ImageDraw.Draw(img)
+        d.rounded_rectangle([x0, y0, x0 + cw, y0 + ch], 36, fill=(255, 255, 255))
+        img.paste(p, (x0 + pad, y0 + pad))
+        return
     top = v.get("top", 120)
     maxh = v.get("max_h", 700)
     w = W
