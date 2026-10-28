@@ -96,6 +96,11 @@ def scene_image(sc, idx, total, cfg, out, text=True):
     else:
         img = Image.new("RGB", (W, H))
         R.gradient(img, (6, 8, 20), (16, 20, 48), 0, H)
+    if sc.get("image"):  # 장면 전체 이미지(글자 포함, 9:16): 꽉 채우고 위에 글자를 따로 얹지 않는다
+        src = Image.open(os.path.join(ROOT, sc["image"])).convert("RGB")
+        sc_ = max(W / src.width, H / src.height)
+        p = src.resize((int(src.width * sc_), int(src.height * sc_)), Image.LANCZOS)
+        img.paste(p, ((W - p.width) // 2, (H - p.height) // 2))
     if sc.get("owner"):  # 사장님 사진: 얼굴은 그대로, 배경색만 게시물마다 바뀐다
         top, bottom, gl = R.owner_theme(cfg.get("post_at") or cfg.get("title", ""))
         R.gradient(img, top, bottom, 0, H)
@@ -104,7 +109,7 @@ def scene_image(sc, idx, total, cfg, out, text=True):
         img.paste(p, (0, 170))
         R.ai_pill(ImageDraw.Draw(img), 40, 170 + p.height - 140)  # 자막 박스에 가리지 않게 위로
     # 비주얼: 카드뉴스용 그림을 만들어 상단에 배치
-    if sc.get("visual") and not clip and not sc.get("owner"):
+    if sc.get("visual") and not clip and not sc.get("owner") and not sc.get("image"):
         v = Image.new("RGB", (1080, 1350))
         R.gradient(v, (6, 8, 20), (10, 13, 32), 0, 1350)
         R.visual(v, sc["visual"])
@@ -130,8 +135,10 @@ def scene_image(sc, idx, total, cfg, out, text=True):
         R.pill(d, W - 60, 62, cfg["ad_label"], R.font("black", 30), (255, 255, 255), (16, 18, 30), padx=18, anchor_right=True)
     if clip and sc.get("ai_label", True):  # AI 생성 영상 표시
         R.pill(d, 60, 180, "AI 생성 장면", R.font("bold", 26), (255, 255, 255), (16, 18, 30), padx=14)
+    if sc.get("image") and sc.get("ai_label", True):  # AI 생성 이미지 표시 (오른쪽 위)
+        R.pill(d, W - 60, 62, "AI 생성 이미지", R.font("bold", 26), (255, 255, 255), (16, 18, 30), padx=14, anchor_right=True)
     y = 1190
-    if not text:  # 리모션: 글자는 애니메이션으로 따로 얹는다
+    if not text or sc.get("image"):  # 리모션: 글자는 애니메이션으로 따로 얹는다
         img.save(out)
         return
     if sc.get("headline"):
@@ -165,7 +172,8 @@ def remotion_voice(cfg, scenes, work):
         voiced &= tts(sc.get("narration") or sc.get("caption", ""), mp3, voice, rate)
         dur = duration(mp3) + 0.35
         it = {"bg": f"job/s{i:02d}.png", "audio": f"job/v{i:02d}.mp3", "frames": int(round(dur * FPS)),
-              "headline": sc.get("headline", ""), "caption": sc.get("caption", "")}
+              "headline": "" if sc.get("image") else sc.get("headline", ""),
+              "caption": "" if sc.get("image") else sc.get("caption", "")}
         if sc.get("clip"):
             sh("ffmpeg", "-y", "-stream_loop", "-1", "-i", os.path.join(ROOT, sc["clip"]), "-t", f"{dur:.2f}", "-an",
                "-vf", f"scale={W}:{H}:force_original_aspect_ratio=increase,crop={W}:{H},fps={FPS}",
@@ -248,7 +256,8 @@ def build(folder):
     import hashlib
     sha = hashlib.sha1(open(os.path.join(folder, "script.json"), "rb").read()).hexdigest()
     info = {"engine": engine, "seconds": round(total, 1), "ai_voice": voiced, "size_mb": round(os.path.getsize(out) / 1e6, 2), "script_sha": sha,
-            "owner_end": bool(scenes and scenes[-1].get("owner"))}
+            "owner_end": bool(scenes and scenes[-1].get("owner")),
+            "ai_images": any(x.get("image") and x.get("ai_label", True) for x in scenes)}
     json.dump(info, open(os.path.join(folder, "build.json"), "w"), ensure_ascii=False, indent=2)
     print("완성:", out, info)
 
