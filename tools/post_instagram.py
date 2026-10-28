@@ -79,9 +79,13 @@ def post(folder):
 
 
 def main():
+    global USER_ID
     if not USER_ID or not TOKEN:
         fail("IG_USER_ID 또는 IG_ACCESS_TOKEN 비밀값이 비어 있습니다")
-    print("사용 서버:", HOST, "| 사용자 ID 길이:", len(USER_ID))
+    me = api("GET", "me", fields="user_id,username" if "instagram" in HOST else "id,username")
+    real_id = str(me.get("user_id") or me.get("id"))
+    print("토큰 계정:", me.get("username"), "| ID 일치:", real_id == USER_ID)
+    USER_ID = real_id  # 토큰에서 조회한 정확한 ID 사용
     todo = [d for d in sorted(glob.glob("approved/*/"))
             if not os.path.exists(os.path.join(d, "posted.json"))]
     if not todo:
