@@ -70,6 +70,8 @@ def build_caption(body):
         if not os.path.exists(DISCLOSURE_FILE):
             fail(f"대가성 문구 파일이 없습니다: {DISCLOSURE_FILE}")
         disclosure = open(DISCLOSURE_FILE, encoding="utf-8").read().strip()
+        if tags and "#광고" not in tags:  # 해시태그를 쓰면 첫 해시태그는 #광고
+            tags = "#광고 #쿠팡파트너스 " + tags.replace("#쿠팡파트너스", "").strip()
         body_text = "\n\n".join(paras)
         if disclosure in body_text:  # 중복 방지: 본문에 이미 있으면 빼고 맨 앞에 다시 둔다
             paras = [x for x in paras if x.strip() != disclosure]

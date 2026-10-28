@@ -469,7 +469,7 @@ def render_follow(s, i, n, brand, cfg):
     d.text((x0 + 130 - d.textlength(t, font=f) / 2, y0 + 168), t, font=f, fill=(20, 24, 40))
     name = cfg.get("store_name", "방학 폰 성지")
     d.text((x0 + 250, y0 + 150), name, font=font("black", 44), fill=(20, 24, 40))
-    d.text((x0 + 250, y0 + 214), cfg.get("store_sub", "휴대폰 꿀팁 · 최저가 상담"), font=font("medium", 30), fill=(90, 98, 120))
+    d.text((x0 + 250, y0 + 214), cfg.get("store_sub", "휴대폰 꿀팁 · 구매 상담"), font=font("medium", 30), fill=(90, 98, 120))
     yy = y0 + 330
     for line in cfg.get("profile_lines", []):
         d.text((x0 + 50, yy), line, font=font("medium", 32), fill=(40, 48, 70)); yy += 54
@@ -482,6 +482,15 @@ def render_follow(s, i, n, brand, cfg):
     d.text((x0 + 90 + bw + (bw - d.textlength("메시지", font=f)) / 2, by + 20), "메시지", font=f, fill=(20, 24, 40))
     # 손가락 대신 강조 화살표
     d.polygon([(x0 + 50 + bw // 2, by + 110), (x0 + 30 + bw // 2, by + 150), (x0 + 70 + bw // 2, by + 150)], fill=C["accent"])
+    # 참여 유도 (좋아요·댓글·저장·유튜브 구독)
+    cta = s.get("cta", cfg.get("cta", "좋아요 · 댓글 · 저장 / 유튜브 구독도 부탁드려요"))
+    if cta:
+        f = font("bold", 36)
+        tw = d.textlength(cta, font=f)
+        if tw > W - 120:
+            f = font("bold", int(36 * (W - 120) / tw)); tw = d.textlength(cta, font=f)
+        d.rounded_rectangle([(W - tw) / 2 - 30, 1125, (W + tw) / 2 + 30, 1195], 35, fill=C["accent"])
+        d.text(((W - tw) / 2, 1138), cta, font=f, fill=(16, 18, 30))
     footer(d, i, n, brand)
     return img
 
