@@ -452,6 +452,19 @@ def render_point(s, i, n, brand, cfg):
     return img
 
 
+def _cta(d, s, cfg):
+    """참여 유도 띠 (좋아요·댓글·저장·유튜브 구독)."""
+    cta = s.get("cta", cfg.get("cta", "좋아요 · 댓글 · 저장 / 유튜브 구독도 부탁드려요"))
+    if not cta:
+        return
+    f = font("bold", 36)
+    tw = d.textlength(cta, font=f)
+    if tw > W - 120:
+        f = font("bold", int(36 * (W - 120) / tw)); tw = d.textlength(cta, font=f)
+    d.rounded_rectangle([(W - tw) / 2 - 30, 1125, (W + tw) / 2 + 30, 1195], 35, fill=C["accent"])
+    d.text(((W - tw) / 2, 1138), cta, font=f, fill=(16, 18, 30))
+
+
 def render_follow(s, i, n, brand, cfg):
     """마지막 장: 우리 계정 팔로우 유도 (프로필 카드 그림은 직접 그린 것)."""
     img = dark_frame()
@@ -460,6 +473,23 @@ def render_follow(s, i, n, brand, cfg):
     for k, line in enumerate(s.get("head", ["더 많은 휴대폰 꿀팁이 궁금하다면", f"{brand} 팔로우하세요!"])):
         f = font("black" if k else "bold", 58 if k else 44)
         d.text(((W - d.textlength(line, font=f)) / 2, 150 + k * 80), line, font=f, fill=C["accent"] if k else C["text"])
+    # 실제 프로필 화면 이미지가 있으면 그림 대신 사용 (매장 계정 기본값: assets/store_profile.png)
+    root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    fimg = cfg.get("follow_image") or ("assets/store_profile.png" if brand == "@bpj0901" else "")
+    if fimg and os.path.exists(os.path.join(root, fimg)):
+        src = Image.open(os.path.join(root, fimg)).convert("RGB")
+        bw_ = W - 140
+        p = src.resize((bw_, int(src.height * bw_ / src.width)), Image.LANCZOS)
+        pad = 26
+        cx0, cy0 = 70 - pad, 300 + (800 - p.height) // 2 - pad
+        d.rounded_rectangle([cx0, cy0, cx0 + p.width + pad * 2, cy0 + p.height + pad * 2], 36, fill=(255, 255, 255))
+        m = Image.new("L", p.size, 0); ImageDraw.Draw(m).rounded_rectangle([0, 0, p.width, p.height], 18, fill=255)
+        img.paste(p, (cx0 + pad, cy0 + pad), m)
+        ay = cy0 + p.height + pad * 2 + 20
+        d.polygon([(W // 2, ay), (W // 2 - 26, ay + 40), (W // 2 + 26, ay + 40)], fill=C["accent"])
+        _cta(d, s, cfg)
+        footer(d, i, n, brand)
+        return img
     # 프로필 카드
     x0, y0, x1, y1 = 150, 380, W - 150, 1080
     d.rounded_rectangle([x0, y0, x1, y1], 40, fill=(250, 251, 254))
@@ -482,15 +512,7 @@ def render_follow(s, i, n, brand, cfg):
     d.text((x0 + 90 + bw + (bw - d.textlength("메시지", font=f)) / 2, by + 20), "메시지", font=f, fill=(20, 24, 40))
     # 손가락 대신 강조 화살표
     d.polygon([(x0 + 50 + bw // 2, by + 110), (x0 + 30 + bw // 2, by + 150), (x0 + 70 + bw // 2, by + 150)], fill=C["accent"])
-    # 참여 유도 (좋아요·댓글·저장·유튜브 구독)
-    cta = s.get("cta", cfg.get("cta", "좋아요 · 댓글 · 저장 / 유튜브 구독도 부탁드려요"))
-    if cta:
-        f = font("bold", 36)
-        tw = d.textlength(cta, font=f)
-        if tw > W - 120:
-            f = font("bold", int(36 * (W - 120) / tw)); tw = d.textlength(cta, font=f)
-        d.rounded_rectangle([(W - tw) / 2 - 30, 1125, (W + tw) / 2 + 30, 1195], 35, fill=C["accent"])
-        d.text(((W - tw) / 2, 1138), cta, font=f, fill=(16, 18, 30))
+    _cta(d, s, cfg)
     footer(d, i, n, brand)
     return img
 
