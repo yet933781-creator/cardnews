@@ -66,7 +66,7 @@ def make_bgm(path, secs=70, bpm=88):
 
 
 # ---------- 장면 이미지 ----------
-def scene_image(sc, idx, total, cfg, out):
+def scene_image(sc, idx, total, cfg, out, text=True):
     clip = sc.get("clip")
     if clip:  # 영상 장면: 글자만 투명 레이어로 만들고 아래에 영상을 깐다
         img = Image.new("RGBA", (W, H), (0, 0, 0, 0))
@@ -108,6 +108,9 @@ def scene_image(sc, idx, total, cfg, out):
     if clip and sc.get("ai_label", True):  # AI 생성 영상 표시
         R.pill(d, 60, 180, "AI 생성 장면", R.font("bold", 26), (255, 255, 255), (16, 18, 30), padx=14)
     y = 1190
+    if not text:  # 리모션: 글자는 애니메이션으로 따로 얹는다
+        img.save(out)
+        return
     if sc.get("headline"):
         y = R.text_block(d, 70, y, sc["headline"], R.font("black", 86), R.C["text"], W - 140, 1.18) + 30
     # 자막 박스 (쇼츠 스타일: 흰 박스 + 검은 글자, 하단 UI 가리지 않는 위치)
@@ -126,12 +129,49 @@ def scene_image(sc, idx, total, cfg, out):
     img.save(out)
 
 
+def remotion_voice(cfg, scenes, work):
+    """리모션으로 글자 애니메이션·장면 전환이 들어간 영상(+내레이션)을 만든다. 실패하면 예외."""
+    rdir = os.path.join(ROOT, "remotion")
+    job = os.path.join(rdir, "public", "job")
+    shutil.rmtree(job, ignore_errors=True); os.makedirs(job)
+    voice = cfg.get("voice", "ko-KR-SunHiNeural"); rate = cfg.get("rate", "+12%")
+    items = []; voiced = True
+    for i, sc in enumerate(scenes):
+        scene_image(sc, i, len(scenes), cfg, os.path.join(job, f"s{i:02d}.png"), text=False)
+        mp3 = os.path.join(job, f"v{i:02d}.mp3")
+        voiced &= tts(sc.get("narration") or sc.get("caption", ""), mp3, voice, rate)
+        dur = duration(mp3) + 0.35
+        it = {"bg": f"job/s{i:02d}.png", "audio": f"job/v{i:02d}.mp3", "frames": int(round(dur * FPS)),
+              "headline": sc.get("headline", ""), "caption": sc.get("caption", "")}
+        if sc.get("clip"):
+            sh("ffmpeg", "-y", "-stream_loop", "-1", "-i", os.path.join(ROOT, sc["clip"]), "-t", f"{dur:.2f}", "-an",
+               "-vf", f"scale={W}:{H}:force_original_aspect_ratio=increase,crop={W}:{H},fps={FPS}",
+               "-c:v", "libx264", "-preset", "veryfast", "-crf", "20", os.path.join(job, f"c{i:02d}.mp4"))
+            it["clip"] = f"job/c{i:02d}.mp4"
+        items.append(it)
+    props = os.path.join(work, "props.json")
+    json.dump({"scenes": items, "fps": FPS}, open(props, "w"), ensure_ascii=False)
+    out = os.path.join(os.path.abspath(work), "voice.mp4")
+    r = subprocess.run(["npx", "remotion", "render", "src/index.ts", "Short", out, f"--props={os.path.abspath(props)}",
+                        "--concurrency=2", "--log=error"], cwd=rdir, capture_output=True, text=True)
+    if r.returncode or not os.path.exists(out):
+        raise RuntimeError((r.stderr or r.stdout)[-1200:])
+    return out, voiced
+
+
 def build(folder):
     cfg = json.load(open(os.path.join(folder, "script.json"), encoding="utf-8"))
     work = os.path.join(folder, "_work"); os.makedirs(work, exist_ok=True)
     voice = cfg.get("voice", "ko-KR-SunHiNeural"); rate = cfg.get("rate", "+12%")
     scenes = cfg["scenes"]; clips = []; voiced = True
-    for i, sc in enumerate(scenes):
+    engine = "ffmpeg"
+    if os.environ.get("SHORTS_ENGINE") == "remotion" and os.path.isdir(os.path.join(ROOT, "remotion", "node_modules")):
+        try:
+            voice_mp4, voiced = remotion_voice(cfg, scenes, work)
+            engine = "remotion"
+        except Exception as e:
+            print("::warning::리모션 렌더 실패, 기존 방식으로 만듭니다:", str(e).replace("\n", " ")[:900])
+    for i, sc in enumerate(scenes if engine == "ffmpeg" else []):
         png = os.path.join(work, f"s{i:02d}.png"); scene_image(sc, i, len(scenes), cfg, png)
         mp3 = os.path.join(work, f"v{i:02d}.mp3")
         voiced &= tts(sc.get("narration") or sc.get("caption", ""), mp3, voice, rate)
@@ -156,10 +196,11 @@ def build(folder):
            "-map", "[v]", "-map", "[a]", "-t", f"{dur:.2f}",
            "-c:v", "libx264", "-preset", "veryfast", "-crf", "21", "-c:a", "aac", "-b:a", "160k", "-ac", "2", clip)
         clips.append(clip)
-    lst = os.path.join(work, "list.txt")
-    open(lst, "w").write("".join(f"file '{os.path.abspath(c)}'\n" for c in clips))
-    voice_mp4 = os.path.join(work, "voice.mp4")
-    sh("ffmpeg", "-y", "-f", "concat", "-safe", "0", "-i", lst, "-c", "copy", voice_mp4)
+    if engine == "ffmpeg":
+        lst = os.path.join(work, "list.txt")
+        open(lst, "w").write("".join(f"file '{os.path.abspath(c)}'\n" for c in clips))
+        voice_mp4 = os.path.join(work, "voice.mp4")
+        sh("ffmpeg", "-y", "-f", "concat", "-safe", "0", "-i", lst, "-c", "copy", voice_mp4)
     total = duration(voice_mp4)
     bgm = os.path.join(ROOT, "assets", "bgm.mp3")
     if not os.path.exists(bgm):
@@ -171,7 +212,9 @@ def build(folder):
        "-map", "0:v", "-map", "[a]", "-c:v", "copy", "-c:a", "aac", "-b:a", "160k",
        "-movflags", "+faststart", "-t", f"{total:.2f}", out)
     # 표지(첫 장면) 이미지
-    if scenes[0].get("clip"):  # 첫 장면이 영상이면 첫 프레임 + 글자로 표지
+    if engine == "remotion":  # 표지: 글자가 다 나온 1초 지점
+        sh("ffmpeg", "-y", "-ss", "1", "-i", out, "-frames:v", "1", os.path.join(folder, "cover.jpg"))
+    elif scenes[0].get("clip"):  # 첫 장면이 영상이면 첫 프레임 + 글자로 표지
         sh("ffmpeg", "-y", "-ss", "1", "-i", os.path.join(ROOT, scenes[0]["clip"]), "-i", os.path.join(work, "s00.png"),
            "-filter_complex", f"[0:v]scale={W}:{H}:force_original_aspect_ratio=increase,crop={W}:{H}[b];[b][1:v]overlay=0:0",
            "-frames:v", "1", os.path.join(folder, "cover.jpg"))
@@ -180,7 +223,7 @@ def build(folder):
     shutil.rmtree(work)
     import hashlib
     sha = hashlib.sha1(open(os.path.join(folder, "script.json"), "rb").read()).hexdigest()
-    info = {"seconds": round(total, 1), "ai_voice": voiced, "size_mb": round(os.path.getsize(out) / 1e6, 2), "script_sha": sha}
+    info = {"engine": engine, "seconds": round(total, 1), "ai_voice": voiced, "size_mb": round(os.path.getsize(out) / 1e6, 2), "script_sha": sha}
     json.dump(info, open(os.path.join(folder, "build.json"), "w"), ensure_ascii=False, indent=2)
     print("완성:", out, info)
 
