@@ -67,10 +67,21 @@ def make_bgm(path, secs=70, bpm=88):
 
 # ---------- 장면 이미지 ----------
 def scene_image(sc, idx, total, cfg, out):
-    img = Image.new("RGB", (W, H))
-    R.gradient(img, (6, 8, 20), (16, 20, 48), 0, H)
+    clip = sc.get("clip")
+    if clip:  # 영상 장면: 글자만 투명 레이어로 만들고 아래에 영상을 깐다
+        img = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+        sh_ = Image.new("L", (W, H), 0); sd = ImageDraw.Draw(sh_)
+        for yy in range(H):  # 위·아래 글자 읽히도록 어둡게
+            a = 0
+            if yy < 220: a = int(150 * (220 - yy) / 220)
+            if yy > 1050: a = int(200 * min(1, (yy - 1050) / 350))
+            sd.line([(0, yy), (W, yy)], fill=a)
+        img.paste(Image.new("RGBA", (W, H), (6, 8, 20, 255)), (0, 0), sh_)
+    else:
+        img = Image.new("RGB", (W, H))
+        R.gradient(img, (6, 8, 20), (16, 20, 48), 0, H)
     # 비주얼: 카드뉴스용 그림을 만들어 상단에 배치
-    if sc.get("visual"):
+    if sc.get("visual") and not clip:
         v = Image.new("RGB", (1080, 1350))
         R.gradient(v, (6, 8, 20), (10, 13, 32), 0, 1350)
         R.visual(v, sc["visual"])
@@ -94,6 +105,8 @@ def scene_image(sc, idx, total, cfg, out):
                             fill=R.C["accent"] if k <= idx else (50, 60, 100))
     if cfg.get("ad_label"):  # 대가성 표시: 모든 장면 오른쪽 위
         R.pill(d, W - 60, 62, cfg["ad_label"], R.font("black", 30), (255, 255, 255), (16, 18, 30), padx=18, anchor_right=True)
+    if clip and sc.get("ai_label", True):  # AI 생성 영상 표시
+        R.pill(d, 60, 180, "AI 생성 장면", R.font("bold", 26), (255, 255, 255), (16, 18, 30), padx=14)
     y = 1190
     if sc.get("headline"):
         y = R.text_block(d, 70, y, sc["headline"], R.font("black", 86), R.C["text"], W - 140, 1.18) + 30
@@ -126,6 +139,16 @@ def build(folder):
         clip = os.path.join(work, f"c{i:02d}.mp4")
         frames = int(dur * FPS)
         zoom = "min(zoom+0.0007,1.07)" if i % 2 == 0 else "if(eq(on,0),1.07,max(zoom-0.0007,1.0))"
+        if sc.get("clip"):
+            src = os.path.join(ROOT, sc["clip"])
+            sh("ffmpeg", "-y", "-stream_loop", "-1", "-i", src, "-loop", "1", "-i", png, "-i", mp3,
+               "-filter_complex",
+               f"[0:v]scale={W}:{H}:force_original_aspect_ratio=increase,crop={W}:{H},fps={FPS},setsar=1[bg];"
+               f"[bg][1:v]overlay=0:0,format=yuv420p[v];[2:a]aresample=44100,apad=pad_dur=0.35[a]",
+               "-map", "[v]", "-map", "[a]", "-t", f"{dur:.2f}",
+               "-c:v", "libx264", "-preset", "veryfast", "-crf", "21", "-c:a", "aac", "-b:a", "160k", "-ac", "2", clip)
+            clips.append(clip)
+            continue
         sh("ffmpeg", "-y", "-loop", "1", "-i", png, "-i", mp3,
            "-filter_complex",
            f"[0:v]scale=2160:3840,zoompan=z='{zoom}':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':d={frames}:s={W}x{H}:fps={FPS},format=yuv420p[v];"
@@ -148,7 +171,12 @@ def build(folder):
        "-map", "0:v", "-map", "[a]", "-c:v", "copy", "-c:a", "aac", "-b:a", "160k",
        "-movflags", "+faststart", "-t", f"{total:.2f}", out)
     # 표지(첫 장면) 이미지
-    Image.open(os.path.join(work, "s00.png")).convert("RGB").save(os.path.join(folder, "cover.jpg"), quality=90)
+    if scenes[0].get("clip"):  # 첫 장면이 영상이면 첫 프레임 + 글자로 표지
+        sh("ffmpeg", "-y", "-ss", "1", "-i", os.path.join(ROOT, scenes[0]["clip"]), "-i", os.path.join(work, "s00.png"),
+           "-filter_complex", f"[0:v]scale={W}:{H}:force_original_aspect_ratio=increase,crop={W}:{H}[b];[b][1:v]overlay=0:0",
+           "-frames:v", "1", os.path.join(folder, "cover.jpg"))
+    else:
+        Image.open(os.path.join(work, "s00.png")).convert("RGB").save(os.path.join(folder, "cover.jpg"), quality=90)
     shutil.rmtree(work)
     import hashlib
     sha = hashlib.sha1(open(os.path.join(folder, "script.json"), "rb").read()).hexdigest()

@@ -1,0 +1,24 @@
+{
+  "title": "Flow AI 장면 샘플 (게시 안 함)",
+  "voice": "ko-KR-SunHiNeural",
+  "rate": "+12%",
+  "store_tag": ["장바구니", "구출작전"],
+  "ad_label": "광고 · 쿠팡 파트너스",
+  "link_no": 1,
+  "scenes": [
+    {"clip": "picks/shorts/drafts/flow-sample/ai_window.mp4", "headline": "창문 닫았는데\n왜 이렇게 춥지?", "caption": "틈새 외풍 때문일 수 있어요",
+     "narration": "광고 포함 영상입니다. 창문을 꼭 닫았는데도 손끝이 시리다면, 창틀 틈으로 들어오는 외풍 때문일 수 있어요."},
+    {"headline": "틈새에 붙이는 문풍지", "caption": "창틀·문틀 틈새용 접착식",
+     "narration": "이럴 땐 창틀이나 문틀 틈새에 붙이는 문풍지로 외풍을 줄여 보세요.",
+     "visual": {"kind": "photo", "card": true, "src": "picks/shorts/approved/2026-10-28-1830/p_shape.jpg", "size": 560}},
+    {"headline": "설치는 간단", "caption": "길이 맞춰 자르고 붙이기",
+     "narration": "틈 길이에 맞춰 자른 다음, 뒷면 테이프를 떼고 붙이면 돼요.",
+     "visual": {"kind": "photo", "card": true, "src": "picks/shorts/approved/2026-10-28-1830/p_install.jpg", "size": 600}},
+    {"headline": "프로필 링크\n1번에서 확인", "caption": "좋아요 · 구독 · 팔로우!",
+     "narration": "제품은 프로필 링크 1번에서 확인하세요. 도움 됐다면 좋아요, 구독과 팔로우 부탁드려요!",
+     "visual": {"kind": "photo", "card": true, "src": "picks/shorts/approved/2026-10-28-1830/p_roll.jpg", "size": 560}}
+  ],
+  "caption": "샘플",
+  "yt_title": "샘플 #Shorts",
+  "yt_tags": []
+}
