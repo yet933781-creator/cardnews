@@ -43,3 +43,42 @@
 1. `git mv drafts/<폴더> approved/<폴더>` → 커밋 → push.
 2. GitHub Actions가 `post_at` 시각 이후 15분 안에 게시한다. 이미 시각이 지났으면 push 직후 바로 게시된다.
 3. 게시가 끝나면 `approved/<폴더>/posted.json`의 permalink를 사용자에게 알린다.
+
+---
+
+# 쇼츠 제작 (카드뉴스 다음에 이어서, 하루 3번)
+
+## S0. 시간과 주제
+| 카드뉴스 | 쇼츠 게시 | 쇼츠 폴더 |
+|---|---|---|
+| 12:00 | 12:30 | `shorts/drafts/YYYY-MM-DD-1230/` |
+| 15:00 | 15:30 | `shorts/drafts/YYYY-MM-DD-1530/` |
+| 18:00 | 18:30 | `shorts/drafts/YYYY-MM-DD-1830/` |
+
+- 1단계 조사에서 이슈를 **2개** 고른다. 화제성 1위는 카드뉴스, 2위는 쇼츠. **같은 날 카드뉴스·쇼츠와 주제가 겹치면 안 된다.** 교차 검증도 두 후보를 함께 묻는다.
+- 같은 슬롯 주제 범위 안에서 고르되, 마땅한 게 없으면 다른 슬롯 주제에서 골라도 된다.
+
+## S1. 대본(script.json) 규칙 — 형식은 `shorts/drafts/2026-10-28-sample/script.json` 참고
+- 장면 5~7개, 전체 25~45초. 첫 장면은 3초 안에 궁금증을 주는 후킹(`headline` + 짧은 `caption`).
+- `narration`: 소리 내어 읽는 자연스러운 존댓말. 장면당 1~2문장. 숫자는 읽기 쉽게("329만 원", "256기가").
+- `caption`: 화면 자막, 18자 안팎 한 줄. `headline`: 1~2줄 큰 제목.
+- `visual.kind`: 카드뉴스와 같음(`phones`, `phone`, `big`, `badges`, `sms`). 이모지는 이미지에 쓰지 않는다.
+- 마지막 장면: "구매 상담은 방학 폰 성지" + DM·카톡 안내.
+- `post_at`: 쇼츠 게시 시각(예: `2026-10-29T12:30:00+09:00`).
+- `caption`(게시글): 카드뉴스 캡션 규칙과 같음. 해시태그 끝에 `#Shorts`.
+- `yt_title`: 60자 이내, 끝에 `#Shorts`. `yt_tags`: 5개 안팎.
+
+## S2. 제작과 확인
+1. `script.json` 만 커밋·push → GitHub Actions "쇼츠 영상 제작"이 AI 음성·배경음악을 넣어 `short.mp4`, `cover.jpg`, `build.json` 을 같은 폴더에 커밋한다(보통 2~3분).
+2. `gh api "repos/yet933781-creator/cardnews/actions/workflows/shorts-build.yml/runs?per_page=1"` 로 완료를 기다린 뒤 `git pull`.
+   실패하면 annotation 의 오류를 읽고 대본을 고쳐 다시 push 한다.
+3. `build.json` 의 `ai_voice` 가 false 면 초안 메시지 맨 위에 "⚠️ AI 음성 실패(무음)"를 적는다.
+4. ffmpeg 로 장면마다 한 프레임씩 뽑아 직접 보고 글자 넘침·겹침을 확인한다.
+5. `topics_log.md` 에 `- YYYY-MM-DD 쇼츠 HHMM: 주제 (출처)` 추가.
+6. `short.mp4` 를 SendUserFile 로 보내고, 주제·게시 예정 시각·유튜브 제목·캡션 전문·출처를 보낸 뒤 "이대로 올릴까요? '게시해줘' 또는 고칠 부분을 알려주세요."라고 묻는다.
+
+## S3. 승인 후
+- `git mv shorts/drafts/<폴더> shorts/approved/<폴더>` → 커밋 → push.
+- "쇼츠 게시" 작업이 게시 시각 이후 15분 안에 인스타 릴스와 유튜브 쇼츠에 올린다. 시각이 지났으면 바로 올린다.
+- 끝나면 `shorts/approved/<폴더>/posted.json` 의 두 링크를 알려준다.
+- 카드뉴스와 쇼츠 승인은 따로 받는다. "둘 다 게시해줘"면 둘 다 옮긴다.
