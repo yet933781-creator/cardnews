@@ -82,3 +82,10 @@
 - "쇼츠 게시" 작업이 게시 시각 이후 15분 안에 인스타 릴스와 유튜브 쇼츠에 올린다. 시각이 지났으면 바로 올린다.
 - 끝나면 `shorts/approved/<폴더>/posted.json` 의 두 링크를 알려준다.
 - 카드뉴스와 쇼츠 승인은 따로 받는다. "둘 다 게시해줘"면 둘 다 옮긴다.
+
+## 정시 게시 보장 (GitHub 예약 지연 대비)
+GitHub 의 15분 예약 확인은 자주 늦거나 건너뛰어진다. 승인 시점에 게시 시각이 아직 안 됐으면,
+이 세션에서 `send_later` 로 게시 시각 1분 뒤에 알림을 걸고, 알림이 오면 해당 게시 작업을 직접 실행한다:
+`gh api -X POST repos/yet933781-creator/cardnews/actions/workflows/post.yml/dispatches -f ref=main` (카드뉴스)
+`gh api -X POST repos/yet933781-creator/cardnews/actions/workflows/shorts-post.yml/dispatches -f ref=main` (쇼츠)
+실행 후 posted.json 의 링크를 확인해 사용자에게 알린다.
