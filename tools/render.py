@@ -475,7 +475,7 @@ def render_follow(s, i, n, brand, cfg):
         d.text(((W - d.textlength(line, font=f)) / 2, 150 + k * 80), line, font=f, fill=C["accent"] if k else C["text"])
     # 실제 프로필 화면 이미지가 있으면 그림 대신 사용 (매장 계정 기본값: assets/store_profile.png)
     root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    fimg = cfg.get("follow_image") or ("assets/store_profile.png" if brand == "@bpj0901" else "")
+    fimg = cfg.get("follow_image") or {"@bpj0901": "assets/store_profile.png", "@jangbaguni0916": "assets/picks_profile.png"}.get(brand, "")
     if fimg and os.path.exists(os.path.join(root, fimg)):
         src = Image.open(os.path.join(root, fimg)).convert("RGB")
         bw_ = W - 140
