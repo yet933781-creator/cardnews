@@ -258,8 +258,168 @@ def render_checklist(s, i, n, brand):
     return img
 
 
+# ---------- v3: 벤치마킹 스타일 (큰 비주얼 + 짧은 글, 한 장에 한 포인트) ----------
+
+def phone_back(img, cx, cy, h, color, tilt=0):
+    """원본 일러스트: 특정 제품이 아닌 일반적인 스마트폰 뒷면."""
+    w = int(h * 0.48)
+    layer = Image.new("RGBA", (w + 40, h + 40), (0, 0, 0, 0))
+    d = ImageDraw.Draw(layer)
+    r = int(w * 0.16)
+    shade = tuple(max(0, c - 40) for c in color)
+    d.rounded_rectangle([20, 20, 20 + w, 20 + h], r, fill=shade)
+    d.rounded_rectangle([26, 26, 14 + w, 14 + h], r - 6, fill=color)
+    hi = tuple(min(255, c + 35) for c in color)
+    d.rounded_rectangle([26, 26, 26 + w * 0.18, 14 + h], r - 6, fill=hi)  # 측면 하이라이트
+    # 카메라 섬
+    cs = int(w * 0.20)
+    for k, (ox, oy) in enumerate([(0.12, 0.05), (0.12, 0.05 + 0.13), (0.12, 0.05 + 0.26)]):
+        x0, y0 = 20 + int(w * ox), 20 + int(h * oy)
+        d.ellipse([x0, y0, x0 + cs, y0 + cs], fill=(18, 18, 22))
+        d.ellipse([x0 + cs * 0.22, y0 + cs * 0.22, x0 + cs * 0.78, y0 + cs * 0.78], fill=(40, 46, 70))
+        d.ellipse([x0 + cs * 0.38, y0 + cs * 0.34, x0 + cs * 0.5, y0 + cs * 0.46], fill=(150, 170, 220))
+    if tilt:
+        layer = layer.rotate(tilt, resample=Image.BICUBIC, expand=True)
+    img.paste(layer, (int(cx - layer.width / 2), int(cy - layer.height / 2)), layer)
+
+
+def stage(img, top=0, bottom=760, glow_col=None):
+    """비주얼 영역 배경: 어두운 무대 + 빛 번짐."""
+    glow(img, W // 2, (top + bottom) // 2 + 60, 420, glow_col or C["sky"], 110)
+    glow(img, W // 2, bottom - 40, 300, (180, 120, 255), 70)
+
+
+def visual(img, v):
+    """v: {"kind": "phones"|"phone"|"big"|"badges"|"sms", ...}"""
+    k = v.get("kind", "big")
+    d = ImageDraw.Draw(img)
+    if k == "phones":
+        cols = [tuple(c) for c in v.get("colors", [[40, 42, 48], [235, 190, 180], [90, 130, 220], [190, 170, 230], [235, 236, 240]])]
+        n = len(cols)
+        stage(img)
+        mid = (n - 1) / 2
+        order = sorted(range(n), key=lambda i: -abs(i - mid))
+        for i in order:
+            off = i - mid
+            h = 560 - int(abs(off) * 50)
+            phone_back(img, W // 2 + off * 175, 400 + abs(off) * 25, h, cols[i], tilt=-off * 4)
+    elif k == "phone":
+        stage(img, glow_col=tuple(v.get("glow", C["sky"])))
+        phone_back(img, W // 2, 400, 620, tuple(v.get("color", [60, 70, 100])), tilt=v.get("tilt", -8))
+    elif k == "sms":
+        stage(img)
+        draw_phone(img, W // 2, 90, v)
+    elif k == "badges":
+        stage(img)
+        d = ImageDraw.Draw(img)
+        badges_row(d, 0, 320, v["items"], size=v.get("size", 76), center=True)
+        if v.get("caption"):
+            f = font("bold", 40)
+            t = v["caption"]
+            d.text(((W - d.textlength(t, font=f)) / 2, 480), t, font=f, fill=C["sub"])
+    elif k == "big":
+        stage(img, glow_col=tuple(v.get("glow", C["accent"])))
+        d = ImageDraw.Draw(img)
+        f = font("black", v.get("size", 210))
+        t = v["text"]
+        tw = d.textlength(t, font=f)
+        if tw > W - 120:
+            f = font("black", int(f.size * (W - 120) / tw)); tw = d.textlength(t, font=f)
+        d.text(((W - tw) / 2, 380 - f.size * 0.62), t, font=f, fill=tuple(v.get("color", C["accent"])))
+        if v.get("sub"):
+            fs = font("bold", 46)
+            d.text(((W - d.textlength(v["sub"], font=fs)) / 2, 420 + f.size * 0.45), v["sub"], font=fs, fill=C["text"])
+
+
+def bottom_shade(img, y0=700):
+    shade = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    sd = ImageDraw.Draw(shade)
+    for yy in range(y0, H):
+        a = min(245, int((yy - y0) / 220 * 245))
+        sd.line([(0, yy), (W, yy)], fill=(6, 8, 18, a))
+    img.paste(shade, (0, 0), shade)
+
+
+def dark_frame():
+    img = Image.new("RGB", (W, H))
+    gradient(img, (6, 8, 20), (14, 18, 42))
+    return img
+
+
+def store_tag(d, x, y, brand_tag):
+    """참고 게시물의 '지역 + 매장명' 작은 태그."""
+    a, b = brand_tag
+    nx = pill(d, x, y, a, font("black", 30), C["text"], (10, 12, 24), padx=12, h=46)
+    d.text((nx + 12, y + 5), b, font=font("bold", 30), fill=C["text"])
+
+
+def render_hero(s, i, n, brand, cfg):
+    img = dark_frame()
+    visual(img, s["visual"])
+    bottom_shade(img, 640)
+    d = ImageDraw.Draw(img)
+    y = 900
+    store_tag(d, M, y, cfg.get("store_tag", ["방학", "폰 성지"]))
+    text_block(d, M, y + 80, s["title"], font("black", 92), C["text"], W - 2 * M, 1.2)
+    footer(d, i, n, brand)
+    return img
+
+
+def render_point(s, i, n, brand, cfg):
+    img = dark_frame()
+    visual(img, s["visual"])
+    bottom_shade(img, 700)
+    d = ImageDraw.Draw(img)
+    y = 860
+    if s.get("label"):
+        pill(d, M, y, s["label"], font("black", 30), C["accent"], (16, 20, 38), padx=18)
+        y += 76
+    d.text((M, y), s["title"], font=font("black", 72), fill=C["text"])
+    y += 108
+    y = text_block(d, M, y, s.get("desc", ""), font("bold", 38), (222, 228, 242), W - 2 * M, 1.45)
+    if s.get("note"):
+        text_block(d, M, max(y + 24, H - 150), s["note"], font("regular", 24), C["sub"], W - 2 * M, 1.4)
+    footer(d, i, n, brand)
+    return img
+
+
+def render_follow(s, i, n, brand, cfg):
+    """마지막 장: 우리 계정 팔로우 유도 (프로필 카드 그림은 직접 그린 것)."""
+    img = dark_frame()
+    stage(img, 300, 1000)
+    d = ImageDraw.Draw(img)
+    for k, line in enumerate(s.get("head", ["더 많은 휴대폰 꿀팁이 궁금하다면", f"{brand} 팔로우하세요!"])):
+        f = font("black" if k else "bold", 58 if k else 44)
+        d.text(((W - d.textlength(line, font=f)) / 2, 150 + k * 80), line, font=f, fill=C["accent"] if k else C["text"])
+    # 프로필 카드
+    x0, y0, x1, y1 = 150, 380, W - 150, 1080
+    d.rounded_rectangle([x0, y0, x1, y1], 40, fill=(250, 251, 254))
+    d.text((x0 + 50, y0 + 40), brand.lstrip("@"), font=font("black", 40), fill=(20, 24, 40))
+    d.ellipse([x0 + 50, y0 + 120, x0 + 210, y0 + 280], fill=C["accent"])
+    f = font("black", 46); t = cfg.get("avatar_text", "폰")
+    d.text((x0 + 130 - d.textlength(t, font=f) / 2, y0 + 168), t, font=f, fill=(20, 24, 40))
+    name = cfg.get("store_name", "방학 폰 성지")
+    d.text((x0 + 250, y0 + 150), name, font=font("black", 44), fill=(20, 24, 40))
+    d.text((x0 + 250, y0 + 214), cfg.get("store_sub", "휴대폰 꿀팁 · 최저가 상담"), font=font("medium", 30), fill=(90, 98, 120))
+    yy = y0 + 330
+    for line in cfg.get("profile_lines", []):
+        d.text((x0 + 50, yy), line, font=font("medium", 32), fill=(40, 48, 70)); yy += 54
+    by = y1 - 140
+    bw = (x1 - x0 - 140) // 2
+    d.rounded_rectangle([x0 + 50, by, x0 + 50 + bw, by + 86], 22, fill=(70, 110, 250))
+    f = font("black", 36)
+    d.text((x0 + 50 + (bw - d.textlength("팔로우", font=f)) / 2, by + 20), "팔로우", font=f, fill=(255, 255, 255))
+    d.rounded_rectangle([x0 + 90 + bw, by, x1 - 50, by + 86], 22, fill=(232, 236, 244))
+    d.text((x0 + 90 + bw + (bw - d.textlength("메시지", font=f)) / 2, by + 20), "메시지", font=f, fill=(20, 24, 40))
+    # 손가락 대신 강조 화살표
+    d.polygon([(x0 + 50 + bw // 2, by + 110), (x0 + 30 + bw // 2, by + 150), (x0 + 70 + bw // 2, by + 150)], fill=C["accent"])
+    footer(d, i, n, brand)
+    return img
+
+
 R = {"cover": render_cover, "list": render_list, "timeline": render_timeline,
      "compare": render_compare, "checklist": render_checklist}
+R3 = {"hero": render_hero, "point": render_point, "follow": render_follow}
 
 
 def main(cfg_path, out):
@@ -270,7 +430,8 @@ def main(cfg_path, out):
         if f.startswith("card_") and f.endswith(".jpg"):
             os.remove(os.path.join(out, f))
     for i, s in enumerate(slides, 1):
-        img = R[s.get("type", "list")](s, i, len(slides), cfg["brand"])
+        t = s.get("type", "list")
+        img = R3[t](s, i, len(slides), cfg["brand"], cfg) if t in R3 else R[t](s, i, len(slides), cfg["brand"])
         p = os.path.join(out, f"card_{i:02d}.jpg")
         img.save(p, "JPEG", quality=92)
         print(p)
