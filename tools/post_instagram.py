@@ -55,11 +55,24 @@ def public_url(path):
     return f"https://cdn.jsdelivr.net/gh/{REPO}@{SHA}/{path}"
 
 
+def build_caption(body):
+    """본문 + 매장 안내(shop_footer.txt) + 해시태그 순으로 캡션 조립."""
+    paras = body.strip().split("\n\n")
+    tags = paras.pop() if paras and paras[-1].lstrip().startswith("#") else ""
+    footer = open("shop_footer.txt", encoding="utf-8").read().strip() if os.path.exists("shop_footer.txt") else ""
+    caption = "\n\n".join(p for p in ["\n\n".join(paras), footer, tags] if p)
+    if len(caption) > 2200:
+        fail(f"캡션이 인스타 한도(2200자)를 넘습니다: {len(caption)}자")
+    if caption.count("#") > 30:
+        fail("해시태그가 30개를 넘습니다")
+    return caption
+
+
 def post(folder):
     imgs = sorted(glob.glob(os.path.join(folder, "card_*.jpg")))
     if not 2 <= len(imgs) <= 10:
         fail(f"{folder}: 캐러셀은 이미지 2~10장이 필요합니다 (현재 {len(imgs)}장)")
-    caption = open(os.path.join(folder, "caption.txt"), encoding="utf-8").read().strip()
+    caption = build_caption(open(os.path.join(folder, "caption.txt"), encoding="utf-8").read())
 
     children = []
     for p in imgs:
