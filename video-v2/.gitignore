@@ -1,3 +1,4 @@
 out/
 remotion/node_modules/
 remotion/public/job/
+__pycache__/
