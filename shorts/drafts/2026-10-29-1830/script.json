@@ -34,14 +34,17 @@
       "caption": "통신 3사 공통지원금 상향",
       "narration": "통신 3사가 폴드8 공통지원금을 최대 60만 원으로 올렸어요. SK텔레콤은 최대 50만 원에서 60만 원이 됐죠.",
       "visual": {
-        "kind": "badges",
-        "items": [
-          "SKT",
-          "KT",
-          "LG U+"
-        ],
-        "caption": "2026년 10월 22일 보도 기준"
-      }
+        "kind": "big",
+        "text": "50만→60만",
+        "sub": "최대 공통지원금 · 보도 기준",
+        "color": [
+          255,
+          212,
+          56
+        ]
+      },
+      "clip": "shorts/drafts/2026-10-29-1830/photo_1.mp4",
+      "ai_label": false
     },
     {
       "headline": "조건은\n고가 요금제",
@@ -61,7 +64,9 @@
           112,
           102
         ]
-      }
+      },
+      "clip": "shorts/drafts/2026-10-29-1830/photo_2.mp4",
+      "ai_label": false
     },
     {
       "headline": "추가지원금까지\n최대 약 69만원",
@@ -81,7 +86,9 @@
           226,
           186
         ]
-      }
+      },
+      "clip": "shorts/drafts/2026-10-29-1830/photo_3.mp4",
+      "ai_label": false
     },
     {
       "headline": "선택약정도\n꼭 비교",
