@@ -1,0 +1,10 @@
+장면 1/6: generated_video static 5.9초 ['AI 생성 장면']
+장면 2/6: generated_photo push_in 7.2초 ['AI 생성 이미지']
+장면 3/6: generated_video static 5.7초 ['AI 생성 장면']
+장면 4/6: generated_video static 6.0초 ['AI 생성 장면']
+장면 5/6: generated_photo parallax_2d 6.5초 ['AI 생성 이미지']
+장면 6/6: owner_photo slow_zoom_in 10.5초 ['AI 생성 이미지']
+리모션 렌더 시작
+ 
+화면 구성: {'움직이는_영상_비율': 0.42, '정지사진_모션_비율': 0.58, 'AI_영상_비율': 0.42, '실제_촬영·허가_영상_비율': 0.0}
+완성: /home/runner/work/cardnews/cardnews/video-v2/out/phone-store.mp4 {'sample': 'video-v2/samples/phone-store.json', 'seconds': 41.8, 'ai_voice': True, 'scenes': 6, 'visual_share': {'움직이는_영상_비율': 0.42, '정지사진_모션_비율': 0.58, 'AI_영상_비율': 0.42, '실제_촬영·허가_영상_비율': 0.0}, 'features': {'camera_motion': True, 'animated_graphics': True, 'audio_enhancement': True, 'product_templates': True, 'ai_director': True, 'quality_check': True}, 'engine': 'remotion-v2'}

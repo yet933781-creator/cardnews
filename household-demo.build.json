@@ -1,0 +1,21 @@
+{
+ "sample": "video-v2/samples/household-demo.json",
+ "seconds": 31.0,
+ "ai_voice": true,
+ "scenes": 6,
+ "visual_share": {
+  "움직이는_영상_비율": 0.4,
+  "정지사진_모션_비율": 0.6,
+  "AI_영상_비율": 0.4,
+  "실제_촬영·허가_영상_비율": 0.0
+ },
+ "features": {
+  "camera_motion": true,
+  "animated_graphics": true,
+  "audio_enhancement": true,
+  "product_templates": true,
+  "ai_director": true,
+  "quality_check": true
+ },
+ "engine": "remotion-v2"
+}

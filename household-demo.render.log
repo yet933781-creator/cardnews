@@ -1,0 +1,10 @@
+장면 1/6: cuts slow_zoom_in 3.4초 []
+장면 2/6: cuts pan_left 3.2초 []
+장면 3/6: cuts slow_zoom_out 4.5초 []
+장면 4/6: cuts pan_right 4.5초 []
+장면 5/6: cuts push_in 7.6초 []
+장면 6/6: cuts slow_zoom_in 7.7초 []
+리모션 렌더 시작
+ 
+화면 구성: {'움직이는_영상_비율': 0.4, '정지사진_모션_비율': 0.6, 'AI_영상_비율': 0.4, '실제_촬영·허가_영상_비율': 0.0}
+완성: /home/runner/work/cardnews/cardnews/video-v2/out/household-demo.mp4 {'sample': 'video-v2/samples/household-demo.json', 'seconds': 31.0, 'ai_voice': True, 'scenes': 6, 'visual_share': {'움직이는_영상_비율': 0.4, '정지사진_모션_비율': 0.6, 'AI_영상_비율': 0.4, '실제_촬영·허가_영상_비율': 0.0}, 'features': {'camera_motion': True, 'animated_graphics': True, 'audio_enhancement': True, 'product_templates': True, 'ai_director': True, 'quality_check': True}, 'engine': 'remotion-v2'}
