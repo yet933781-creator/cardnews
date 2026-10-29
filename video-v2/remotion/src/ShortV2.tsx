@@ -4,11 +4,39 @@ import {CameraMotion} from './components/CameraMotion';
 import {OverlayView} from './components/Graphics';
 import {ReadabilityShade, SubtitleOverlay, TopBar} from './components/Chrome';
 import {parallaxForeground} from './camera';
+import {HoneyHeader, HoneyHook, HoneyShade, HoneySubs, HoneyVisual} from './components/Honey';
 import type {SceneV2, ShortV2Props} from './types';
 
 const FADE = 7; // 장면 시작 시 짧은 페이드 + 살짝 올라오는 전환
 
+// 꿀템 쇼츠식 장면: 꽉 찬 화면 + 빠른 컷 + 말자막 + 위 고정 제목
+const HoneyScene: React.FC<{s: SceneV2; index: number; p: ShortV2Props}> = ({s, index, p}) => {
+  const frame = useCurrentFrame();
+  const fade = interpolate(frame, [0, 4], [0.5, 1], {extrapolateRight: 'clamp'});
+  const keep = s.overlay && (s.overlay.type === 'cta' || s.overlay.type === 'number');
+  return (
+    <AbsoluteFill style={{backgroundColor: '#000', opacity: fade}}>
+      {s.owner && s.image ? (
+        <AbsoluteFill style={{background: 'linear-gradient(#141a36, #060814)'}}>
+          <Img src={staticFile(s.image)} style={{position: 'absolute', top: 170, width: '100%'}} />
+        </AbsoluteFill>
+      ) : (
+        <HoneyVisual s={s} />
+      )}
+      <HoneyShade />
+      {keep && s.overlay ? <OverlayView o={s.overlay} accent={p.accent} frames={s.frames} /> : null}
+      {index === 0 ? <HoneyHook text={s.headline} accent={p.accent} /> : null}
+      {index > 0 ? <HoneyHeader text={p.header} /> : null}
+      <HoneySubs subs={s.subs} accent={p.accent} />
+      <TopBar storeTag={p.storeTag} index={index} total={p.scenes.length} accent={p.accent} adLabel={p.adLabel} labels={s.labels} />
+      {s.audio ? <Audio src={staticFile(s.audio)} /> : null}
+      {s.sfx ? <Audio src={staticFile(s.sfx)} volume={0.35} /> : null}
+    </AbsoluteFill>
+  );
+};
+
 const Scene: React.FC<{s: SceneV2; index: number; p: ShortV2Props}> = ({s, index, p}) => {
+  if (p.style === 'honey') return <HoneyScene s={s} index={index} p={p} />;
   const frame = useCurrentFrame();
   const fade = interpolate(frame, [0, FADE], [0, 1], {extrapolateRight: 'clamp'});
   const lift = interpolate(frame, [0, FADE + 3], [26, 0], {extrapolateRight: 'clamp'});

@@ -44,8 +44,7 @@ jobs:
         run: npm install --no-audit --no-fund --loglevel=error && npx remotion browser ensure
       - name: 시험 렌더 (매장 · 꿀템)
         run: |
-          python video-v2/render_v2.py video-v2/samples/phone-store.json
-          python video-v2/render_v2.py video-v2/samples/household.json
+          for f in video-v2/samples/*.json; do python video-v2/render_v2.py "$f"; done
       - name: 기존 영상과 나란히 비교 (매장)
         run: |
           OLD=shorts/approved/2026-10-29-1530/short.mp4
@@ -53,7 +52,7 @@ jobs:
           ffmpeg -v error -y -i "$OLD" -i "$NEW" -filter_complex \
             "[0:v]scale=540:960,setsar=1[a];[1:v]scale=540:960,setsar=1[b];[a][b]hstack=2[v];[0:a][1:a]amix=inputs=2:duration=longest[x]" \
             -map "[v]" -map "[x]" -c:v libx264 -crf 24 -preset veryfast -c:a aac video-v2/out/phone-store-compare.mp4
-          for n in phone-store household; do
+          for n in $(ls video-v2/samples/*.json | xargs -n1 basename | sed 's/.json$//'); do
             d=$(ffprobe -v error -show_entries format=duration -of csv=p=0 video-v2/out/$n.mp4)
             for k in 1 2 3 4 5 6 7 8; do
               t=$(python -c "print(round($d*($k-0.5)/8,2))")

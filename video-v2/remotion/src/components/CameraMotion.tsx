@@ -11,7 +11,8 @@ export const CameraMotion: React.FC<{
   frames: number;
   focus?: {x: number; y: number};
   productFit?: boolean;
-}> = ({image, clip, preset, frames, focus, productFit}) => {
+  box?: {top: number; height: number}; // productFit 상품 표시 영역
+}> = ({image, clip, preset, frames, focus, productFit, box = {top: 240, height: 800}}) => {
   const frame = useCurrentFrame();
   const tr = cameraTransform(preset, frames > 1 ? frame / (frames - 1) : 0, focus);
   const moving: React.CSSProperties = {transform: toCss(tr), transformOrigin: '50% 50%'};
@@ -31,7 +32,7 @@ export const CameraMotion: React.FC<{
           <Img src={src} style={{width: '100%', height: '100%', objectFit: 'cover', filter: 'blur(38px) brightness(0.55)'}} />
         </AbsoluteFill>
         <AbsoluteFill style={moving}>
-          <div style={{position: 'absolute', top: 240, height: 800, left: 70, right: 70}}>
+          <div style={{position: 'absolute', top: box.top, height: box.height, left: 50, right: 50}}>
             <Img src={src} style={{width: '100%', height: '100%', objectFit: 'contain',
               filter: 'drop-shadow(0 18px 40px rgba(0,0,0,0.45))'}} />
           </div>

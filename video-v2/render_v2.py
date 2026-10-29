@@ -21,6 +21,54 @@ PRESETS = {"slow_zoom_in", "slow_zoom_out", "pan_left", "pan_right", "push_in", 
 AUTO = ["slow_zoom_in", "pan_left", "slow_zoom_out", "pan_right", "push_in"]
 
 
+def tts_words(text, mp3, voice, rate, pitch):
+    """Edge TTS 로 음성을 만들면서 낱말(또는 문장) 시각을 받는다. 실패하면 None."""
+    try:
+        import asyncio, edge_tts
+        marks = []
+        async def go():
+            try:
+                c = edge_tts.Communicate(text, voice, rate=rate, pitch=pitch, boundary="WordBoundary")
+            except TypeError:
+                c = edge_tts.Communicate(text, voice, rate=rate, pitch=pitch)
+            with open(mp3, "wb") as f:
+                async for ch in c.stream():
+                    if ch["type"] == "audio":
+                        f.write(ch["data"])
+                    elif ch["type"] in ("WordBoundary", "SentenceBoundary"):
+                        marks.append((ch["offset"] / 1e7, (ch["offset"] + ch["duration"]) / 1e7, ch["text"], ch["type"]))
+        asyncio.run(go())
+        return marks
+    except Exception as e:
+        print("단어 시각 받기 실패, 기존 방식:", type(e).__name__, str(e)[:120])
+        return None
+
+
+def chunk_subs(text, marks, total_sec, max_chars=9):
+    """말자막 구절 만들기: (시작초, 끝초, 글) 목록. 낱말 시각이 있으면 그걸 쓰고, 없으면 글자 수 비율로 나눈다."""
+    words = []
+    if marks and any(m[3] == "WordBoundary" for m in marks):
+        words = [(a, b, w) for a, b, w, t in marks if t == "WordBoundary" and w.strip()]
+    else:
+        spans = [(a, b, w) for a, b, w, t in marks] if marks else [(0.0, total_sec, text)]
+        for a, b, sent in spans:
+            ws = sent.split(); n = sum(len(w) for w in ws) or 1; t = a
+            for w in ws:
+                d = (b - a) * len(w) / n; words.append((t, t + d, w)); t += d
+    out, cur, start = [], [], None
+    for a, b, w in words:
+        if start is None: start = a
+        cur.append(w)
+        if sum(len(x) for x in cur) >= max_chars or w[-1:] in ",.!?…":
+            out.append([start, b, " ".join(cur).rstrip(",.")]); cur, start = [], None
+    if cur:
+        out.append([start, words[-1][1], " ".join(cur).rstrip(",.")])
+    for i in range(len(out) - 1):  # 다음 구절까지 빈틈 없이
+        out[i][1] = out[i + 1][0]
+    if out: out[-1][1] = max(out[-1][1], total_sec)
+    return out
+
+
 def load(p):
     return json.load(open(p, encoding="utf-8"))
 
@@ -39,7 +87,10 @@ def validate(cfg, preset):
         t = v.get("type")
         if t not in VISUAL_TYPES:
             errs.append(f"{i}번 장면: 허용되지 않은 visual.type {t!r}")
-        src = v.get("src")
+        src = v.get("src") or (v.get("srcs") or [None])[0]
+        for extra in (v.get("srcs") or [])[1:]:
+            if not os.path.isfile(os.path.join(ROOT, extra)) or ".." in extra.split("/"):
+                errs.append(f"{i}번 장면: 파일 없음 {extra!r}")
         if t != "motion_graphics":
             if not src or not os.path.isfile(os.path.join(ROOT, src)):
                 errs.append(f"{i}번 장면: 파일 없음 {src!r}")
@@ -86,8 +137,13 @@ def build(sample_path, out_path=None):
     for i, sc in enumerate(cfg["scenes"]):
         v = sc["visual"]; t = v["type"]
         mp3 = os.path.join(job, f"v{i:02d}.mp3")
-        ok = M.tts(sc.get("narration", ""), mp3, voice, rate, pitch) if sc.get("narration") else False
-        voiced &= ok or not sc.get("narration")
+        marks = None
+        if sc.get("narration"):
+            marks = tts_words(sc["narration"], mp3, voice, rate, pitch)
+            ok = marks is not None and os.path.exists(mp3) and os.path.getsize(mp3) > 0
+            if not ok:
+                ok = M.tts(sc["narration"], mp3, voice, rate, pitch)
+            voiced &= ok
         dur = (M.duration(mp3) + 0.35) if os.path.exists(mp3) else float(sc.get("seconds", 3))
         dur = max(dur, float(sc.get("min_seconds", 0)))
         item = {"frames": int(round(dur * FPS)), "audio": f"job/v{i:02d}.mp3" if os.path.exists(mp3) else None,
@@ -98,8 +154,18 @@ def build(sample_path, out_path=None):
             item["labels"].append(LABEL[t])
         if t == "licensed_official_asset":
             item["labels"].append(f"사진: {v['source']}")
-        src = v.get("src")
-        if src:
+        if sc.get("narration"):
+            item["subs"] = [{"text": t_, "from": int(a * FPS), "to": int(round(b * FPS))}
+                            for a, b, t_ in chunk_subs(sc["narration"], marks, dur - 0.35)]
+        srcs = v.get("srcs") or []
+        if srcs:  # 한 장면 안 빠른 컷
+            item["images"] = []
+            for k, sp in enumerate(srcs):
+                dst = f"job/a{i:02d}_{k}{os.path.splitext(sp)[1].lower()}"
+                shutil.copy(os.path.join(ROOT, sp), os.path.join(rdir, "public", dst))
+                item["images"].append({"src": dst, "camera": AUTO[(i + k) % len(AUTO)] if feats.get("camera_motion") else "static"})
+        src = v.get("src") or (srcs[0] if srcs else None)
+        if src and not srcs:
             ext = os.path.splitext(src)[1].lower()
             dst = f"job/a{i:02d}{ext}"
             shutil.copy(os.path.join(ROOT, src), os.path.join(rdir, "public", dst))
@@ -123,7 +189,8 @@ def build(sample_path, out_path=None):
         scenes.append(item)
         say(f"장면 {i + 1}/{total}: {t} {item['camera']} {dur:.1f}초 {item['labels']}")
 
-    props = {"scenes": scenes, "fps": FPS, "storeTag": acc["store_tag"], "adLabel": acc.get("ad_label"), "accent": acc["accent"]}
+    props = {"scenes": scenes, "fps": FPS, "storeTag": acc["store_tag"], "adLabel": acc.get("ad_label"), "accent": acc["accent"],
+             "style": cfg.get("style", "card"), "header": cfg.get("header")}
     pj = os.path.join(out_dir, f"{name}.props.json"); json.dump(props, open(pj, "w"), ensure_ascii=False, indent=1)
     raw = os.path.join(out_dir, f"{name}.raw.mp4")
     say("리모션 렌더 시작")
