@@ -55,7 +55,7 @@ def yt_short(folder, cfg, description):
             "status": {"privacyStatus": "public", "selfDeclaredMadeForKids": False}}
     try:  # 사장님 AI 사진이 실제로 들어간 영상인지 (make_short 가 build.json 에 기록)
         _b = json.load(open(os.path.join(folder, "build.json")))
-        owner = _b.get("owner_end", False) or _b.get("ai_images", False) or _b.get("ai_opening", False)  # 사장님 사진·AI 장면 이미지·AI 오프닝 영상
+        owner = _b.get("owner_end", False) or _b.get("ai_images", False) or _b.get("drive_ai", False)  # 사장님 사진·AI 장면 이미지·드라이브 AI 영상
     except Exception:
         owner = False
     if any(sc.get("clip") for sc in cfg.get("scenes", [])) or owner:  # AI 생성 영상·사장님 AI 사진 포함 → 합성 콘텐츠 표시
