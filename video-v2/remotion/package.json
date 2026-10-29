@@ -1,0 +1,15 @@
+{
+  "name": "cardnews-video-v2",
+  "private": true,
+  "version": "2.0.0",
+  "description": "쇼츠 V2 렌더러 (시험용, 기존 remotion/ 과 분리). Remotion Free License(3인 이하 사업자).",
+  "scripts": {
+    "test": "node --experimental-strip-types --test tests/*.test.ts"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.539",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "remotion": "4.0.539"
+  }
+}

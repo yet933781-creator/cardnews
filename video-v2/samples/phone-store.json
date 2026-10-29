@@ -1,0 +1,36 @@
+{
+  "account": "phone",
+  "title": "SKT 유심 해킹 1년 반, 해지율 (V2 시험)",
+  "compare_with": "shorts/approved/2026-10-29-1530/short.mp4",
+  "scenes": [
+    {"narration": "유심 해킹 사태 이후 1년 반, SK텔레콤 고객들은 정말 떠났을까요?",
+     "headline": "유심 해킹 1년 반,\n고객은 떠났을까?", "caption": "SKT 해지율 변화",
+     "visual": {"type": "generated_video", "src": "shorts/approved/2026-10-29-1530/ai_scene.mp4", "camera": "static"}},
+    {"narration": "사고 전 0.7%였던 월 평균 해지율이, 사고 직후엔 1.6%까지 뛰었어요.",
+     "headline": "사고 직후\n해지율 두 배", "caption": "월 평균 0.7% → 1.6%",
+     "visual": {"type": "generated_photo", "src": "video-v2/samples/assets/skt_scene2.jpg", "camera": "push_in", "focus": {"x": 0.7, "y": 0.6}},
+     "overlay": {"type": "number", "value": "1.6%", "label": "2025년 2분기 월 평균 해지율", "color": [255, 112, 102]},
+     "facts": [{"claim": "2025년 2분기 월 평균 해지율 1.6%", "source": "매일일보·아시아경제", "date": "2026-10-28"}]},
+    {"narration": "올해 2분기엔 0.8%로, 사고 전과 거의 비슷해졌어요.",
+     "headline": "올해는 0.8%", "caption": "사고 전과 0.1%p 차이",
+     "visual": {"type": "generated_video", "src": "shorts/approved/2026-10-29-1530/ai_scene3.mp4", "camera": "static"},
+     "overlay": {"type": "compare", "title": "월 평균 해지율", "items": [
+        {"label": "사고 전 (25년 1분기)", "value": "0.7%"},
+        {"label": "사고 직후 (25년 2분기)", "value": "1.6%"},
+        {"label": "올해 (26년 2분기)", "value": "0.8%", "highlight": true}],
+       "conditions": "2026.10.28 학회 세미나 발표 보도 기준"},
+     "facts": [{"claim": "해지율 0.7% → 1.6% → 0.8%", "source": "매일일보·아시아경제", "date": "2026-10-28"}]},
+    {"narration": "유심 무료 교체와 유심보호서비스, 떠나는 고객 위약금 한시 면제가 있었죠.",
+     "visual": {"type": "generated_video", "src": "shorts/approved/2026-10-29-1530/ai_scene4.mp4", "camera": "static"},
+     "overlay": {"type": "checklist", "title": "그동안 있었던 조치", "items": ["유심 무료 교체", "유심보호서비스", "위약금 한시 면제"]},
+     "headline": "무슨 조치가\n있었나"},
+    {"narration": "보상 5천억 원, 5년간 보안 투자 7천억 원, 모두 1조 2천억 원 규모예요.",
+     "headline": "보상·보안에\n1조2천억", "caption": "5년간 보안 투자 7천억",
+     "visual": {"type": "generated_photo", "src": "video-v2/samples/assets/skt_scene5.jpg", "camera": "parallax_2d"},
+     "overlay": {"type": "number", "value": "1.2조", "label": "보상 5천억 + 보안 투자 7천억"},
+     "facts": [{"claim": "보상 5천억 + 정보보호 투자 7천억 = 1.2조", "source": "매일일보", "date": "2026-10-28"}]},
+    {"narration": "통신사 고민되면 방학 폰 성지! DM이나 카톡으로 편하게 문의 주세요. 도움 됐다면 좋아요, 구독·팔로우 부탁드려요!",
+     "caption": "DM·카톡 편하게 문의 주세요",
+     "visual": {"type": "owner_photo", "src": "assets/owner_end.jpg"}}
+  ]
+}

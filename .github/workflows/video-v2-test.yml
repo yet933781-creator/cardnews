@@ -1,0 +1,79 @@
+name: 쇼츠 V2 시험 렌더 (게시 없음)
+
+# video-v2/ 시험 전용. 게시 API·비밀키를 쓰지 않고, 결과는 main 이 아닌 v2-preview 브랜치와 artifact 로만 남긴다.
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ["video-v2/**", ".github/workflows/video-v2-test.yml"]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: video-v2-test
+  cancel-in-progress: true
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: 도구 설치 (한글 글꼴, 영상, AI 음성)
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-noto-cjk fonts-noto-cjk-extra ffmpeg > /dev/null
+          pip install -q pillow edge-tts
+      - name: npm 캐시
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: npm-v2-${{ hashFiles('video-v2/remotion/package.json') }}
+      - name: 단위 테스트 (카메라·숫자)
+        working-directory: video-v2/remotion
+        run: node --experimental-strip-types --test tests/camera.test.ts tests/numbers.test.ts
+      - name: 리모션 설치
+        working-directory: video-v2/remotion
+        run: npm install --no-audit --no-fund --loglevel=error && npx remotion browser ensure
+      - name: 시험 렌더 (매장 · 꿀템)
+        run: |
+          python video-v2/render_v2.py video-v2/samples/phone-store.json
+          python video-v2/render_v2.py video-v2/samples/household.json
+      - name: 기존 영상과 나란히 비교 (매장)
+        run: |
+          OLD=shorts/approved/2026-10-29-1530/short.mp4
+          NEW=video-v2/out/phone-store.mp4
+          ffmpeg -v error -y -i "$OLD" -i "$NEW" -filter_complex \
+            "[0:v]scale=540:960,setsar=1[a];[1:v]scale=540:960,setsar=1[b];[a][b]hstack=2[v];[0:a][1:a]amix=inputs=2:duration=longest[x]" \
+            -map "[v]" -map "[x]" -c:v libx264 -crf 24 -preset veryfast -c:a aac video-v2/out/phone-store-compare.mp4
+          for n in phone-store household; do
+            d=$(ffprobe -v error -show_entries format=duration -of csv=p=0 video-v2/out/$n.mp4)
+            for k in 1 2 3 4 5 6 7 8; do
+              t=$(python -c "print(round($d*($k-0.5)/8,2))")
+              ffmpeg -v error -y -ss $t -i video-v2/out/$n.mp4 -frames:v 1 -vf scale=270:-1 video-v2/out/$n-f$k.jpg
+            done
+            ffmpeg -v error -y $(for k in 1 2 3 4 5 6 7 8; do echo -i video-v2/out/$n-f$k.jpg; done) -filter_complex hstack=8 video-v2/out/$n-frames.jpg
+          done
+      - name: 결과 보관 (artifact)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: video-v2-out
+          path: |
+            video-v2/out/*.mp4
+            video-v2/out/*.jpg
+            video-v2/out/*.json
+            video-v2/out/*.log
+      - name: 결과를 v2-preview 브랜치에 저장 (main 아님)
+        run: |
+          mkdir /tmp/preview && cp video-v2/out/*.mp4 video-v2/out/*-frames.jpg video-v2/out/*.build.json video-v2/out/*.log /tmp/preview/ 2>/dev/null || true
+          cd /tmp/preview && git init -q -b v2-preview && git add -A
+          git -c user.name=cardnews-bot -c user.email=cardnews-bot@users.noreply.github.com commit -qm "V2 시험 결과 ${GITHUB_SHA::7}"
+          git push -qf "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" v2-preview

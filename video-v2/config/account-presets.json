@@ -1,0 +1,25 @@
+{
+  "phone": {
+    "name": "방학 폰 성지",
+    "store_tag": ["방학", "폰 성지"],
+    "accent": [255, 212, 56],
+    "ad_label": null,
+    "end": "owner",
+    "voice": "ko-KR-SunHiNeural",
+    "rate": "+12%",
+    "pitch": "+0Hz",
+    "banned_phrases": ["0원", "공짜폰", "공짜", "무료폰", "최저가", "업계 최고", "전국 최저"]
+  },
+  "household": {
+    "name": "장바구니 구출작전",
+    "store_tag": ["장바구니", "구출작전"],
+    "accent": [120, 190, 255],
+    "ad_label": "광고 · 쿠팡 파트너스",
+    "end": "cta",
+    "voice": "ko-KR-SunHiNeural",
+    "rate": "+10%",
+    "pitch": "+0Hz",
+    "banned_phrases": ["내돈내산", "살림 고수들이 절대", "1위", "최저가", "100% 효과", "완벽 차단"]
+  },
+  "safe_area": {"top": 220, "bottom": 1600, "left": 60, "right": 1020}
+}

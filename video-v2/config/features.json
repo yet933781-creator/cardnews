@@ -1,0 +1,21 @@
+{
+  "version": "2.0",
+  "enabled": false,
+  "features": {
+    "camera_motion": true,
+    "animated_graphics": true,
+    "audio_enhancement": true,
+    "product_templates": true,
+    "ai_director": true,
+    "quality_check": true
+  },
+  "publishing": {
+    "enabled": false,
+    "require_manual_approval": true,
+    "block_on_quality_failure": true
+  },
+  "budget": {
+    "allow_paid_api_calls": false,
+    "allow_paid_assets": false
+  }
+}
