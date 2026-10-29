@@ -15,8 +15,11 @@ import make_short as M  # tts, make_bgm, duration 재사용
 import effects
 
 FPS = 30
-VISUAL_TYPES = {"generated_video", "generated_photo", "original_product_photo", "licensed_official_asset", "motion_graphics", "owner_photo"}
+VISUAL_TYPES = {"cuts", "generated_video", "generated_photo", "original_product_photo", "licensed_official_asset", "motion_graphics", "owner_photo"}
 LABEL = {"generated_video": "AI 생성 장면", "generated_photo": "AI 생성 이미지", "owner_photo": "AI 생성 이미지"}
+CUT_LABEL = {"generated_video": "AI 연출 장면 (실제 제품 시연 아님)", "generated_photo": "AI 생성 이미지",
+             "original_product_photo": "실제 상품 사진", "licensed_video": "제품 영상 (사용 허가)", "own_video": "직접 촬영"}
+VIDEO_EXT = (".mp4", ".mov", ".webm")
 PRESETS = {"slow_zoom_in", "slow_zoom_out", "pan_left", "pan_right", "push_in", "parallax_2d", "static"}
 AUTO = ["slow_zoom_in", "pan_left", "slow_zoom_out", "pan_right", "push_in"]
 
@@ -87,6 +90,16 @@ def validate(cfg, preset):
         t = v.get("type")
         if t not in VISUAL_TYPES:
             errs.append(f"{i}번 장면: 허용되지 않은 visual.type {t!r}")
+        for k, c in enumerate(v.get("cuts") or [], 1):
+            cp = c.get("src", "")
+            if c.get("type") not in CUT_LABEL:
+                errs.append(f"{i}번 장면 {k}번 컷: 허용되지 않은 type {c.get('type')!r}")
+            if not cp or ".." in cp.split("/") or os.path.isabs(cp) or not os.path.isfile(os.path.join(ROOT, cp)):
+                errs.append(f"{i}번 장면 {k}번 컷: 파일 없음/경로 오류 {cp!r}")
+            if c.get("type") in ("original_product_photo", "licensed_video") and not c.get("source"):
+                errs.append(f"{i}번 장면 {k}번 컷: 출처(source) 필수")
+        if v.get("cuts"):
+            continue
         src = v.get("src") or (v.get("srcs") or [None])[0]
         for extra in (v.get("srcs") or [])[1:]:
             if not os.path.isfile(os.path.join(ROOT, extra)) or ".." in extra.split("/"):
@@ -133,6 +146,7 @@ def build(sample_path, out_path=None):
     sfx = effects.make_all(job) if feats.get("audio_enhancement") else {}
     voice = cfg.get("voice", acc["voice"]); rate = cfg.get("rate", acc["rate"]); pitch = cfg.get("pitch", acc.get("pitch", "+0Hz"))
     scenes = []; voiced = True
+    stats = {"video_frames": 0, "photo_frames": 0, "ai_frames": 0, "real_video_frames": 0}
     total = len(cfg["scenes"])
     for i, sc in enumerate(cfg["scenes"]):
         v = sc["visual"]; t = v["type"]
@@ -157,6 +171,28 @@ def build(sample_path, out_path=None):
         if sc.get("narration"):
             item["subs"] = [{"text": t_, "from": int(a * FPS), "to": int(round(b * FPS))}
                             for a, b, t_ in chunk_subs(sc["narration"], marks, dur - 0.35)]
+        cuts = v.get("cuts") or []
+        if cuts:  # 영상·사진 컷 섞기 (컷별 출처 표시). 영상은 길이에 맞춰 미리 잘라 둔다(끝나면 마지막 화면 유지).
+            item["images"] = []
+            n = len(cuts); per = max(1, item["frames"] // n)
+            for k, c in enumerate(cuts):
+                fr = item["frames"] - per * k if k == n - 1 else per
+                ext = os.path.splitext(c["src"])[1].lower()
+                if ext in VIDEO_EXT:
+                    dst = f"job/c{i:02d}_{k}.mp4"; secs_ = fr / FPS
+                    M.sh("ffmpeg", "-y", "-ss", str(c.get("start", 0)), "-i", os.path.join(ROOT, c["src"]), "-t", f"{secs_:.3f}", "-an",
+                         "-vf", f"scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,fps={FPS},tpad=stop_mode=clone:stop_duration={secs_:.3f}",
+                         "-t", f"{secs_:.3f}", "-c:v", "libx264", "-preset", "veryfast", "-crf", "20", os.path.join(rdir, "public", dst))
+                    item["images"].append({"src": dst, "camera": "static", "clip": True, "label": CUT_LABEL[c["type"]]})
+                    stats["video_frames"] += fr
+                else:
+                    dst = f"job/c{i:02d}_{k}{ext}"
+                    shutil.copy(os.path.join(ROOT, c["src"]), os.path.join(rdir, "public", dst))
+                    item["images"].append({"src": dst, "camera": c.get("camera", AUTO[(i + k) % len(AUTO)]) if feats.get("camera_motion") else "static",
+                                           "label": CUT_LABEL[c["type"]], "fit": c["type"] == "original_product_photo"})
+                    stats["photo_frames"] += fr
+                if c["type"] == "generated_video": stats["ai_frames"] += fr
+                if c["type"] in ("licensed_video", "own_video"): stats["real_video_frames"] += fr
         srcs = v.get("srcs") or []
         if srcs:  # 한 장면 안 빠른 컷
             item["images"] = []
@@ -164,7 +200,7 @@ def build(sample_path, out_path=None):
                 dst = f"job/a{i:02d}_{k}{os.path.splitext(sp)[1].lower()}"
                 shutil.copy(os.path.join(ROOT, sp), os.path.join(rdir, "public", dst))
                 item["images"].append({"src": dst, "camera": AUTO[(i + k) % len(AUTO)] if feats.get("camera_motion") else "static"})
-        src = v.get("src") or (srcs[0] if srcs else None)
+        src = None if cuts else (v.get("src") or (srcs[0] if srcs else None))
         if src and not srcs:
             ext = os.path.splitext(src)[1].lower()
             dst = f"job/a{i:02d}{ext}"
@@ -186,6 +222,12 @@ def build(sample_path, out_path=None):
             o = (sc.get("overlay") or {}).get("type")
             name_ = "pop" if o in ("number", "cta") else "click" if o in ("checklist", "features") else ("whoosh" if i else None)
             if name_: item["sfx"] = f"job/sfx_{name_}.wav"
+        if not cuts:
+            if item.get("clip"):
+                stats["video_frames"] += item["frames"]
+                if t == "generated_video": stats["ai_frames"] += item["frames"]
+            elif item.get("image") or item.get("images"):
+                stats["photo_frames"] += item["frames"]
         scenes.append(item)
         say(f"장면 {i + 1}/{total}: {t} {item['camera']} {dur:.1f}초 {item['labels']}")
 
@@ -212,7 +254,11 @@ def build(sample_path, out_path=None):
               "[0:a][b]amix=inputs=2:duration=first:dropout_transition=0,loudnorm=I=-14:TP=-1.5:LRA=11[a]")
     M.sh("ffmpeg", "-y", "-i", raw, "-stream_loop", "-1", "-i", bgm, "-filter_complex", fc,
          "-map", "0:v", "-map", "[a]", "-c:v", "copy", "-c:a", "aac", "-b:a", "160k", "-t", f"{secs:.2f}", out_path)
-    info = {"sample": sample_path, "seconds": round(secs, 1), "ai_voice": voiced, "scenes": len(scenes),
+    allf = max(1, sum(x["frames"] for x in scenes))
+    share = {"움직이는_영상_비율": round(stats["video_frames"] / allf, 2), "정지사진_모션_비율": round(stats["photo_frames"] / allf, 2),
+             "AI_영상_비율": round(stats["ai_frames"] / allf, 2), "실제_촬영·허가_영상_비율": round(stats["real_video_frames"] / allf, 2)}
+    say("화면 구성:", share)
+    info = {"sample": sample_path, "seconds": round(secs, 1), "ai_voice": voiced, "scenes": len(scenes), "visual_share": share,
             "features": feats, "engine": "remotion-v2"}
     json.dump(info, open(out_path.replace(".mp4", ".build.json"), "w"), ensure_ascii=False, indent=1)
     say("완성:", out_path, info)

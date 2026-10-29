@@ -12,14 +12,15 @@ export const CameraMotion: React.FC<{
   focus?: {x: number; y: number};
   productFit?: boolean;
   box?: {top: number; height: number}; // productFit 상품 표시 영역
-}> = ({image, clip, preset, frames, focus, productFit, box = {top: 240, height: 800}}) => {
+  clipStart?: number; // 영상 시작 위치(프레임)
+}> = ({image, clip, preset, frames, focus, productFit, box = {top: 240, height: 800}, clipStart = 0}) => {
   const frame = useCurrentFrame();
   const tr = cameraTransform(preset, frames > 1 ? frame / (frames - 1) : 0, focus);
   const moving: React.CSSProperties = {transform: toCss(tr), transformOrigin: '50% 50%'};
   if (clip) {
     return (
       <AbsoluteFill style={moving}>
-        <OffthreadVideo src={staticFile(clip)} muted style={{width: '100%', height: '100%', objectFit: 'cover'}} />
+        <OffthreadVideo src={staticFile(clip)} muted startFrom={clipStart} style={{width: '100%', height: '100%', objectFit: 'cover'}} />
       </AbsoluteFill>
     );
   }

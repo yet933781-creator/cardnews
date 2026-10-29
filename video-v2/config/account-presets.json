@@ -1,25 +1,93 @@
 {
   "phone": {
     "name": "방학 폰 성지",
-    "store_tag": ["방학", "폰 성지"],
-    "accent": [255, 212, 56],
+    "store_tag": [
+      "방학",
+      "폰 성지"
+    ],
+    "accent": [
+      255,
+      212,
+      56
+    ],
     "ad_label": null,
     "end": "owner",
     "voice": "ko-KR-SunHiNeural",
     "rate": "+12%",
     "pitch": "+0Hz",
-    "banned_phrases": ["0원", "공짜폰", "공짜", "무료폰", "최저가", "업계 최고", "전국 최저"]
+    "banned_phrases": [
+      "0원",
+      "공짜폰",
+      "공짜",
+      "무료폰",
+      "최저가",
+      "업계 최고",
+      "전국 최저"
+    ],
+    "template": "card"
   },
   "household": {
     "name": "장바구니 구출작전",
-    "store_tag": ["장바구니", "구출작전"],
-    "accent": [120, 190, 255],
+    "store_tag": [
+      "장바구니",
+      "구출작전"
+    ],
+    "accent": [
+      120,
+      190,
+      255
+    ],
     "ad_label": "광고 · 쿠팡 파트너스",
     "end": "cta",
     "voice": "ko-KR-SunHiNeural",
     "rate": "+10%",
     "pitch": "+0Hz",
-    "banned_phrases": ["내돈내산", "살림 고수들이 절대", "1위", "최저가", "100% 효과", "완벽 차단"]
+    "banned_phrases": [
+      "내돈내산",
+      "살림 고수들이 절대",
+      "1위",
+      "최저가",
+      "100% 효과",
+      "완벽 차단"
+    ],
+    "template": "demo",
+    "demo_structure": [
+      {
+        "role": "problem",
+        "from": 0,
+        "to": 3,
+        "desc": "생활 속 불편한 상황"
+      },
+      {
+        "role": "reveal",
+        "from": 3,
+        "to": 7,
+        "desc": "해결할 제품 등장 (실제 상품 외형)"
+      },
+      {
+        "role": "use",
+        "from": 7,
+        "to": 18,
+        "desc": "제품 사용 모습과 핵심 기능"
+      },
+      {
+        "role": "benefit",
+        "from": 18,
+        "to": 25,
+        "desc": "전후 비교·장점 (실제 자료만, 없으면 장점 정리)"
+      },
+      {
+        "role": "cta",
+        "from": 25,
+        "to": 30,
+        "desc": "자연스러운 구매 유도 + 광고 고지"
+      }
+    ]
   },
-  "safe_area": {"top": 220, "bottom": 1600, "left": 60, "right": 1020}
+  "safe_area": {
+    "top": 220,
+    "bottom": 1600,
+    "left": 60,
+    "right": 1020
+  }
 }

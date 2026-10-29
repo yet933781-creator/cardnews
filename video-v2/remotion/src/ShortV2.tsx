@@ -36,7 +36,7 @@ const HoneyScene: React.FC<{s: SceneV2; index: number; p: ShortV2Props}> = ({s, 
 };
 
 const Scene: React.FC<{s: SceneV2; index: number; p: ShortV2Props}> = ({s, index, p}) => {
-  if (p.style === 'honey') return <HoneyScene s={s} index={index} p={p} />;
+  if (p.style === 'honey' || p.style === 'demo') return <HoneyScene s={s} index={index} p={p} />;
   const frame = useCurrentFrame();
   const fade = interpolate(frame, [0, FADE], [0, 1], {extrapolateRight: 'clamp'});
   const lift = interpolate(frame, [0, FADE + 3], [26, 0], {extrapolateRight: 'clamp'});

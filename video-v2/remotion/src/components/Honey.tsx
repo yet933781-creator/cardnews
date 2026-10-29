@@ -26,14 +26,25 @@ export const HoneyVisual: React.FC<{s: SceneV2}> = ({s}) => {
         return (
           <Sequence key={k} from={from} durationInFrames={dur}>
             <CutIn>
-              <CameraMotion image={im.src} preset={im.camera} frames={dur} productFit={s.productFit} box={BOX} />
+              {im.clip ? (
+                <CameraMotion clip={im.src} preset={im.camera} frames={dur} clipStart={im.start ?? 0} />
+              ) : (
+                <CameraMotion image={im.src} preset={im.camera} frames={dur} productFit={im.fit ?? s.productFit} box={BOX} />
+              )}
             </CutIn>
+            {im.label ? <CutLabel text={im.label} /> : null}
           </Sequence>
         );
       })}
     </AbsoluteFill>
   );
 };
+
+// 컷마다 출처 표시 (AI 연출 장면 / 실제 상품 사진 등) — 진행 막대 아래 왼쪽
+const CutLabel: React.FC<{text: string}> = ({text}) => (
+  <div style={{position: 'absolute', left: 60, top: 172, fontFamily: FONT, background: 'rgba(16,18,30,0.92)', color: '#fff',
+    fontWeight: 700, fontSize: 26, padding: '8px 16px', borderRadius: 999}}>{text}</div>
+);
 
 // 컷 전환: 아주 짧게 살짝 확대되며 들어옴 (번쩍임 없이)
 const CutIn: React.FC<{children: React.ReactNode}> = ({children}) => {
