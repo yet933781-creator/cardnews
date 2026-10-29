@@ -6,7 +6,7 @@
   "scenes": [
     {
       "role": "problem",
-      "narration": "창문 닫았는데, 창가만 가면 왜 이렇게 서늘하죠?",
+      "narration": "창가만 가면 왜 이렇게 서늘하죠?",
       "visual": {
         "type": "cuts",
         "cuts": [
@@ -19,7 +19,7 @@
     },
     {
       "role": "reveal",
-      "narration": "이럴 때 많이 쓰는 게 창문 단열 뽁뽁이예요.",
+      "narration": "이럴 땐 창문 단열 뽁뽁이예요.",
       "visual": {
         "type": "cuts",
         "cuts": [
@@ -34,7 +34,7 @@
     },
     {
       "role": "use",
-      "narration": "폭 100센티 롤이라, 창 크기에 맞춰 가위로 잘라 쓰고요,",
+      "narration": "창 크기에 맞춰 가위로 자르고,",
       "visual": {
         "type": "cuts",
         "cuts": [
@@ -44,11 +44,12 @@
             "start": 0.5
           }
         ]
-      }
+      },
+      "min_seconds": 4.5
     },
     {
       "role": "use",
-      "narration": "유리 먼지와 물기를 닦은 뒤, 한쪽 끝부터 손으로 밀어 붙이면 돼요.",
+      "narration": "유리에 대고 한쪽 끝부터 밀어 붙이면 끝.",
       "visual": {
         "type": "cuts",
         "cuts": [
@@ -58,11 +59,12 @@
             "start": 0.3
           }
         ]
-      }
+      },
+      "min_seconds": 4.5
     },
     {
       "role": "benefit",
-      "narration": "공기층이 있는 3중 에어캡이라 찬 기운을 줄이는 데 도움이 될 수 있고, 무지 타입이라 덜 답답해 보여요. 체감은 창마다 다를 수 있어요.",
+      "narration": "공기층이 있는 3중 에어캡이라 찬 기운을 줄이는 데 도움이 될 수 있어요. 체감은 창마다 달라요.",
       "visual": {
         "type": "cuts",
         "cuts": [
@@ -83,7 +85,7 @@
     },
     {
       "role": "cta",
-      "narration": "프로필 링크 5번에서 오늘 가격 확인하세요. 쿠팡 파트너스 활동으로 수수료를 받을 수 있어요.",
+      "narration": "프로필 링크 5번에서 가격 확인하세요. 쿠팡 파트너스 활동으로 수수료를 받을 수 있어요.",
       "visual": {
         "type": "cuts",
         "cuts": [

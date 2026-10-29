@@ -21,13 +21,13 @@ const HoneyScene: React.FC<{s: SceneV2; index: number; p: ShortV2Props}> = ({s, 
           <Img src={staticFile(s.image)} style={{position: 'absolute', top: 170, width: '100%'}} />
         </AbsoluteFill>
       ) : (
-        <HoneyVisual s={s} />
+        <HoneyVisual s={s} demo={p.style === 'demo'} />
       )}
       <HoneyShade />
       {keep && s.overlay ? <OverlayView o={s.overlay} accent={p.accent} frames={s.frames} /> : null}
       {index === 0 && p.style !== 'demo' ? <HoneyHook text={s.headline} accent={p.accent} /> : null}
       {index > 0 || p.style === 'demo' ? <HoneyHeader text={p.header} small={p.style === 'demo'} /> : null}
-      <HoneySubs subs={s.subs} accent={p.accent} top={p.style === 'demo' ? 600 : 1230} plain={p.style === 'demo'} />
+      <HoneySubs subs={s.subs} accent={p.accent} top={p.style === 'demo' ? (s.overlay?.type === 'cta' ? 1300 : 600) : 1230} plain={p.style === 'demo'} />
       <TopBar storeTag={p.storeTag} index={index} total={p.scenes.length} accent={p.accent} adLabel={p.adLabel} labels={s.labels} />
       {s.audio ? <Audio src={staticFile(s.audio)} /> : null}
       {s.sfx ? <Audio src={staticFile(s.sfx)} volume={0.35} /> : null}

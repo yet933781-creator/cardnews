@@ -11,11 +11,13 @@ import type {RGB, SceneV2} from '../types';
 
 const rgb = (c: RGB) => `rgb(${c[0]},${c[1]},${c[2]})`;
 const BOX = {top: 360, height: 840}; // 상품 사진: 위 제목(236~)과 아래 자막(1230~) 사이
+const DEMO_BOX = {top: 340, height: 1180}; // 시연형: 자막이 위쪽이라 사진을 화면 가운데 크게
 
-export const HoneyVisual: React.FC<{s: SceneV2}> = ({s}) => {
+export const HoneyVisual: React.FC<{s: SceneV2; demo?: boolean}> = ({s, demo}) => {
+  const box = demo ? DEMO_BOX : BOX;
   const imgs = s.images && s.images.length ? s.images : null;
   if (!imgs) {
-    return <CameraMotion image={s.image} clip={s.clip} preset={s.camera} frames={s.frames} focus={s.focus} productFit={s.productFit} box={BOX} />;
+    return <CameraMotion image={s.image} clip={s.clip} preset={s.camera} frames={s.frames} focus={s.focus} productFit={s.productFit} box={box} />;
   }
   const per = Math.max(1, Math.floor(s.frames / imgs.length));
   return (
@@ -29,7 +31,7 @@ export const HoneyVisual: React.FC<{s: SceneV2}> = ({s}) => {
               {im.clip ? (
                 <CameraMotion clip={im.src} preset={im.camera} frames={dur} clipStart={im.start ?? 0} />
               ) : (
-                <CameraMotion image={im.src} preset={im.camera} frames={dur} productFit={im.fit ?? s.productFit} box={BOX} />
+                <CameraMotion image={im.src} preset={im.camera} frames={dur} productFit={im.fit ?? s.productFit} box={box} />
               )}
             </CutIn>
             {im.label ? <CutLabel text={im.label} /> : null}
