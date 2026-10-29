@@ -1,0 +1,29 @@
+name: 드라이브 연결 점검
+
+on:
+  push:
+    branches: [main]
+    paths: ["tools/drive_check.py", ".github/workflows/drive-check.yml"]
+  workflow_dispatch:
+    inputs:
+      file:
+        description: "확인할 파일 이름"
+        default: "test-drive.mp4"
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: 도구 설치
+        run: |
+          sudo apt-get install -y -qq ffmpeg > /dev/null
+          pip install -q pillow google-auth requests
+      - name: 드라이브 읽기 시험
+        env:
+          GDRIVE_SA_JSON: ${{ secrets.GDRIVE_SA_JSON }}
+          GDRIVE_FOLDER_ID: ${{ secrets.GDRIVE_FOLDER_ID }}
+        run: python tools/drive_check.py "${{ github.event.inputs.file || 'test-drive.mp4' }}"
