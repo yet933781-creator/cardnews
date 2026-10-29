@@ -14,6 +14,8 @@ const GLASS: React.CSSProperties = {
   boxShadow: '0 20px 60px rgba(0,0,0,0.35)',
 };
 const AREA: React.CSSProperties = {position: 'absolute', left: 70, right: 70, top: 300, fontFamily: FONT, color: '#fff'};
+// 상품 원본 장면: 사진(위쪽 240~1040)을 가리지 않도록 아래 공간에 표시
+const LOWER: React.CSSProperties = {top: 1070};
 
 const usePop = (delay = 0) => {
   const frame = useCurrentFrame();
@@ -43,10 +45,10 @@ export const AnimatedNumber: React.FC<{value: string; label?: string; color: RGB
 };
 
 // 2) 가격·요금제 비교 (조건 문구 필수, 같은 상자 안에 크게)
-export const ComparisonGraphic: React.FC<{o: Extract<Overlay, {type: 'compare'}>; accent: RGB}> = ({o, accent}) => {
+export const ComparisonGraphic: React.FC<{o: Extract<Overlay, {type: 'compare'}>; accent: RGB; lower?: boolean}> = ({o, accent, lower}) => {
   const box = usePop(0);
   return (
-    <div style={{...AREA, ...GLASS, padding: '34px 40px', opacity: box, transform: `translateY(${(1 - box) * 40}px)`}}>
+    <div style={{...AREA, ...(lower ? LOWER : {}), ...GLASS, padding: '34px 40px', opacity: box, transform: `translateY(${(1 - box) * 40}px)`}}>
       <Title text={o.title} accent={accent} />
       {o.items.map((it, i) => <CompareRow key={i} i={i} it={it} accent={accent} />)}
       <div style={{fontSize: 34, fontWeight: 700, lineHeight: 1.35, marginTop: 18, color: 'rgba(255,255,255,0.92)'}}>{o.conditions}</div>
@@ -66,10 +68,10 @@ const CompareRow: React.FC<{i: number; it: {label: string; value: string; highli
 };
 
 // 3) 체크리스트 (하나씩 체크)
-export const ChecklistGraphic: React.FC<{o: Extract<Overlay, {type: 'checklist'}>; accent: RGB}> = ({o, accent}) => {
+export const ChecklistGraphic: React.FC<{o: Extract<Overlay, {type: 'checklist'}>; accent: RGB; lower?: boolean}> = ({o, accent, lower}) => {
   const box = usePop(0);
   return (
-    <div style={{...AREA, ...GLASS, padding: '34px 40px', opacity: box}}>
+    <div style={{...AREA, ...(lower ? LOWER : {}), ...GLASS, padding: '34px 40px', opacity: box}}>
       <Title text={o.title} accent={accent} />
       {o.items.slice(0, 4).map((t, i) => <CheckRow key={i} i={i} text={t} accent={accent} />)}
     </div>
@@ -90,14 +92,14 @@ const CheckRow: React.FC<{i: number; text: string; accent: RGB}> = ({i, text, ac
 };
 
 // 4) 타임라인 (유지 기간·조건)
-export const TimelineGraphic: React.FC<{o: Extract<Overlay, {type: 'timeline'}>; accent: RGB; frames: number}> = ({o, accent, frames}) => {
+export const TimelineGraphic: React.FC<{o: Extract<Overlay, {type: 'timeline'}>; accent: RGB; frames: number; lower?: boolean}> = ({o, accent, frames, lower}) => {
   const frame = useCurrentFrame();
   const box = usePop(0);
   const n = Math.max(1, o.steps.length);
   const fill = interpolate(frame, [8, Math.min(frames - 1, 8 + n * 14)], [0, 1],
     {extrapolateLeft: 'clamp', extrapolateRight: 'clamp', easing: Easing.inOut(Easing.cubic)});
   return (
-    <div style={{...AREA, ...GLASS, padding: '34px 40px', opacity: box}}>
+    <div style={{...AREA, ...(lower ? LOWER : {}), ...GLASS, padding: '34px 40px', opacity: box}}>
       <Title text={o.title} accent={accent} />
       <div style={{position: 'relative', paddingLeft: 56}}>
         <div style={{position: 'absolute', left: 22, top: 18, bottom: 18, width: 8, borderRadius: 4, background: 'rgba(255,255,255,0.15)'}} />
@@ -158,12 +160,12 @@ export const ProductCTA: React.FC<{o: Extract<Overlay, {type: 'cta'}>; accent: R
   );
 };
 
-export const OverlayView: React.FC<{o: Overlay; accent: RGB; frames: number}> = ({o, accent, frames}) => {
+export const OverlayView: React.FC<{o: Overlay; accent: RGB; frames: number; lower?: boolean}> = ({o, accent, frames, lower}) => {
   switch (o.type) {
     case 'number': return <AnimatedNumber value={o.value} label={o.label} color={o.color ?? accent} frames={frames} />;
-    case 'compare': return <ComparisonGraphic o={o} accent={accent} />;
-    case 'checklist': return <ChecklistGraphic o={o} accent={accent} />;
-    case 'timeline': return <TimelineGraphic o={o} accent={accent} frames={frames} />;
+    case 'compare': return <ComparisonGraphic o={o} accent={accent} lower={lower} />;
+    case 'checklist': return <ChecklistGraphic o={o} accent={accent} lower={lower} />;
+    case 'timeline': return <TimelineGraphic o={o} accent={accent} frames={frames} lower={lower} />;
     case 'features': return <FeatureHighlight o={o} accent={accent} />;
     case 'cta': return <ProductCTA o={o} accent={accent} />;
     default: return null;

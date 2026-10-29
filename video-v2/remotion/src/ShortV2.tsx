@@ -24,7 +24,7 @@ const Scene: React.FC<{s: SceneV2; index: number; p: ShortV2Props}> = ({s, index
       )}
       <ReadabilityShade />
       <AbsoluteFill style={{transform: `translate(${fg}px, ${lift}px)`}}>
-        {s.overlay ? <OverlayView o={s.overlay} accent={p.accent} frames={s.frames} /> : null}
+        {s.overlay ? <OverlayView o={s.overlay} accent={p.accent} frames={s.frames} lower={s.productFit} /> : null}
         <SubtitleOverlay headline={s.headline} caption={s.caption} top={s.owner ? 1190 : 1080} />
       </AbsoluteFill>
       <TopBar storeTag={p.storeTag} index={index} total={p.scenes.length} accent={p.accent} adLabel={p.adLabel} labels={s.labels} />
