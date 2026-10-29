@@ -1,0 +1,32 @@
+name: 정시 게시 도우미
+
+# 승인(approved 로 이동) push 가 들어오면, 게시 시각까지 기다렸다가 기존 게시 작업을 정확한 시각에 실행한다.
+# GitHub 15분 예약 실행이 자주 늦거나 건너뛰어지는 문제(2026-10-29 15:30 쇼츠 32분 지연) 대비.
+# 기존 게시 워크플로(post / shorts-post / picks-post)는 그대로 두고, 그 작업을 workflow_dispatch 로 불러주기만 한다.
+# 중복 게시는 기존 작업의 posted.json 확인 + concurrency 로 막힌다.
+
+on:
+  push:
+    branches: [main]
+    paths: ["approved/**", "shorts/approved/**", "picks/approved/**", "picks/shorts/approved/**"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: write
+
+concurrency:
+  group: post-on-time
+  cancel-in-progress: true   # 새 승인이 오면 최신 상태로 다시 계산
+
+jobs:
+  wait-and-dispatch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 70
+    steps:
+      - uses: actions/checkout@v4
+      - name: 게시 시각마다 기존 게시 작업 실행 (최대 60분 앞까지)
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: python3 tools/post_on_time.py

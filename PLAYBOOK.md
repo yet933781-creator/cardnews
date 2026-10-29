@@ -84,6 +84,8 @@
 - 카드뉴스와 쇼츠 승인은 따로 받는다. "둘 다 게시해줘"면 둘 다 옮긴다.
 
 ## 정시 게시 보장 (GitHub 예약 지연 대비)
+- 2026-10-29부터: 승인 push 가 들어오면 `정시 게시 도우미`(post-on-time.yml)가 게시 시각까지 기다렸다가 기존 게시 작업을 바로 실행한다(60분 앞까지). 승인 후 게시 시각까지 60분 넘게 남았으면 아래 send_later 방식도 함께 쓴다.
+- send_later 알림이 늦게 도착할 수 있다(세션이 다른 작업 중이면 끝난 뒤 전달). 알림을 받으면 posted.json 을 먼저 확인하고, 없을 때만 실행한다.
 GitHub 의 15분 예약 확인은 자주 늦거나 건너뛰어진다. 승인 시점에 게시 시각이 아직 안 됐으면,
 이 세션에서 `send_later` 로 게시 시각 1분 뒤에 알림을 걸고, 알림이 오면 해당 게시 작업을 직접 실행한다:
 `gh api -X POST repos/yet933781-creator/cardnews/actions/workflows/post.yml/dispatches -f ref=main` (카드뉴스)
