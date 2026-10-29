@@ -4,7 +4,7 @@
 - AI 음성: edge-tts (무료). 설치 안 됐거나 접속 실패 시 무음 + 글자 수 기준 길이로 대체.
 - 배경음악: assets/bgm.mp3 가 있으면 사용, 없으면 직접 만든 기본 음원(저작권 문제 없음)을 생성해 사용.
 """
-import json, os, subprocess, sys, wave, math, struct, random, asyncio, shutil
+import json, os, re, subprocess, sys, wave, math, struct, random, asyncio, shutil
 sys.path.insert(0, os.path.dirname(__file__))
 import render as R
 from PIL import Image, ImageDraw
@@ -79,6 +79,221 @@ def apply_owner(cfg, folder):
         last["headline"] = ""  # 사진 안에 '구매 상담은 방학 폰 성지' 제목이 있으므로 겹치지 않게 비운다
         last.setdefault("caption", "DM·카톡 편하게 문의 주세요")
         last.pop("visual", None)
+
+
+# ---------- 구글 드라이브 영상 (오프닝 + 중간 장면, 2026-10-29 추가, 100% 무료) ----------
+# 사용자가 구글 드라이브 폴더에 직접 올린 mp4 를 쇼츠에 붙인다. 유료 API 는 쓰지 않는다.
+# script.json 에 "opening" 항목이 있으면 켜진다 (내용은 모두 선택):
+#   "opening": {"seconds": 3, "headline": "영상 위 큰 글자", "caption": "자막", "narration": "읽어줄 문장",
+#               "drive_file": "오프닝 파일을 이름 규칙 대신 따로 지정할 때 (파일 이름 또는 드라이브 링크)"}
+# 드라이브 파일 이름 규칙 (쇼츠 폴더 이름 기준, 꿀템은 앞에 'picks-'):
+#   2026-10-29-1530.mp4      → 맨 앞 0~3초 오프닝 (장면이 하나 새로 붙는다)
+#   2026-10-29-1530_2.mp4    → 2번째 장면의 배경 영상 (장면 길이에 맞춰 자르거나 반복)
+#   이름 끝에 _촬영 (또는 _real) → 직접 찍은 실제 영상: 'AI 생성 장면' 표시를 붙이지 않는다
+#   예) 2026-10-29-1530_3_촬영.mp4 = 3번째 장면, 사장님이 직접 찍은 영상
+# 필요한 GitHub 비밀값: GDRIVE_SA_JSON (서비스 계정 키 JSON 전체), GDRIVE_FOLDER_ID (드라이브 폴더 ID)
+# 영상이 없거나 받기에 실패하면 그 부분만 기존 방식 그대로 만든다. 받은 영상은 폴더의 drive/ 에 저장해 재사용한다.
+DRIVE_API = "https://www.googleapis.com/drive/v3/files"
+REAL_TAGS = ("_촬영", "_real")
+
+
+def drive_ready():
+    return bool(os.environ.get("GDRIVE_SA_JSON", "").strip() and os.environ.get("GDRIVE_FOLDER_ID", "").strip())
+
+
+def drive_wanted(cfg):
+    return "opening" in cfg and cfg.get("opening") is not False
+
+
+def drive_prefix(folder):
+    base = os.path.basename(os.path.abspath(folder))
+    return ("picks-" if "picks" in os.path.abspath(folder).split(os.sep) else "") + base
+
+
+def parse_drive_name(name, prefix):
+    """파일 이름 → (장면 번호 또는 0=오프닝, 직접 촬영 여부). 규칙에 안 맞으면 None."""
+    stem, ext = os.path.splitext(name)
+    if ext.lower() not in (".mp4", ".mov") or not stem.startswith(prefix):
+        return None
+    rest = stem[len(prefix):]
+    real = False
+    for t in REAL_TAGS:
+        if rest.lower().endswith(t):
+            rest, real = rest[: -len(t)], True
+    if rest == "":
+        return 0, real
+    m = re.fullmatch(r"_(\d{1,2})", rest)
+    return (int(m.group(1)), real) if m else None
+
+
+def _drive_token():
+    """서비스 계정 키로 읽기 전용 토큰을 받는다 (google-auth, 무료 라이브러리)."""
+    from google.oauth2 import service_account
+    from google.auth.transport.requests import Request
+    info = json.loads(os.environ["GDRIVE_SA_JSON"])
+    cred = service_account.Credentials.from_service_account_info(
+        info, scopes=["https://www.googleapis.com/auth/drive.readonly"])
+    cred.refresh(Request())
+    return cred.token
+
+
+def _drive_get(url, token):
+    import urllib.request
+    with urllib.request.urlopen(urllib.request.Request(url, headers={"Authorization": f"Bearer {token}"}), timeout=60) as r:
+        return json.loads(r.read())
+
+
+FIELDS = "id,name,md5Checksum,modifiedTime,size,trashed"
+
+
+def _drive_id(ref):
+    """드라이브 링크면 파일 ID 를 꺼낸다 (…/file/d/<ID>/view, …?id=<ID>). 파일 이름이면 None."""
+    m = re.search(r"/d/([A-Za-z0-9_-]{10,})", ref) or re.search(r"[?&]id=([A-Za-z0-9_-]{10,})", ref)
+    return m.group(1) if m else None
+
+
+def drive_find(ref, token):
+    """파일 이름(폴더 안) 또는 링크로 드라이브 파일 하나를 찾는다. 없으면 None."""
+    import urllib.parse, urllib.error
+    fid = _drive_id(ref)
+    if fid:
+        try:
+            f = _drive_get(f"{DRIVE_API}/{fid}?" + urllib.parse.urlencode({"fields": FIELDS, "supportsAllDrives": "true"}), token)
+            return None if f.get("trashed") else f
+        except urllib.error.HTTPError as e:
+            if e.code == 404:
+                return None
+            raise
+    files = drive_query(f"name = '{ref.replace(chr(39), chr(92) + chr(39))}'", token)
+    return files[0] if files else None
+
+
+def drive_query(cond, token):
+    import urllib.parse
+    q = f"'{os.environ['GDRIVE_FOLDER_ID'].strip()}' in parents and {cond} and trashed = false"
+    url = DRIVE_API + "?" + urllib.parse.urlencode({
+        "q": q, "fields": f"files({FIELDS})", "orderBy": "modifiedTime desc", "pageSize": "100",
+        "supportsAllDrives": "true", "includeItemsFromAllDrives": "true"})
+    return _drive_get(url, token).get("files", [])
+
+
+def drive_files(cfg, folder, token=None):
+    """이 쇼츠에 쓸 드라이브 영상 목록 {장면번호: (파일정보, 직접촬영여부)}. 0 = 오프닝."""
+    token = token or _drive_token()
+    prefix = drive_prefix(folder)
+    found = {}
+    for f in drive_query(f"name contains '{prefix}'", token):  # 최신 파일이 먼저 온다
+        key = parse_drive_name(f["name"], prefix)
+        if key and key[0] not in found:
+            found[key[0]] = (f, key[1])
+    ref = (cfg.get("opening") or {}).get("drive_file")
+    if ref:  # 오프닝 파일을 따로 지정한 경우 (이름 또는 링크)
+        f = drive_find(ref, token)
+        if f:
+            found[0] = (f, any(t in os.path.splitext(f["name"])[0].lower() for t in REAL_TAGS))
+        else:
+            found.pop(0, None)
+    return found
+
+
+def drive_signature(found):
+    return {str(k): f.get("md5Checksum") or f.get("modifiedTime") for k, (f, _) in sorted(found.items())}
+
+
+def fit_clip(raw, out, seconds=None):
+    """쇼츠 규격(1080x1920, 30fps, 소리 없음)으로 맞춘다. seconds 가 있으면 그 길이로 자르고, 짧으면 반복해서 채운다."""
+    cut = ["-stream_loop", "-1", "-i", raw, "-t", f"{seconds:.2f}"] if seconds else ["-i", raw, "-t", "20"]
+    sh("ffmpeg", "-y", *cut, "-an",
+       "-vf", f"scale={W}:{H}:force_original_aspect_ratio=increase,crop={W}:{H},fps={FPS},setsar=1",
+       "-c:v", "libx264", "-preset", "veryfast", "-crf", "20", "-pix_fmt", "yuv420p", out)
+
+
+def drive_sync(cfg, folder):
+    """드라이브 영상을 폴더의 drive/ 로 받아온다 (바뀐 것만). {장면번호: (로컬경로, 직접촬영여부)} 와 서명을 돌려준다."""
+    if not drive_wanted(cfg):
+        return {}, {}
+    if not drive_ready():
+        print("::warning::GDRIVE_SA_JSON / GDRIVE_FOLDER_ID 비밀값이 없어 드라이브 영상 없이 만듭니다.")
+        return {}, {}
+    import urllib.request
+    seconds = float((cfg.get("opening") or {}).get("seconds", 3))
+    ddir = os.path.join(folder, "drive"); os.makedirs(ddir, exist_ok=True)
+    meta_p = os.path.join(ddir, "drive.json")
+    meta = json.load(open(meta_p)) if os.path.exists(meta_p) else {}
+    try:
+        token = _drive_token()
+        found = drive_files(cfg, folder, token)
+    except Exception as e:
+        print("::warning::드라이브 확인 실패, 드라이브 영상 없이 만듭니다:", str(e).replace("\n", " ")[:400])
+        return {}, {}
+    out = {}
+    for n, (f, real) in sorted(found.items()):
+        if n > len(cfg["scenes"]):  # 없는 장면 번호는 받지 않는다
+            print(f"::warning::'{f['name']}': {n}번째 장면이 없어 건너뜁니다 (장면 {len(cfg['scenes'])}개).")
+            continue
+        local = os.path.join(ddir, "opening.mp4" if n == 0 else f"scene{n}.mp4")
+        tag = f"{f['id']}|{f.get('md5Checksum') or f.get('modifiedTime')}|{seconds if n == 0 else ''}"
+        if not (os.path.exists(local) and meta.get(str(n)) == tag):
+            raw = local + ".raw"
+            try:
+                with urllib.request.urlopen(urllib.request.Request(
+                        f"{DRIVE_API}/{f['id']}?alt=media&supportsAllDrives=true",
+                        headers={"Authorization": f"Bearer {token}"}), timeout=300) as r, open(raw, "wb") as w:
+                    shutil.copyfileobj(r, w)
+                fit_clip(raw, local, seconds if n == 0 else None)
+                meta[str(n)] = tag
+                print(f"드라이브 영상 받음: {f['name']} → {'오프닝' if n == 0 else f'{n}번째 장면'}")
+            except BaseException as e:
+                print(f"::warning::'{f['name']}' 받기 실패, 이 부분은 기존 방식으로 만듭니다:", str(e).replace("\n", " ")[:300])
+                continue
+            finally:
+                if os.path.exists(raw):
+                    os.remove(raw)
+        out[n] = (local, real)
+    json.dump(meta, open(meta_p, "w"), ensure_ascii=False, indent=2)
+    return out, drive_signature(found)
+
+
+def apply_drive(cfg, folder):
+    """받은 드라이브 영상을 장면에 붙인다. 오프닝은 맨 앞에 새 장면으로 넣는다. (오프닝 장면 또는 None, AI 영상 포함 여부, 서명)"""
+    clips, sig = drive_sync(cfg, folder)
+    scenes = cfg["scenes"]; ai = False
+    for n, (path, real) in clips.items():
+        if n == 0:
+            continue
+        if not (1 <= n <= len(scenes)):
+            print(f"::warning::{n}번째 장면이 없어 드라이브 영상을 건너뜁니다 (장면 {len(scenes)}개).")
+            continue
+        sc = scenes[n - 1]
+        if sc.get("owner"):  # 사장님 마무리 장면은 그대로 둔다
+            print(f"::warning::{n}번째 장면은 사장님 마무리 장면이라 드라이브 영상을 쓰지 않습니다.")
+            continue
+        sc["clip"] = os.path.relpath(path, ROOT); sc["ai_label"] = not real
+        sc.pop("image", None)
+        ai |= not real
+    opening = None
+    if 0 in clips:
+        path, real = clips[0]
+        op = cfg.get("opening") or {}
+        opening = {"clip": os.path.relpath(path, ROOT), "min_dur": float(op.get("seconds", 3)), "opening": True,
+                   "ai_label": not real,
+                   "headline": op.get("headline", ""), "caption": op.get("caption", ""), "narration": op.get("narration", "")}
+        scenes.insert(0, opening)
+        ai |= not real
+    return opening, ai, sig
+
+
+def scene_audio(sc, mp3, voice, rate):
+    """장면 음성을 만들고 (장면 길이, AI 음성 성공 여부)를 돌려준다. 내레이션 없는 오프닝은 무음."""
+    text = sc.get("narration") or ("" if sc.get("opening") else sc.get("caption", ""))
+    if text:
+        ok = tts(text, mp3, voice, rate)
+        dur = duration(mp3) + 0.35
+    else:
+        sh("ffmpeg", "-y", "-f", "lavfi", "-i", "anullsrc=r=24000:cl=mono", "-t", f"{sc.get('min_dur', 3):.2f}", mp3)
+        ok, dur = True, 0
+    sc["_dur"] = max(dur, sc.get("min_dur", 0))
+    return sc["_dur"], ok
 
 
 # ---------- 장면 이미지 ----------
@@ -169,8 +384,7 @@ def remotion_voice(cfg, scenes, work):
     for i, sc in enumerate(scenes):
         scene_image(sc, i, len(scenes), cfg, os.path.join(job, f"s{i:02d}.png"), text=False)
         mp3 = os.path.join(job, f"v{i:02d}.mp3")
-        voiced &= tts(sc.get("narration") or sc.get("caption", ""), mp3, voice, rate)
-        dur = duration(mp3) + 0.35
+        dur, ok = scene_audio(sc, mp3, voice, rate); voiced &= ok
         it = {"bg": f"job/s{i:02d}.png", "audio": f"job/v{i:02d}.mp3", "frames": int(round(dur * FPS)),
               "headline": "" if sc.get("image") else sc.get("headline", ""),
               "caption": "" if sc.get("image") else sc.get("caption", "")}
@@ -195,6 +409,7 @@ def build(folder):
     work = os.path.join(folder, "_work"); os.makedirs(work, exist_ok=True)
     voice = cfg.get("voice", "ko-KR-SunHiNeural"); rate = cfg.get("rate", "+12%")
     apply_owner(cfg, folder)
+    opening, drive_ai, drive_sig = apply_drive(cfg, folder)  # 드라이브 영상: 오프닝(0~3초) + 중간 장면 배경
     scenes = cfg["scenes"]; clips = []; voiced = True
     engine = "ffmpeg"
     if os.environ.get("SHORTS_ENGINE") == "remotion" and os.path.isdir(os.path.join(ROOT, "remotion", "node_modules")):
@@ -206,8 +421,7 @@ def build(folder):
     for i, sc in enumerate(scenes if engine == "ffmpeg" else []):
         png = os.path.join(work, f"s{i:02d}.png"); scene_image(sc, i, len(scenes), cfg, png)
         mp3 = os.path.join(work, f"v{i:02d}.mp3")
-        voiced &= tts(sc.get("narration") or sc.get("caption", ""), mp3, voice, rate)
-        dur = duration(mp3) + 0.35
+        dur, ok = scene_audio(sc, mp3, voice, rate); voiced &= ok
         clip = os.path.join(work, f"c{i:02d}.mp4")
         frames = int(dur * FPS)
         zoom = "min(zoom+0.0007,1.07)" if i % 2 == 0 else "if(eq(on,0),1.07,max(zoom-0.0007,1.0))"
@@ -244,7 +458,9 @@ def build(folder):
        "-map", "0:v", "-map", "[a]", "-c:v", "copy", "-c:a", "aac", "-b:a", "160k",
        "-movflags", "+faststart", "-t", f"{total:.2f}", out)
     # 표지(첫 장면) 이미지
-    if engine == "remotion":  # 표지: 글자가 다 나온 1초 지점
+    if opening:  # 실사 오프닝이 있으면 표지는 오프닝 다음 장면(원래 첫 장면)에서 뽑는다
+        sh("ffmpeg", "-y", "-ss", f"{scenes[0].get('_dur', 3) + 1:.2f}", "-i", out, "-frames:v", "1", os.path.join(folder, "cover.jpg"))
+    elif engine == "remotion":  # 표지: 글자가 다 나온 1초 지점
         sh("ffmpeg", "-y", "-ss", "1", "-i", out, "-frames:v", "1", os.path.join(folder, "cover.jpg"))
     elif scenes[0].get("clip"):  # 첫 장면이 영상이면 첫 프레임 + 글자로 표지
         sh("ffmpeg", "-y", "-ss", "1", "-i", os.path.join(ROOT, scenes[0]["clip"]), "-i", os.path.join(work, "s00.png"),
@@ -257,7 +473,8 @@ def build(folder):
     sha = hashlib.sha1(open(os.path.join(folder, "script.json"), "rb").read()).hexdigest()
     info = {"engine": engine, "seconds": round(total, 1), "ai_voice": voiced, "size_mb": round(os.path.getsize(out) / 1e6, 2), "script_sha": sha,
             "owner_end": bool(scenes and scenes[-1].get("owner")),
-            "ai_images": any(x.get("image") and x.get("ai_label", True) for x in scenes)}
+            "ai_images": any(x.get("image") and x.get("ai_label", True) for x in scenes),
+            "opening": bool(opening), "drive_ai": drive_ai, "drive": drive_sig}
     json.dump(info, open(os.path.join(folder, "build.json"), "w"), ensure_ascii=False, indent=2)
     print("완성:", out, info)
 
@@ -268,15 +485,31 @@ def needs_build(folder):
     if not os.path.exists(b) or not os.path.exists(os.path.join(folder, "short.mp4")):
         return True
     sha = hashlib.sha1(open(os.path.join(folder, "script.json"), "rb").read()).hexdigest()
-    return json.load(open(b)).get("script_sha") != sha
+    info = json.load(open(b))
+    if info.get("script_sha") != sha:
+        return True
+    # 아직 게시 전(drafts)이면, 드라이브에 영상이 새로 올라왔거나 바뀌었을 때 다시 만든다
+    if "drafts" in os.path.abspath(folder).split(os.sep) and drive_ready():
+        cfg = json.load(open(os.path.join(folder, "script.json"), encoding="utf-8"))
+        if drive_wanted(cfg):
+            try:
+                return drive_signature(drive_files(cfg, folder)) != info.get("drive", {})
+            except Exception as e:
+                print("::warning::드라이브 확인 실패:", str(e)[:200])
+    return False
 
 
 if __name__ == "__main__":
-    if sys.argv[1] == "--changed":
+    if sys.argv[1] in ("--changed", "--check"):
         import glob
-        for f in sorted(glob.glob("shorts/drafts/*/script.json") + glob.glob("picks/shorts/drafts/*/script.json")):
-            d = os.path.dirname(f)
-            if needs_build(d):
-                build(d)
+        todo = [os.path.dirname(f) for f in sorted(glob.glob("shorts/drafts/*/script.json") + glob.glob("picks/shorts/drafts/*/script.json"))
+                if needs_build(os.path.dirname(f))]
+        if sys.argv[1] == "--check":  # 만들 게 있는지만 확인 (GitHub Actions 출력: todo=1/0)
+            print("만들 쇼츠:", todo or "없음")
+            if os.environ.get("GITHUB_OUTPUT"):
+                open(os.environ["GITHUB_OUTPUT"], "a").write(f"todo={1 if todo else 0}\n")
+            sys.exit(0)
+        for d in todo:
+            build(d)
     else:
         build(sys.argv[1])

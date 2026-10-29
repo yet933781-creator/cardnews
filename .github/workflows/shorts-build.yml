@@ -5,6 +5,8 @@ on:
     branches: [main]
     paths: ["shorts/drafts/**/script.json", "picks/shorts/drafts/**/script.json", "tools/make_short.py", "tools/render.py"]
   workflow_dispatch:
+  schedule:  # 드라이브에 오프닝 영상을 나중에 올려도 20분 안에 다시 만든다 (한국시간 오전 9시~밤 9시)
+    - cron: "*/20 0-12 * * *"
 
 permissions:
   contents: write
@@ -21,23 +23,37 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      - name: 만들 쇼츠가 있는지 확인 (예약 실행일 때만)
+        id: check
+        if: github.event_name == 'schedule'
+        env:
+          GDRIVE_SA_JSON: ${{ secrets.GDRIVE_SA_JSON }}
+          GDRIVE_FOLDER_ID: ${{ secrets.GDRIVE_FOLDER_ID }}
+        run: pip install -q pillow google-auth requests && python tools/make_short.py --check
       - name: 도구 설치 (한글 글꼴, 영상, AI 음성)
+        if: github.event_name != 'schedule' || steps.check.outputs.todo == '1'
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq fonts-noto-cjk fonts-noto-cjk-extra ffmpeg > /dev/null
-          pip install -q pillow edge-tts
+          pip install -q pillow edge-tts google-auth requests
       - uses: actions/setup-node@v4
+        if: github.event_name != 'schedule' || steps.check.outputs.todo == '1'
         with:
           node-version: "22"
       - name: 리모션 준비 (실패해도 기존 방식으로 제작)
+        if: github.event_name != 'schedule' || steps.check.outputs.todo == '1'
         continue-on-error: true
         run: cd remotion && npm install --no-audit --no-fund --loglevel=error && npx remotion browser ensure
       - name: 바뀐 대본만 영상으로 제작
+        if: github.event_name != 'schedule' || steps.check.outputs.todo == '1'
         env:
           SHORTS_ENGINE: remotion
+          GDRIVE_SA_JSON: ${{ secrets.GDRIVE_SA_JSON }}
+          GDRIVE_FOLDER_ID: ${{ secrets.GDRIVE_FOLDER_ID }}
         run: python tools/make_short.py --changed 2>&1 | tee build.log; s=${PIPESTATUS[0]}; [ $s -eq 0 ] || { echo "::error::$(tail -c 900 build.log | tr '\n' ' ')"; exit $s; }
         shell: bash
       - name: 영상 저장
+        if: github.event_name != 'schedule' || steps.check.outputs.todo == '1'
         run: |
           git config user.name "cardnews-bot"
           git config user.email "cardnews-bot@users.noreply.github.com"
