@@ -26,11 +26,11 @@ def duration(path):
 
 
 # ---------- 음성 ----------
-def tts(text, out, voice, rate):
+def tts(text, out, voice, rate, pitch="+0Hz"):
     try:
         import edge_tts
         async def go():
-            await edge_tts.Communicate(text, voice, rate=rate).save(out)
+            await edge_tts.Communicate(text, voice, rate=rate, pitch=pitch).save(out)
         asyncio.run(go())
         return True
     except Exception as e:
@@ -287,7 +287,7 @@ def scene_audio(sc, mp3, voice, rate):
     """장면 음성을 만들고 (장면 길이, AI 음성 성공 여부)를 돌려준다. 내레이션 없는 오프닝은 무음."""
     text = sc.get("narration") or ("" if sc.get("opening") else sc.get("caption", ""))
     if text:
-        ok = tts(text, mp3, voice, rate)
+        ok = tts(text, mp3, voice, rate, sc.get("_pitch", "+0Hz"))
         dur = duration(mp3) + 0.35
     else:
         sh("ffmpeg", "-y", "-f", "lavfi", "-i", "anullsrc=r=24000:cl=mono", "-t", f"{sc.get('min_dur', 3):.2f}", mp3)
@@ -297,6 +297,32 @@ def scene_audio(sc, mp3, voice, rate):
 
 
 # ---------- 장면 이미지 ----------
+def stat_box(img, v):
+    """실사 영상 장면용 수치 박스: 반투명 검은 박스 + 얇은 테두리, 큰 숫자(강조색) + 설명(흰색)."""
+    text = v["text"].strip(); sub = (v.get("sub") or "").strip()
+    col = tuple(v.get("color") or R.C["accent"])
+    tmp = ImageDraw.Draw(img)
+    size = 150
+    while size > 70 and tmp.textlength(text, font=R.font("black", size)) > W - 260:
+        size -= 6
+    fb, fs = R.font("black", size), R.font("bold", 40)
+    sub_lines = R.wrap(tmp, sub, fs, W - 260) if sub else []
+    bw = max([tmp.textlength(text, font=fb)] + [tmp.textlength(l, font=fs) for l in sub_lines]) + 120
+    bh = int(size * 1.15) + len(sub_lines) * 54 + 80
+    x0 = (W - bw) / 2; y0 = 470
+    layer = Image.new("RGBA", (W, H), (0, 0, 0, 0)); ld = ImageDraw.Draw(layer)
+    ld.rounded_rectangle([x0, y0, x0 + bw, y0 + bh], 40, fill=(0, 0, 0, 150), outline=(255, 255, 255, 70), width=2)
+    ty = y0 + 34
+    ld.text(((W - ld.textlength(text, font=fb)) / 2, ty - size * 0.12), text, font=fb, fill=col + (255,))
+    ty += int(size * 1.15)
+    for l in sub_lines:
+        ld.text(((W - ld.textlength(l, font=fs)) / 2, ty), l, font=fs, fill=(255, 255, 255, 240)); ty += 54
+    if img.mode == "RGBA":
+        img.alpha_composite(layer)
+    else:
+        img.paste(layer, (0, 0), layer)
+
+
 def scene_image(sc, idx, total, cfg, out, text=True):
     clip = sc.get("clip")
     if clip:  # 영상 장면: 글자만 투명 레이어로 만들고 아래에 영상을 깐다
@@ -352,7 +378,10 @@ def scene_image(sc, idx, total, cfg, out, text=True):
         R.pill(d, 60, 180, "AI 생성 장면", R.font("bold", 26), (255, 255, 255), (16, 18, 30), padx=14)
     if sc.get("image") and sc.get("ai_label", True):  # AI 생성 이미지 표시 (오른쪽 위)
         R.pill(d, W - 60, 62, "AI 생성 이미지", R.font("bold", 26), (255, 255, 255), (16, 18, 30), padx=14, anchor_right=True)
-    y = 1190
+    if clip and (sc.get("visual") or {}).get("kind") == "big" and (sc["visual"].get("text") or "").strip():
+        stat_box(img, sc["visual"])  # 실사 장면 위 수치 정보: 반투명 박스 (화면 중앙 위쪽, 앱 UI에 안 가림)
+        d = ImageDraw.Draw(img)
+    y = 1190 if sc.get("owner") else 1080  # 제목·자막은 아래쪽 앱 UI(캡션·버튼) 영역보다 위에 둔다
     if not text or sc.get("image"):  # 리모션: 글자는 애니메이션으로 따로 얹는다
         img.save(out)
         return
@@ -364,8 +393,8 @@ def scene_image(sc, idx, total, cfg, out, text=True):
         f = R.font("black", 54)
         lines = R.wrap(d, cap, f, W - 220)
         bh = len(lines) * 74 + 50
-        by = max(y + 10, 1560 - bh // 2)
-        by = min(by, 1680 - bh)
+        by = max(y + 10, 1480 - bh // 2)
+        by = min(by, 1600 - bh)
         d.rounded_rectangle([80, by, W - 80, by + bh], 28, fill=(255, 255, 255))
         yy = by + 22
         for ln in lines:
@@ -381,13 +410,16 @@ def remotion_voice(cfg, scenes, work):
     shutil.rmtree(job, ignore_errors=True); os.makedirs(job)
     voice = cfg.get("voice", "ko-KR-SunHiNeural"); rate = cfg.get("rate", "+12%")
     items = []; voiced = True
+    for sc in scenes:
+        sc["_pitch"] = cfg.get("pitch", "+0Hz")
     for i, sc in enumerate(scenes):
         scene_image(sc, i, len(scenes), cfg, os.path.join(job, f"s{i:02d}.png"), text=False)
         mp3 = os.path.join(job, f"v{i:02d}.mp3")
         dur, ok = scene_audio(sc, mp3, voice, rate); voiced &= ok
         it = {"bg": f"job/s{i:02d}.png", "audio": f"job/v{i:02d}.mp3", "frames": int(round(dur * FPS)),
               "headline": "" if sc.get("image") else sc.get("headline", ""),
-              "caption": "" if sc.get("image") else sc.get("caption", "")}
+              "caption": "" if sc.get("image") else sc.get("caption", ""),
+              "top": 1190 if sc.get("owner") else 1080}
         if sc.get("clip"):
             sh("ffmpeg", "-y", "-stream_loop", "-1", "-i", os.path.join(ROOT, sc["clip"]), "-t", f"{dur:.2f}", "-an",
                "-vf", f"scale={W}:{H}:force_original_aspect_ratio=increase,crop={W}:{H},fps={FPS}",
@@ -411,6 +443,8 @@ def build(folder):
     apply_owner(cfg, folder)
     opening, drive_ai, drive_sig = apply_drive(cfg, folder)  # 드라이브 영상: 오프닝(0~3초) + 중간 장면 배경
     scenes = cfg["scenes"]; clips = []; voiced = True
+    for sc in scenes:
+        sc["_pitch"] = cfg.get("pitch", "+0Hz")
     engine = "ffmpeg"
     if os.environ.get("SHORTS_ENGINE") == "remotion" and os.path.isdir(os.path.join(ROOT, "remotion", "node_modules")):
         try:

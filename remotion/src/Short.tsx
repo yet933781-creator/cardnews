@@ -11,6 +11,7 @@ export type Scene = {
   frames: number;
   headline?: string;
   caption?: string;
+  top?: number;        // 제목·자막 시작 높이 (기본 1080, 사장님 장면은 사진에 맞춰 1190)
 };
 export type ShortProps = {scenes: Scene[]; fps: number};
 
@@ -35,7 +36,7 @@ const SceneView: React.FC<{s: Scene; index: number}> = ({s, index}) => {
       <AbsoluteFill style={{transform: s.clip ? undefined : `scale(${zoom})`}}>
         <Img src={staticFile(s.bg)} style={{width: '100%', height: '100%'}} />
       </AbsoluteFill>
-      <div style={{position: 'absolute', left: 70, right: 70, top: 1190, fontFamily: FONT}}>
+      <div style={{position: 'absolute', left: 70, right: 70, top: s.top ?? 1080, fontFamily: FONT}}>
         {s.headline ? (
           <div style={{
             color: '#fff', fontWeight: 900, fontSize: 86, lineHeight: 1.18,
