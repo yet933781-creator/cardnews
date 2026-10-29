@@ -97,8 +97,14 @@
       "visual": {
         "kind": "big",
         "text": "25%",
-        "sub": "선택약정 요금할인과 비교"
-      }
+        "sub": "선택약정 요금할인과 비교",
+        "color": [
+          255,
+          212,
+          56
+        ]
+      },
+      "clip": "shorts/drafts/2026-10-29-1830/ai_scene5.mp4"
     },
     {
       "headline": "",
