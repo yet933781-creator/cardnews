@@ -81,6 +81,116 @@ def apply_owner(cfg, folder):
         last.pop("visual", None)
 
 
+# ---------- Kling AI 실사 오프닝 (2026-10-29 추가) ----------
+# script.json 맨 위에 아래처럼 넣으면, 영상 맨 앞(0~3초)에 Kling 실사 영상이 자동으로 붙는다.
+#   "opening": {"prompt": "Cinematic, photorealistic, 8k ...", "seconds": 3,
+#               "headline": "선택: 영상 위 큰 글자", "caption": "선택: 자막", "narration": "선택: 읽어줄 문장"}
+# 키는 GitHub 비밀값 KLING_API_KEY. 키가 없거나 생성에 실패하면 오프닝 없이 기존 방식 그대로 만든다.
+# 한 번 만든 영상은 폴더의 opening.mp4 로 저장해 두고, 프롬프트가 바뀌지 않으면 다시 돈을 쓰지 않는다.
+KLING_BASE = os.environ.get("KLING_API_BASE", "https://api-singapore.klingai.com")
+KLING_MODEL = os.environ.get("KLING_MODEL", "kling-3.0")
+
+
+def _kling_auth():
+    """KLING_API_KEY 를 그대로 쓴다. 예전 방식 키('액세스키:시크릿키')면 JWT 토큰을 만들어 쓴다."""
+    key = os.environ.get("KLING_API_KEY", "").strip()
+    if ":" not in key:
+        return key
+    import base64, hashlib, hmac, time
+    ak, sk = key.split(":", 1)
+    b64 = lambda b: base64.urlsafe_b64encode(b).rstrip(b"=").decode()
+    now = int(time.time())
+    head = b64(json.dumps({"alg": "HS256", "typ": "JWT"}).encode())
+    body = b64(json.dumps({"iss": ak, "exp": now + 1800, "nbf": now - 5}).encode())
+    sig = b64(hmac.new(sk.encode(), f"{head}.{body}".encode(), hashlib.sha256).digest())
+    return f"{head}.{body}.{sig}"
+
+
+def _kling_call(method, path, data=None):
+    import urllib.request, urllib.error
+    req = urllib.request.Request(KLING_BASE + path, method=method,
+                                 data=json.dumps(data).encode() if data is not None else None,
+                                 headers={"Authorization": f"Bearer {_kling_auth()}", "Content-Type": "application/json"})
+    try:
+        with urllib.request.urlopen(req, timeout=60) as r:
+            res = json.loads(r.read())
+    except urllib.error.HTTPError as e:
+        raise RuntimeError(f"HTTP {e.code}: {e.read().decode(errors='replace')[:300]}")
+    if res.get("code", 0) != 0:
+        raise RuntimeError(f"code {res.get('code')}: {res.get('message')}")
+    return res.get("data")
+
+
+def kling_video(prompt, out, seconds=3, timeout_s=900):
+    """Kling 으로 9:16 실사 영상을 만들어 out(mp4)에 저장한다. 실패하면 예외."""
+    import time, urllib.request
+    task = _kling_call("POST", f"/text-to-video/{KLING_MODEL}", {
+        "prompt": prompt,
+        "settings": {"resolution": "1080p", "aspect_ratio": "9:16", "duration": max(3, int(math.ceil(seconds))),
+                     "audio": "off", "multi_shot": False},
+        "options": {"watermark_info": {"enabled": False}}})
+    tid = task["id"]
+    print("Kling 오프닝 생성 요청:", tid)
+    end = time.time() + timeout_s
+    while time.time() < end:
+        time.sleep(10)
+        t = (_kling_call("GET", f"/tasks?task_ids={tid}") or [{}])[0]
+        st = t.get("status")
+        if st == "failed":
+            raise RuntimeError("생성 실패: " + str(t.get("message", ""))[:300])
+        if st == "succeeded":
+            url = next(o["url"] for o in t.get("outputs", []) if o.get("type") == "video")
+            raw = out + ".raw.mp4"
+            with urllib.request.urlopen(urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"}), timeout=120) as r, open(raw, "wb") as f:
+                shutil.copyfileobj(r, f)
+            # 쇼츠 규격(1080x1920, 30fps, 소리 없음)으로 맞추고 정확히 seconds 초로 자른다
+            sh("ffmpeg", "-y", "-i", raw, "-t", f"{seconds:.2f}", "-an",
+               "-vf", f"scale={W}:{H}:force_original_aspect_ratio=increase,crop={W}:{H},fps={FPS},setsar=1",
+               "-c:v", "libx264", "-preset", "veryfast", "-crf", "20", "-pix_fmt", "yuv420p", out)
+            os.remove(raw)
+            return out
+    raise RuntimeError(f"{timeout_s}초 안에 영상이 완성되지 않았습니다 (작업 ID {tid})")
+
+
+def opening_scene(cfg, folder):
+    """script.json 의 opening 설정으로 맨 앞 장면을 만든다. 쓸 수 없으면 None (기존 방식 그대로)."""
+    op = cfg.get("opening") or {}
+    prompt = (op.get("prompt") or "").strip()
+    if not prompt:
+        return None
+    import hashlib
+    seconds = float(op.get("seconds", 3))
+    mp4 = os.path.join(folder, "opening.mp4"); meta = os.path.join(folder, "opening.json")
+    sig = hashlib.sha1(f"{KLING_MODEL}|{seconds}|{prompt}".encode()).hexdigest()
+    cached = os.path.exists(mp4) and os.path.exists(meta) and json.load(open(meta)).get("sig") == sig
+    if not cached:
+        if not os.environ.get("KLING_API_KEY", "").strip():
+            print("::warning::KLING_API_KEY 비밀값이 없어 실사 오프닝 없이 만듭니다.")
+            return None
+        try:
+            kling_video(prompt, mp4, seconds)
+            json.dump({"sig": sig, "model": KLING_MODEL, "seconds": seconds, "prompt": prompt},
+                      open(meta, "w"), ensure_ascii=False, indent=2)
+        except Exception as e:
+            print("::warning::Kling 오프닝 생성 실패, 오프닝 없이 만듭니다:", str(e).replace("\n", " ")[:600])
+            return None
+    return {"clip": os.path.relpath(mp4, ROOT), "min_dur": seconds, "opening": True,
+            "headline": op.get("headline", ""), "caption": op.get("caption", ""), "narration": op.get("narration", "")}
+
+
+def scene_audio(sc, mp3, voice, rate):
+    """장면 음성을 만들고 (장면 길이, AI 음성 성공 여부)를 돌려준다. 내레이션 없는 오프닝은 무음."""
+    text = sc.get("narration") or ("" if sc.get("opening") else sc.get("caption", ""))
+    if text:
+        ok = tts(text, mp3, voice, rate)
+        dur = duration(mp3) + 0.35
+    else:
+        sh("ffmpeg", "-y", "-f", "lavfi", "-i", "anullsrc=r=24000:cl=mono", "-t", f"{sc.get('min_dur', 3):.2f}", mp3)
+        ok, dur = True, 0
+    sc["_dur"] = max(dur, sc.get("min_dur", 0))
+    return sc["_dur"], ok
+
+
 # ---------- 장면 이미지 ----------
 def scene_image(sc, idx, total, cfg, out, text=True):
     clip = sc.get("clip")
@@ -169,8 +279,7 @@ def remotion_voice(cfg, scenes, work):
     for i, sc in enumerate(scenes):
         scene_image(sc, i, len(scenes), cfg, os.path.join(job, f"s{i:02d}.png"), text=False)
         mp3 = os.path.join(job, f"v{i:02d}.mp3")
-        voiced &= tts(sc.get("narration") or sc.get("caption", ""), mp3, voice, rate)
-        dur = duration(mp3) + 0.35
+        dur, ok = scene_audio(sc, mp3, voice, rate); voiced &= ok
         it = {"bg": f"job/s{i:02d}.png", "audio": f"job/v{i:02d}.mp3", "frames": int(round(dur * FPS)),
               "headline": "" if sc.get("image") else sc.get("headline", ""),
               "caption": "" if sc.get("image") else sc.get("caption", "")}
@@ -195,6 +304,9 @@ def build(folder):
     work = os.path.join(folder, "_work"); os.makedirs(work, exist_ok=True)
     voice = cfg.get("voice", "ko-KR-SunHiNeural"); rate = cfg.get("rate", "+12%")
     apply_owner(cfg, folder)
+    opening = opening_scene(cfg, folder)  # Kling 실사 오프닝 (0~3초)
+    if opening:
+        cfg["scenes"].insert(0, opening)
     scenes = cfg["scenes"]; clips = []; voiced = True
     engine = "ffmpeg"
     if os.environ.get("SHORTS_ENGINE") == "remotion" and os.path.isdir(os.path.join(ROOT, "remotion", "node_modules")):
@@ -206,8 +318,7 @@ def build(folder):
     for i, sc in enumerate(scenes if engine == "ffmpeg" else []):
         png = os.path.join(work, f"s{i:02d}.png"); scene_image(sc, i, len(scenes), cfg, png)
         mp3 = os.path.join(work, f"v{i:02d}.mp3")
-        voiced &= tts(sc.get("narration") or sc.get("caption", ""), mp3, voice, rate)
-        dur = duration(mp3) + 0.35
+        dur, ok = scene_audio(sc, mp3, voice, rate); voiced &= ok
         clip = os.path.join(work, f"c{i:02d}.mp4")
         frames = int(dur * FPS)
         zoom = "min(zoom+0.0007,1.07)" if i % 2 == 0 else "if(eq(on,0),1.07,max(zoom-0.0007,1.0))"
@@ -244,7 +355,9 @@ def build(folder):
        "-map", "0:v", "-map", "[a]", "-c:v", "copy", "-c:a", "aac", "-b:a", "160k",
        "-movflags", "+faststart", "-t", f"{total:.2f}", out)
     # 표지(첫 장면) 이미지
-    if engine == "remotion":  # 표지: 글자가 다 나온 1초 지점
+    if opening:  # 실사 오프닝이 있으면 표지는 오프닝 다음 장면(원래 첫 장면)에서 뽑는다
+        sh("ffmpeg", "-y", "-ss", f"{scenes[0].get('_dur', 3) + 1:.2f}", "-i", out, "-frames:v", "1", os.path.join(folder, "cover.jpg"))
+    elif engine == "remotion":  # 표지: 글자가 다 나온 1초 지점
         sh("ffmpeg", "-y", "-ss", "1", "-i", out, "-frames:v", "1", os.path.join(folder, "cover.jpg"))
     elif scenes[0].get("clip"):  # 첫 장면이 영상이면 첫 프레임 + 글자로 표지
         sh("ffmpeg", "-y", "-ss", "1", "-i", os.path.join(ROOT, scenes[0]["clip"]), "-i", os.path.join(work, "s00.png"),
@@ -257,7 +370,8 @@ def build(folder):
     sha = hashlib.sha1(open(os.path.join(folder, "script.json"), "rb").read()).hexdigest()
     info = {"engine": engine, "seconds": round(total, 1), "ai_voice": voiced, "size_mb": round(os.path.getsize(out) / 1e6, 2), "script_sha": sha,
             "owner_end": bool(scenes and scenes[-1].get("owner")),
-            "ai_images": any(x.get("image") and x.get("ai_label", True) for x in scenes)}
+            "ai_images": any(x.get("image") and x.get("ai_label", True) for x in scenes),
+            "ai_opening": bool(opening)}
     json.dump(info, open(os.path.join(folder, "build.json"), "w"), ensure_ascii=False, indent=2)
     print("완성:", out, info)
 

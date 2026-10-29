@@ -35,6 +35,7 @@ jobs:
       - name: 바뀐 대본만 영상으로 제작
         env:
           SHORTS_ENGINE: remotion
+          KLING_API_KEY: ${{ secrets.KLING_API_KEY }}
         run: python tools/make_short.py --changed 2>&1 | tee build.log; s=${PIPESTATUS[0]}; [ $s -eq 0 ] || { echo "::error::$(tail -c 900 build.log | tr '\n' ' ')"; exit $s; }
         shell: bash
       - name: 영상 저장
