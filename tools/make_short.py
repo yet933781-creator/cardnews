@@ -130,7 +130,7 @@ def _drive_token():
     """서비스 계정 키로 읽기 전용 토큰을 받는다 (google-auth, 무료 라이브러리)."""
     from google.oauth2 import service_account
     from google.auth.transport.requests import Request
-    info = json.loads(os.environ["GDRIVE_SA_JSON"])
+    info = json.loads(os.environ["GDRIVE_SA_JSON"].strip().lstrip("\ufeff"))
     cred = service_account.Credentials.from_service_account_info(
         info, scopes=["https://www.googleapis.com/auth/drive.readonly"])
     cred.refresh(Request())

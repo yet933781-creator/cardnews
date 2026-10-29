@@ -17,7 +17,7 @@ def main():
         note("error", "GDRIVE_SA_JSON 또는 GDRIVE_FOLDER_ID 비밀값이 비어 있습니다.")
         return 1
     try:
-        email = json.loads(os.environ["GDRIVE_SA_JSON"]).get("client_email", "?")
+        email = json.loads(os.environ["GDRIVE_SA_JSON"].strip().lstrip("\ufeff")).get("client_email", "?")
     except Exception:
         note("error", "GDRIVE_SA_JSON 이 올바른 JSON 이 아닙니다. 파일 내용 전체({ 부터 } 까지)를 다시 넣어주세요.")
         return 1
