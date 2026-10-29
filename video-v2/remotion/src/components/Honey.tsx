@@ -55,7 +55,7 @@ const CutIn: React.FC<{children: React.ReactNode}> = ({children}) => {
 };
 
 // 말자막: 지금 읽는 구절만 크게. 숫자가 든 낱말은 강조색.
-export const HoneySubs: React.FC<{subs?: SceneV2['subs']; accent: RGB; top?: number}> = ({subs, accent, top = 1230}) => {
+export const HoneySubs: React.FC<{subs?: SceneV2['subs']; accent: RGB; top?: number; plain?: boolean}> = ({subs, accent, top = 1230, plain = false}) => {
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
   if (!subs || !subs.length) return null;
@@ -64,9 +64,10 @@ export const HoneySubs: React.FC<{subs?: SceneV2['subs']; accent: RGB; top?: num
   const pop = spring({frame: frame - cur.from, fps, config: {damping: 13, stiffness: 220}});
   return (
     <div style={{position: 'absolute', left: 60, right: 60, top, display: 'flex', justifyContent: 'center', fontFamily: FONT}}>
-      <div style={{background: 'rgba(0,0,0,0.62)', borderRadius: 18, padding: '14px 30px', maxWidth: 960, textAlign: 'center',
+      <div style={{background: plain ? 'transparent' : 'rgba(0,0,0,0.62)', borderRadius: 18, padding: '14px 30px', maxWidth: 960, textAlign: 'center',
         transform: `scale(${0.85 + 0.15 * pop})`}}>
-        <span style={{color: '#fff', fontSize: 68, fontWeight: 900, lineHeight: 1.25, wordBreak: 'keep-all'}}>
+        <span style={{color: '#fff', fontSize: plain ? 64 : 68, fontWeight: 900, lineHeight: 1.25, wordBreak: 'keep-all',
+          ...(plain ? {WebkitTextStroke: '6px rgba(0,0,0,0.85)', paintOrder: 'stroke fill', textShadow: '0 3px 14px rgba(0,0,0,0.6)'} : {})}}>
           {cur.text.split(' ').map((w, i) => (
             <span key={i} style={{color: /\d/.test(w) ? rgb(accent) : '#fff'}}>{(i ? ' ' : '') + w}</span>
           ))}
@@ -77,10 +78,10 @@ export const HoneySubs: React.FC<{subs?: SceneV2['subs']; accent: RGB; top?: num
 };
 
 // 위에 고정되는 제목 (영상 전체)
-export const HoneyHeader: React.FC<{text?: string}> = ({text}) =>
+export const HoneyHeader: React.FC<{text?: string; small?: boolean}> = ({text, small}) =>
   text ? (
     <div style={{position: 'absolute', left: 60, right: 60, top: 236, display: 'flex', justifyContent: 'center', fontFamily: FONT}}>
-      <div style={{background: 'rgba(0,0,0,0.78)', color: '#fff', fontSize: 50, fontWeight: 900, lineHeight: 1.25,
+      <div style={{background: 'rgba(0,0,0,0.78)', color: '#fff', fontSize: small ? 38 : 50, fontWeight: small ? 700 : 900, lineHeight: 1.3,
         padding: '12px 26px', borderRadius: 14, textAlign: 'center', whiteSpace: 'pre-line', wordBreak: 'keep-all'}}>{text}</div>
     </div>
   ) : null;
