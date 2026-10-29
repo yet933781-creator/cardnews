@@ -2,8 +2,11 @@
   "engine": "remotion",
   "seconds": 43.7,
   "ai_voice": true,
-  "size_mb": 6.84,
-  "script_sha": "ab5b7fecd7f27db13a6efeabcf597ee6b4b58464",
+  "size_mb": 10.13,
+  "script_sha": "ebaf31d7c7c1d52afedbc07c26f5394609e08368",
   "owner_end": true,
-  "ai_images": false
+  "ai_images": false,
+  "opening": false,
+  "drive_ai": false,
+  "drive": {}
 }
