@@ -1,0 +1,105 @@
+{
+  "account": "household",
+  "style": "demo",
+  "title": "창문 단열 뽁뽁이 30초 시연형 (V2 시험)",
+  "header": "창가만 가면 서늘하다면\n유리에 붙이는 단열 뽁뽁이",
+  "scenes": [
+    {
+      "role": "problem",
+      "narration": "창문 닫았는데, 창가만 가면 왜 이렇게 서늘하죠?",
+      "visual": {
+        "type": "cuts",
+        "cuts": [
+          {
+            "type": "generated_video",
+            "src": "picks/shorts/drafts/flow-sample/ai_window.mp4"
+          }
+        ]
+      }
+    },
+    {
+      "role": "reveal",
+      "narration": "이럴 때 많이 쓰는 게 창문 단열 뽁뽁이예요.",
+      "visual": {
+        "type": "cuts",
+        "cuts": [
+          {
+            "type": "original_product_photo",
+            "src": "picks/approved/2026-10-29-1300/p_rolls.jpg",
+            "source": "사용자 제공 상품 사진 (꿀템 5번)",
+            "camera": "push_in"
+          }
+        ]
+      }
+    },
+    {
+      "role": "use",
+      "narration": "폭 100센티 롤이라, 창 크기에 맞춰 가위로 잘라 쓰고요,",
+      "visual": {
+        "type": "cuts",
+        "cuts": [
+          {
+            "type": "generated_video",
+            "src": "video-v2/samples/assets/bubble_cut.mp4",
+            "start": 0.5
+          }
+        ]
+      }
+    },
+    {
+      "role": "use",
+      "narration": "유리 먼지와 물기를 닦은 뒤, 한쪽 끝부터 손으로 밀어 붙이면 돼요.",
+      "visual": {
+        "type": "cuts",
+        "cuts": [
+          {
+            "type": "generated_video",
+            "src": "video-v2/samples/assets/bubble_apply.mp4",
+            "start": 0.3
+          }
+        ]
+      }
+    },
+    {
+      "role": "benefit",
+      "narration": "공기층이 있는 3중 에어캡이라 찬 기운을 줄이는 데 도움이 될 수 있고, 무지 타입이라 덜 답답해 보여요. 체감은 창마다 다를 수 있어요.",
+      "visual": {
+        "type": "cuts",
+        "cuts": [
+          {
+            "type": "original_product_photo",
+            "src": "picks/approved/2026-10-29-1300/p_closeup.jpg",
+            "source": "사용자 제공 상품 사진 (꿀템 5번)",
+            "camera": "pan_left"
+          },
+          {
+            "type": "original_product_photo",
+            "src": "picks/approved/2026-10-29-1300/p_attach.jpg",
+            "source": "사용자 제공 상품 사진 (꿀템 5번)",
+            "camera": "slow_zoom_in"
+          }
+        ]
+      }
+    },
+    {
+      "role": "cta",
+      "narration": "프로필 링크 5번에서 오늘 가격 확인하세요. 쿠팡 파트너스 활동으로 수수료를 받을 수 있어요.",
+      "visual": {
+        "type": "cuts",
+        "cuts": [
+          {
+            "type": "original_product_photo",
+            "src": "picks/approved/2026-10-29-1300/p_room.jpg",
+            "source": "사용자 제공 상품 사진 (꿀템 5번)",
+            "camera": "slow_zoom_out"
+          }
+        ]
+      },
+      "overlay": {
+        "type": "cta",
+        "number": "5번",
+        "text": "오늘 가격은 링크에서 확인"
+      }
+    }
+  ]
+}

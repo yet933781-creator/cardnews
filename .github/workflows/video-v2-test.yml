@@ -52,6 +52,11 @@ jobs:
           ffmpeg -v error -y -i "$OLD" -i "$NEW" -filter_complex \
             "[0:v]scale=540:960,setsar=1[a];[1:v]scale=540:960,setsar=1[b];[a][b]hstack=2[v];[0:a][1:a]amix=inputs=2:duration=longest[x]" \
             -map "[v]" -map "[x]" -c:v libx264 -crf 24 -preset veryfast -c:a aac video-v2/out/phone-store-compare.mp4
+          if [ -f video-v2/out/household-demo.mp4 ]; then
+            ffmpeg -v error -y -i video-v2/out/household.mp4 -i video-v2/out/household-demo.mp4 -filter_complex \
+              "[0:v]scale=540:960,setsar=1[a];[1:v]scale=540:960,setsar=1[b];[a][b]hstack=2[v];[1:a]anull[x]" \
+              -map "[v]" -map "[x]" -c:v libx264 -crf 24 -preset veryfast -c:a aac -shortest video-v2/out/household-demo-compare.mp4
+          fi
           for n in $(ls video-v2/samples/*.json | xargs -n1 basename | sed 's/.json$//'); do
             d=$(ffprobe -v error -show_entries format=duration -of csv=p=0 video-v2/out/$n.mp4)
             for k in 1 2 3 4 5 6 7 8; do
