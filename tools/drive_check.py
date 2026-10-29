@@ -26,6 +26,18 @@ def main():
     except Exception as e:
         note("error", f"서비스 계정 로그인 실패 ({type(e).__name__}): 키가 꺼졌거나 잘못 붙여넣었을 수 있습니다.")
         return 1
+    fid = os.environ["GDRIVE_FOLDER_ID"]
+    clean = fid.strip()
+    shape = (f"폴더 ID 길이 {len(clean)}자"
+             + (", 앞뒤 빈칸 있음" if clean != fid else "")
+             + (", 주소(/ 또는 ?) 포함 — ID만 넣어야 합니다" if any(c in clean for c in "/?= ") else ""))
+    try:
+        meta = M._drive_get(f"{M.DRIVE_API}/{clean}?fields=id,name,mimeType&supportsAllDrives=true", token)
+        note("notice", f"폴더 확인: '{meta.get('name')}' ({meta.get('mimeType', '').split('.')[-1]})")
+    except Exception as e:
+        note("error", f"폴더를 열 수 없습니다 ({str(e)[:80]}). {shape}. "
+                      f"폴더 ID 가 틀렸거나, 폴더가 {email} 에 공유되지 않았습니다.")
+        return 1
     try:
         files = M.drive_query("mimeType != 'application/vnd.google-apps.folder'", token)
     except Exception as e:
