@@ -114,12 +114,12 @@ def draw_phone(img, cx, top, s):
     d.rounded_rectangle([x0 + 14, y0 + 14, x0 + pw - 14, y0 + ph - 14], 52, fill=(236, 240, 248))
     d.rounded_rectangle([cx - 60, y0 + 30, cx + 60, y0 + 62], 16, fill=(8, 10, 20))  # 카메라 섬
     # 메시지 앱 상단
-    d.text((x0 + 50, y0 + 96), "‹  통신사 고객센터", font=font("bold", 30), fill=(40, 48, 70))
+    d.text((x0 + 50, y0 + 96), "‹  " + s.get("sms_from", "통신사 고객센터"), font=font("bold", 30), fill=(40, 48, 70))
     d.line([(x0 + 30, y0 + 150), (x0 + pw - 30, y0 + 150)], fill=(205, 212, 226), width=2)
     # 말풍선
     bx0, by0 = x0 + 40, y0 + 185
     d.rounded_rectangle([bx0, by0, x0 + pw - 50, by0 + 250], 34, fill=(255, 255, 255))
-    d.text((bx0 + 28, by0 + 26), "[요금제 안내]", font=font("black", 30), fill=C["tagred"])
+    d.text((bx0 + 28, by0 + 26), s.get("sms_tag", "[요금제 안내]"), font=font("black", 30), fill=C["tagred"])
     text_block(d, bx0 + 28, by0 + 76, s.get("sms", ""), font("medium", 27), (40, 48, 70), pw - 150, 1.4)
     # 절약 강조 말풍선
     sx0, sy0 = x0 + 70, by0 + 280
