@@ -1,0 +1,43 @@
+name: 꿀템 상품 사진 가져오기
+
+# picks/**/photo_urls.txt 에 "파일이름 URL" 을 한 줄씩 적어 push 하면
+# 그 폴더에 상품 이미지를 내려받아 커밋한다 (작업 환경에서 쿠팡 이미지 서버가 막혀 있어서).
+on:
+  push:
+    branches: [main]
+    paths: ["picks/**/photo_urls.txt"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: picks-photos
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: 상품 사진 내려받기
+        run: |
+          set -e
+          for list in $(git ls-files 'picks/**/photo_urls.txt'); do
+            dir=$(dirname "$list")
+            while read -r name url; do
+              [ -z "$name" ] && continue
+              case "$name" in \#*) continue;; esac
+              case "$url" in https://*.coupangcdn.com/*) ;; *) echo "건너뜀(쿠팡 이미지 아님): $url"; continue;; esac
+              [ -f "$dir/$name" ] && continue
+              curl -fsSL -A "Mozilla/5.0" -o "$dir/$name" "$url" && echo "받음: $dir/$name" || echo "실패: $url"
+            done < "$list"
+          done
+      - name: 커밋
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add picks
+          git diff --cached --quiet && exit 0
+          git commit -m "상품 사진 가져오기 [skip ci]"
+          for i in 1 2 3; do git pull --rebase -q origin main && git push -q && break; sleep 5; done
