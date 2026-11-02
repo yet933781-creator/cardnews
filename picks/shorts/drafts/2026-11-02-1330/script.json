@@ -35,10 +35,10 @@
       "caption": "하코리 냉장고 정리 대형 트레이",
       "narration": "이럴 땐 냉장고 정리 트레이로 칸을 나눠 보세요.",
       "visual": {
-        "kind": "tag",
-        "kicker": "오늘의 꿀템 12번",
-        "name": "냉장고 정리\n대형 트레이",
-        "point": "투명 다용도 트레이\n4개 구성"
+        "kind": "photo",
+        "card": true,
+        "src": "picks/shorts/drafts/2026-11-02-1330/p_main.jpg",
+        "size": 900
       }
     },
     {
@@ -46,19 +46,10 @@
       "caption": "소스·반찬·간식 따로따로",
       "narration": "소스, 반찬, 간식처럼 종류별로 나눠 담으면 찾기가 한결 쉬워질 수 있어요.",
       "visual": {
-        "kind": "big",
-        "text": "칸 나누기",
-        "sub": "종류별로 담기",
-        "color": [
-          120,
-          200,
-          255
-        ],
-        "glow": [
-          120,
-          200,
-          255
-        ]
+        "kind": "photo",
+        "card": true,
+        "src": "picks/shorts/drafts/2026-11-02-1330/p_shelf.jpg",
+        "size": 900
       }
     },
     {
@@ -66,19 +57,10 @@
       "caption": "안쪽 물건도 트레이째로",
       "narration": "안쪽 물건도 트레이째로 꺼내면 되니까 정리에 도움이 돼요.",
       "visual": {
-        "kind": "big",
-        "text": "트레이째",
-        "sub": "안쪽도 한 번에 꺼내기",
-        "color": [
-          120,
-          200,
-          255
-        ],
-        "glow": [
-          120,
-          200,
-          255
-        ]
+        "kind": "photo",
+        "card": true,
+        "src": "picks/shorts/drafts/2026-11-02-1330/p_milk.jpg",
+        "size": 900
       }
     },
     {
@@ -86,10 +68,10 @@
       "caption": "우리 집 냉장고 칸 크기 재 보기",
       "narration": "냉장고 칸 높이와 깊이는 집마다 다르니 상세페이지 사이즈를 꼭 확인하세요.",
       "visual": {
-        "kind": "tag",
-        "kicker": "구매 전 체크",
-        "name": "칸 크기 재기",
-        "point": "높이·깊이를 재고\n상세페이지 사이즈와 비교"
+        "kind": "photo",
+        "card": true,
+        "src": "picks/shorts/drafts/2026-11-02-1330/p_carry.jpg",
+        "size": 900
       }
     },
     {
