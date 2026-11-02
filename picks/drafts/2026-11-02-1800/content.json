@@ -1,0 +1,138 @@
+{
+  "brand": "@jangbaguni0916",
+  "ad_label": "광고 · 쿠팡 파트너스",
+  "theme": {
+    "frame1": [
+      34,
+      26,
+      22
+    ],
+    "frame2": [
+      56,
+      42,
+      34
+    ],
+    "accent": [
+      255,
+      160,
+      90
+    ],
+    "card": [
+      66,
+      50,
+      40
+    ],
+    "sub": [
+      226,
+      210,
+      196
+    ]
+  },
+  "store_tag": [
+    "장바구니",
+    "구출작전"
+  ],
+  "store_name": "장바구니 구출작전",
+  "store_sub": "살림 꿀템만 골라 구출해요",
+  "avatar_text": "장",
+  "profile_lines": [
+    "· 매일 13시·18시 살림 꿀템",
+    "· 프로필 링크에 번호별 모음",
+    "· 궁금한 건 댓글로"
+  ],
+  "post_at": "2026-11-02T18:00:00+09:00",
+  "link_no": 13,
+  "slides": [
+    {
+      "type": "hero",
+      "title": "김장철 무채,\n아직 칼로 써세요?",
+      "visual": {
+        "kind": "photo",
+        "src": "p_main.jpg",
+        "card": true,
+        "size": 620,
+        "top": 130
+      }
+    },
+    {
+      "type": "point",
+      "label": "이런 불편 있죠?",
+      "title": "무채 한 통이면 손목이 뻐근",
+      "desc": "김장·무생채 준비할 때 칼로 채 썰면\n시간도 오래 걸리고 굵기도 들쭉날쭉하죠.",
+      "visual": {
+        "kind": "photo",
+        "src": "p_blade.jpg",
+        "card": true,
+        "size": 620,
+        "top": 130
+      }
+    },
+    {
+      "type": "point",
+      "label": "오늘의 꿀템 13번",
+      "title": "3단 두께조절 채칼",
+      "desc": "대한명도 4세대 채칼이에요.\n밀어서 채를 써는 방식이라\n무채 손질을 편하게 하는 데 도움돼요.",
+      "visual": {
+        "kind": "photo",
+        "src": "p_set.jpg",
+        "card": true,
+        "size": 620,
+        "top": 130
+      }
+    },
+    {
+      "type": "point",
+      "label": "두께 고르기",
+      "title": "5mm · 3mm · 2mm",
+      "desc": "상세페이지 기준 3단으로 두께를 바꿀 수 있어요.\n무생채는 얇게, 김장 속은 도톰하게\n용도에 맞춰 골라 보세요.",
+      "visual": {
+        "kind": "photo",
+        "src": "p_thick.jpg",
+        "card": true,
+        "size": 620,
+        "top": 130
+      }
+    },
+    {
+      "type": "point",
+      "label": "쓸 때 꼭!",
+      "title": "안전손잡이 끼우고 쓰기",
+      "desc": "① 재료는 안전손잡이에 끼워서 밀기\n② 끝까지 무리해서 밀지 않기\n③ 칼날은 맨손으로 만지지 않기",
+      "visual": {
+        "kind": "photo",
+        "src": "p_holder.jpg",
+        "card": true,
+        "size": 620,
+        "top": 130
+      }
+    },
+    {
+      "type": "point",
+      "label": "어디서 봐요?",
+      "title": "프로필 링크 → 13번",
+      "desc": "가격은 시기마다 달라요.\n링크에서 오늘 가격을 확인하세요.",
+      "visual": {
+        "kind": "big",
+        "text": "13번",
+        "sub": "프로필 링크에서 찾기",
+        "color": [
+          255,
+          160,
+          90
+        ],
+        "glow": [
+          255,
+          160,
+          90
+        ]
+      }
+    },
+    {
+      "type": "follow",
+      "head": [
+        "매일 살림 꿀템이 궁금하다면",
+        "@jangbaguni0916 팔로우하세요!"
+      ]
+    }
+  ]
+}
