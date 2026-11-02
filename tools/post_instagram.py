@@ -52,7 +52,16 @@ def wait_ready(cid):
 
 def public_url(path):
     # jsDelivr CDN: 커밋 고정 주소라 캐시 문제 없음, 이미지 형식도 정확히 전달
-    return f"https://cdn.jsdelivr.net/gh/{REPO}@{SHA}/{path}"
+    url = f"https://cdn.jsdelivr.net/gh/{REPO}@{SHA}/{path}"
+    # 저장소가 50MB 를 넘으면 jsDelivr 가 403 을 준다(2026-11-02 확인) → GitHub raw 주소로 대체
+    try:
+        import urllib.request
+        with urllib.request.urlopen(urllib.request.Request(url, method="HEAD"), timeout=20) as r:
+            if r.status == 200:
+                return url
+    except Exception:
+        pass
+    return f"https://raw.githubusercontent.com/{REPO}/{SHA}/{path}"
 
 
 CARDS_DIR = os.environ.get("CARDS_DIR", "approved")
