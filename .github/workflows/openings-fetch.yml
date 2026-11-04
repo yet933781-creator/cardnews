@@ -36,7 +36,7 @@ jobs:
             mkdir -p "$(dirname "$out")"
             tmp=$(mktemp --suffix=.mp4)
             if curl -fsSL -A "Mozilla/5.0" -o "$tmp" "$url"; then
-              ffmpeg -v error -y -ss "${start:-1}" -i "$tmp" -t 3 -an \
+              ffmpeg -nostdin -v error -y -ss "${start:-1}" -i "$tmp" -t 3 -an \
                 -vf "scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,fps=30" \
                 -c:v libx264 -preset veryfast -crf 24 -pix_fmt yuv420p -movflags +faststart "$out.tmp.mp4" \
                 && mv "$out.tmp.mp4" "$out" && echo "만듦: $out" || echo "자르기 실패: $name"
