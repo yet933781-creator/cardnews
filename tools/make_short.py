@@ -480,9 +480,13 @@ def scene_image(sc, idx, total, cfg, out, text=True):
         R.pill(d, W - 60, 62, cfg["ad_label"], R.font("black", 30), (255, 255, 255), (16, 18, 30), padx=18, anchor_right=True)
     if clip and sc.get("ai_label", True):  # AI 생성 영상 표시
         R.pill(d, 60, 180, "AI 생성 장면", R.font("bold", 26), (255, 255, 255), (16, 18, 30), padx=14)
-    if sc.get("_line"):  # 상황극 표시
-        R.pill(d, 60, 232 if (clip and sc.get("ai_label", True)) else 180, "※ 연출된 상황극입니다",
-               R.font("bold", 26), (235, 235, 235), (16, 18, 30), padx=14)
+    if sc.get("_line"):  # 상황극 표시 (사장님 사진 장면은 사진 제목과 겹치지 않게 오른쪽 위)
+        if sc.get("owner"):
+            R.pill(d, W - 60, 62, "※ 연출된 상황극입니다", R.font("bold", 26), (235, 235, 235), (16, 18, 30),
+                   padx=14, anchor_right=True)
+        else:
+            R.pill(d, 60, 232 if (clip and sc.get("ai_label", True)) else 180, "※ 연출된 상황극입니다",
+                   R.font("bold", 26), (235, 235, 235), (16, 18, 30), padx=14)
     if sc.get("image") and sc.get("ai_label", True):  # AI 생성 이미지 표시 (오른쪽 위)
         R.pill(d, W - 60, 62, "AI 생성 이미지", R.font("bold", 26), (255, 255, 255), (16, 18, 30), padx=14, anchor_right=True)
     if clip and (sc.get("visual") or {}).get("kind") == "big" and (sc["visual"].get("text") or "").strip():
