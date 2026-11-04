@@ -113,6 +113,23 @@ def build_caption(body, link_no=None):
     return caption
 
 
+def publish(creation_id):
+    """media_publish. '아직 준비 안 됨(9007)'이면 잠시 기다렸다 다시 시도."""
+    for k in range(8):
+        params = {"creation_id": creation_id, "access_token": TOKEN}
+        req = urllib.request.Request(f"{BASE}/{USER_ID}/media_publish", data=urllib.parse.urlencode(params).encode(), method="POST")
+        try:
+            with urllib.request.urlopen(req, timeout=60) as r:
+                return json.load(r)
+        except urllib.error.HTTPError as e:
+            body = e.read().decode(errors="replace")
+            if '"code":9007' in body and k < 7:
+                print("게시 준비 대기 중… 다시 시도", k + 1)
+                time.sleep(15)
+                continue
+            fail(f"API 오류 {e.code} (media_publish): {body}")
+
+
 def post(folder):
     imgs = sorted(glob.glob(os.path.join(folder, "card_*.jpg")))
     if not 2 <= len(imgs) <= 10:
@@ -131,7 +148,7 @@ def post(folder):
     car = api("POST", f"{USER_ID}/media", media_type="CAROUSEL",
               children=",".join(children), caption=caption)
     wait_ready(car["id"])
-    pub = api("POST", f"{USER_ID}/media_publish", creation_id=car["id"])
+    pub = publish(car["id"])
     info = api("GET", pub["id"], fields="permalink,timestamp")
     print("게시 완료:", info.get("permalink"))
     json.dump({"media_id": pub["id"], **info}, open(os.path.join(folder, "posted.json"), "w"),

@@ -24,7 +24,7 @@ def ig_reel(folder, caption):
         time.sleep(5)
     else:
         IG.fail("릴스 처리 시간 초과")
-    pub = IG.api("POST", f"{IG.USER_ID}/media_publish", creation_id=c["id"])
+    pub = IG.publish(c["id"])
     info = IG.api("GET", pub["id"], fields="permalink")
     print("릴스 게시 완료:", info.get("permalink"))
     return {"media_id": pub["id"], "permalink": info.get("permalink")}
