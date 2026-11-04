@@ -1,0 +1,27 @@
+# 쇼츠 오프닝 영상 라이브러리 (모든 쇼츠 공용: 매장·꿀템)
+# 출처: Pexels (https://www.pexels.com/license/) — 상업적 사용 무료, 출처 표시 의무 없음
+# 형식: 분류/이름  영상주소  [시작초]
+# 줄을 추가해 push 하면 openings-fetch 작업이 3초 1080x1920 무음 클립으로 만들어 같은 분류 폴더에 저장한다.
+home/home_01 https://videos.pexels.com/video-files/6941383/6941383-hd_1080_2048_25fps.mp4 1
+home/home_02 https://videos.pexels.com/video-files/7408647/7408647-hd_1080_2048_25fps.mp4 1
+home/home_03 https://videos.pexels.com/video-files/6541159/6541159-hd_1080_1920_25fps.mp4 1
+home/home_04 https://videos.pexels.com/video-files/10756221/10756221-hd_1080_1920_30fps.mp4 1
+home/home_05 https://videos.pexels.com/video-files/14319069/14319069-hd_1080_1920_30fps.mp4 1
+home/home_06 https://videos.pexels.com/video-files/14668860/14668860-hd_1080_1920_30fps.mp4 1
+home/home_07 https://videos.pexels.com/video-files/7576288/7576288-hd_1080_1920_30fps.mp4 1
+clean/clean_01 https://videos.pexels.com/video-files/9462938/9462938-hd_1080_1920_24fps.mp4 1
+clean/clean_02 https://videos.pexels.com/video-files/9462946/9462946-hd_1080_1920_24fps.mp4 1
+clean/clean_03 https://videos.pexels.com/video-files/9472813/9472813-hd_1080_1920_24fps.mp4 1
+clean/clean_04 https://videos.pexels.com/video-files/10573427/10573427-hd_1080_2048_25fps.mp4 1
+unbox/unbox_01 https://videos.pexels.com/video-files/6568265/6568265-hd_1080_2048_25fps.mp4 1
+unbox/unbox_02 https://videos.pexels.com/video-files/7308298/7308298-hd_1080_1920_24fps.mp4 1
+unbox/unbox_03 https://videos.pexels.com/video-files/8938178/8938178-hd_1080_1920_30fps.mp4 1
+unbox/unbox_04 https://videos.pexels.com/video-files/7191510/7191510-hd_1080_1920_25fps.mp4 1
+phone/phone_01 https://videos.pexels.com/video-files/7191514/7191514-hd_1080_1920_25fps.mp4 1
+phone/phone_02 https://videos.pexels.com/video-files/6115070/6115070-hd_1080_2048_25fps.mp4 1
+phone/phone_03 https://videos.pexels.com/video-files/8166027/8166027-hd_1080_2048_25fps.mp4 1
+phone/phone_04 https://videos.pexels.com/video-files/6278948/6278948-hd_1080_1920_30fps.mp4 1
+phone/phone_05 https://videos.pexels.com/video-files/6279146/6279146-hd_1080_1920_30fps.mp4 1
+phone/phone_06 https://videos.pexels.com/video-files/8551164/8551164-hd_1080_1920_24fps.mp4 1
+phone/phone_07 https://videos.pexels.com/video-files/7669201/7669201-hd_1080_2048_25fps.mp4 1
+phone/phone_08 https://videos.pexels.com/video-files/17512949/17512949-hd_1080_1920_25fps.mp4 1

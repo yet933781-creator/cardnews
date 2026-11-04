@@ -1,0 +1,55 @@
+name: 오프닝 영상 라이브러리 만들기
+
+# assets/openings/sources.txt 를 push 하면 무료 영상(Pexels)을 받아
+# 3초 · 1080x1920 · 무음 오프닝 클립으로 잘라 assets/openings/<분류>/ 에 커밋한다.
+# 기존 카드뉴스·쇼츠 자동 게시 작업과는 별개 파일이며, 아무것도 게시하지 않는다.
+on:
+  push:
+    branches: [main]
+    paths: ["assets/openings/sources.txt"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: openings-fetch
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: 도구 설치
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg > /dev/null
+      - name: 받아서 3초 클립으로 자르기
+        run: |
+          set -u
+          base=assets/openings
+          while read -r name url start; do
+            [ -z "${name:-}" ] && continue
+            case "$name" in \#*) continue;; esac
+            case "$url" in https://videos.pexels.com/*) ;; *) echo "건너뜀(Pexels 아님): $url"; continue;; esac
+            out="$base/$name.mp4"
+            [ -f "$out" ] && continue
+            mkdir -p "$(dirname "$out")"
+            tmp=$(mktemp --suffix=.mp4)
+            if curl -fsSL -A "Mozilla/5.0" -o "$tmp" "$url"; then
+              ffmpeg -v error -y -ss "${start:-1}" -i "$tmp" -t 3 -an \
+                -vf "scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,fps=30" \
+                -c:v libx264 -preset veryfast -crf 24 -pix_fmt yuv420p -movflags +faststart "$out.tmp.mp4" \
+                && mv "$out.tmp.mp4" "$out" && echo "만듦: $out" || echo "자르기 실패: $name"
+            else
+              echo "받기 실패: $url"
+            fi
+            rm -f "$tmp"
+          done < "$base/sources.txt"
+      - name: 커밋
+        run: |
+          git config user.name "cardnews-bot"
+          git config user.email "cardnews-bot@users.noreply.github.com"
+          git add assets/openings
+          git diff --cached --quiet && exit 0
+          git commit -m "오프닝 영상 라이브러리 추가 [skip ci]"
+          for i in 1 2 3; do git pull --rebase -q origin main && git push -q && break; sleep 5; done
