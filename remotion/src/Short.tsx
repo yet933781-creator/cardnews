@@ -12,6 +12,8 @@ export type Scene = {
   headline?: string;
   caption?: string;
   top?: number;        // 제목·자막 시작 높이 (기본 1080, 사장님 장면은 사진에 맞춰 1190)
+  cont?: boolean;      // 상황극: 앞 장면에 이어지는 대사 (페이드·제목 애니메이션 없이 이어 붙임)
+  bubble?: {who: string; text: string; right: boolean} | null;  // 상황극 대사 말풍선
 };
 export type ShortProps = {scenes: Scene[]; fps: number};
 
@@ -20,9 +22,10 @@ const FONT = '"Noto Sans CJK KR", "Noto Sans KR", sans-serif';
 const SceneView: React.FC<{s: Scene; index: number}> = ({s, index}) => {
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
-  const fadeIn = interpolate(frame, [0, 6], [0, 1], {extrapolateRight: 'clamp'});
+  const fadeIn = s.cont ? 1 : interpolate(frame, [0, 6], [0, 1], {extrapolateRight: 'clamp'});
   const zoom = interpolate(frame, [0, s.frames], index % 2 === 0 ? [1, 1.06] : [1.06, 1]);
-  const head = spring({frame: frame - 2, fps, config: {damping: 14, stiffness: 160}});
+  const head = s.cont ? 1 : spring({frame: frame - 2, fps, config: {damping: 14, stiffness: 160}});
+  const pop = spring({frame: frame - 1, fps, config: {damping: 11, stiffness: 220}});
   const cap = spring({frame: frame - 8, fps, config: {damping: 12, stiffness: 180}});
   const lines = (s.headline || '').split('\n');
   return (
@@ -54,6 +57,22 @@ const SceneView: React.FC<{s: Scene; index: number}> = ({s, index}) => {
               transform: `scale(${0.6 + 0.4 * cap})`, opacity: cap,
               boxShadow: '0 8px 30px rgba(0,0,0,0.35)',
             }}>{s.caption}</div>
+          </div>
+        ) : null}
+        {s.bubble ? (
+          <div style={{display: 'flex', flexDirection: 'column',
+            alignItems: s.bubble.right ? 'flex-end' : 'flex-start', marginTop: 40}}>
+            {!s.bubble.right ? (
+              <div style={{color: '#fff', fontWeight: 700, fontSize: 36, marginLeft: 8, marginBottom: 8,
+                textShadow: '0 2px 6px rgba(0,0,0,0.8)'}}>{s.bubble.who}</div>
+            ) : null}
+            <div style={{
+              background: s.bubble.right ? '#fee500' : '#fff', color: '#191919', fontWeight: 700, fontSize: 54,
+              lineHeight: 1.35, borderRadius: 34, padding: '22px 36px', maxWidth: 820,
+              transform: `scale(${0.6 + 0.4 * pop})`, opacity: pop,
+              transformOrigin: s.bubble.right ? 'right center' : 'left center',
+              boxShadow: '0 8px 30px rgba(0,0,0,0.35)', wordBreak: 'keep-all',
+            }}>{s.bubble.text}</div>
           </div>
         ) : null}
       </div>

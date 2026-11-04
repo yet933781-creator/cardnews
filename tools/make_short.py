@@ -26,11 +26,11 @@ def duration(path):
 
 
 # ---------- 음성 ----------
-def tts(text, out, voice, rate, pitch="+0Hz"):
+def tts(text, out, voice, rate, pitch="+0Hz", volume="+0%"):
     try:
         import edge_tts
         async def go():
-            await edge_tts.Communicate(text, voice, rate=rate, pitch=pitch).save(out)
+            await edge_tts.Communicate(text, voice, rate=rate, pitch=pitch, volume=volume).save(out)
         asyncio.run(go())
         return True
     except Exception as e:
@@ -327,8 +327,67 @@ def library_opening(cfg, folder):
     return os.path.join(LIB, cat, clips[i])
 
 
+# ---------- 상황극 대사 (2026-11-04 추가) ----------
+# script.json 장면에 "lines" 를 쓰면 인물별 목소리로 대화하는 장면이 된다 (내레이션 대신).
+#   "cast": {"엄마": {"voice": "ko-KR-SunHiNeural"}, "아들": {"voice": "ko-KR-HyunsuMultilingualNeural", "side": "right"}}
+#   장면: {"clip": "...", "headline": "...", "lines": [
+#            {"who": "엄마", "text": "아들! 가습기 또 안 씻었지?!", "pitch": "+12Hz", "fx": "far"},
+#            {"who": "아들", "text": "아 씻을 거야~ 이따가...", "rate": "+18%", "volume": "-10%", "gap": 0.1}]}
+# - 대사 하나마다 말풍선 자막(오른쪽 인물 = 노랑, 왼쪽 = 흰색)이 나오고, 배경 영상은 끊기지 않고 이어진다.
+# - fx: "room"(기본, 방 울림) / "far"(다른 방에서 부르는 소리) / "none". gap: 다음 대사까지 쉬는 시간(초, 기본 0.2).
+# - 대사 장면에는 "※ 연출된 상황극입니다" 표시가 자동으로 붙는다.
+CAST_DEFAULT = {"voice": "ko-KR-SunHiNeural"}
+FX = {"room": "highpass=f=90,equalizer=f=3000:t=q:w=1:g=2,aecho=0.85:0.6:18|32:0.12|0.07",
+      "far": "highpass=f=250,lowpass=f=3200,aecho=0.8:0.7:60|110:0.35|0.25,volume=0.85",
+      "none": "anull"}
+TRIM = ("silenceremove=start_periods=1:start_threshold=-60dB:start_silence=0.05,areverse,"
+        "silenceremove=start_periods=1:start_threshold=-60dB:start_silence=0.08,areverse")
+
+
+def expand_dialogue(cfg):
+    """대사(lines)가 있는 장면을 대사 하나당 하나의 짧은 장면으로 펼친다 (배경·제목은 그대로 이어짐)."""
+    cast = cfg.get("cast") or {}
+    names = list(cast.keys())
+    out = []
+    for gi, sc in enumerate(cfg["scenes"]):
+        lines = sc.get("lines")
+        if not lines:
+            sc["_gi"] = gi
+            out.append(sc)
+            continue
+        for k, ln in enumerate(lines):
+            c = cast.get(ln["who"], CAST_DEFAULT)
+            side = c.get("side") or ("right" if names and ln["who"] != names[0] else "left")
+            sub = {key: v for key, v in sc.items() if key not in ("lines", "caption", "narration")}
+            sub.update({"narration": ln["text"], "caption": "", "_gi": gi, "_cont": k > 0,
+                        "_line": {"who": ln["who"], "text": ln["text"], "right": side == "right"},
+                        "_voice": ln.get("voice") or c.get("voice", CAST_DEFAULT["voice"]),
+                        "_rate": ln.get("rate", c.get("rate", cfg.get("rate", "+12%"))),
+                        "_lpitch": ln.get("pitch", c.get("pitch", "+0Hz")),
+                        "_volume": ln.get("volume", c.get("volume", "+0%")),
+                        "_fx": ln.get("fx", "room"), "_gap": float(ln.get("gap", 0.2))})
+            if k > 0:
+                sub.pop("min_dur", None)
+            out.append(sub)
+    cfg["scenes"] = out
+    cfg["_groups"] = len(set(s.get("_gi", i) for i, s in enumerate(out)))
+
+
+def line_audio(sc, mp3):
+    raw = mp3 + ".raw.mp3"
+    ok = tts(sc["narration"], raw, sc["_voice"], sc["_rate"], sc["_lpitch"], sc["_volume"])
+    af = TRIM + "," + FX.get(sc.get("_fx", "room"), FX["room"]) if ok else "anull"
+    sh("ffmpeg", "-y", "-i", raw, "-af", af, "-ar", "24000", "-ac", "1", mp3)
+    os.remove(raw)
+    return ok
+
+
 def scene_audio(sc, mp3, voice, rate):
     """장면 음성을 만들고 (장면 길이, AI 음성 성공 여부)를 돌려준다. 내레이션 없는 오프닝은 무음."""
+    if sc.get("_line"):
+        ok = line_audio(sc, mp3)
+        sc["_dur"] = duration(mp3) + sc.get("_gap", 0.2)
+        return sc["_dur"], ok
     text = sc.get("narration") or ("" if sc.get("opening") else sc.get("caption", ""))
     if text:
         ok = tts(text, mp3, voice, rate, sc.get("_pitch", "+0Hz"))
@@ -412,14 +471,18 @@ def scene_image(sc, idx, total, cfg, out, text=True):
     # 상단 매장 태그 + 진행 막대
     tag = cfg.get("store_tag", ["방학", "폰 성지"])
     R.store_tag(d, 60, 70, tag)
-    bw = (W - 120) / total
-    for k in range(total):
+    gt = cfg.get("_groups", total); gi = sc.get("_gi", idx)
+    bw = (W - 120) / gt
+    for k in range(gt):
         d.rounded_rectangle([60 + k * bw + 4, 140, 60 + (k + 1) * bw - 4, 148], 4,
-                            fill=R.C["accent"] if k <= idx else (50, 60, 100))
+                            fill=R.C["accent"] if k <= gi else (50, 60, 100))
     if cfg.get("ad_label"):  # 대가성 표시: 모든 장면 오른쪽 위
         R.pill(d, W - 60, 62, cfg["ad_label"], R.font("black", 30), (255, 255, 255), (16, 18, 30), padx=18, anchor_right=True)
     if clip and sc.get("ai_label", True):  # AI 생성 영상 표시
         R.pill(d, 60, 180, "AI 생성 장면", R.font("bold", 26), (255, 255, 255), (16, 18, 30), padx=14)
+    if sc.get("_line"):  # 상황극 표시
+        R.pill(d, 60, 232 if (clip and sc.get("ai_label", True)) else 180, "※ 연출된 상황극입니다",
+               R.font("bold", 26), (235, 235, 235), (16, 18, 30), padx=14)
     if sc.get("image") and sc.get("ai_label", True):  # AI 생성 이미지 표시 (오른쪽 위)
         R.pill(d, W - 60, 62, "AI 생성 이미지", R.font("bold", 26), (255, 255, 255), (16, 18, 30), padx=14, anchor_right=True)
     if clip and (sc.get("visual") or {}).get("kind") == "big" and (sc["visual"].get("text") or "").strip():
@@ -431,6 +494,10 @@ def scene_image(sc, idx, total, cfg, out, text=True):
         return
     if sc.get("headline"):
         y = R.text_block(d, 70, y, sc["headline"], R.font("black", 86), R.C["text"], W - 140, 1.18) + 30
+    if sc.get("_line"):  # 대사 말풍선
+        speech_bubble(img, sc["_line"], max(y + 10, 1330))
+        img.save(out)
+        return
     # 자막 박스 (쇼츠 스타일: 흰 박스 + 검은 글자, 하단 UI 가리지 않는 위치)
     cap = sc.get("caption", "")
     if cap:
@@ -445,6 +512,33 @@ def scene_image(sc, idx, total, cfg, out, text=True):
             d.text(((W - d.textlength(ln, font=f)) / 2, yy), ln, font=f, fill=(16, 18, 30))
             yy += 74
     img.save(out)
+
+
+def bubble_lines(text, f, d, maxw=760):
+    words, lines, cur = text.split(" "), [], ""
+    for w in words:
+        t = (cur + " " + w).strip()
+        if cur and d.textlength(t, font=f) > maxw:
+            lines.append(cur); cur = w
+        else:
+            cur = t
+    return lines + [cur]
+
+
+def speech_bubble(img, line, y):
+    """말풍선 자막 (ffmpeg 방식용). 오른쪽 인물 = 노랑, 왼쪽 인물 = 흰색 + 이름."""
+    d = ImageDraw.Draw(img)
+    f = R.font("bold", 54); fn = R.font("bold", 36)
+    ls = bubble_lines(line["text"], f, d)
+    bw = int(max(d.textlength(l, font=f) for l in ls)) + 70
+    bh = len(ls) * 74 + 44
+    x = W - 70 - bw if line["right"] else 70
+    if not line["right"]:
+        d.text((x + 8, y), line["who"], font=fn, fill=(255, 255, 255), stroke_width=3, stroke_fill=(0, 0, 0))
+        y += 50
+    d.rounded_rectangle([x, y, x + bw, y + bh], 34, fill=(254, 229, 0) if line["right"] else (255, 255, 255))
+    for i, l in enumerate(ls):
+        d.text((x + 35, y + 22 + i * 74), l, font=f, fill=(25, 25, 25))
 
 
 def remotion_voice(cfg, scenes, work):
@@ -463,9 +557,11 @@ def remotion_voice(cfg, scenes, work):
         it = {"bg": f"job/s{i:02d}.png", "audio": f"job/v{i:02d}.mp3", "frames": int(round(dur * FPS)),
               "headline": "" if sc.get("image") else sc.get("headline", ""),
               "caption": "" if sc.get("image") else sc.get("caption", ""),
-              "top": 1190 if sc.get("owner") else 1080}
+              "top": 1190 if sc.get("owner") else 1080,
+              "cont": bool(sc.get("_cont")), "bubble": sc.get("_line")}
+        off = clip_offset(scenes, i)
         if sc.get("clip"):
-            sh("ffmpeg", "-y", "-stream_loop", "-1", "-i", os.path.join(ROOT, sc["clip"]), "-t", f"{dur:.2f}", "-an",
+            sh("ffmpeg", "-y", "-stream_loop", "-1", "-ss", f"{off:.2f}", "-i", os.path.join(ROOT, sc["clip"]), "-t", f"{dur:.2f}", "-an",
                "-vf", f"scale={W}:{H}:force_original_aspect_ratio=increase,crop={W}:{H},fps={FPS}",
                "-c:v", "libx264", "-preset", "veryfast", "-crf", "20", os.path.join(job, f"c{i:02d}.mp4"))
             it["clip"] = f"job/c{i:02d}.mp4"
@@ -480,12 +576,22 @@ def remotion_voice(cfg, scenes, work):
     return out, voiced
 
 
+def clip_offset(scenes, i):
+    """대사로 펼쳐진 장면은 배경 영상을 끊지 않고 이어서 재생하도록 시작 위치를 돌려준다."""
+    off = 0.0
+    while i > 0 and scenes[i].get("_cont"):
+        i -= 1
+        off += scenes[i].get("_dur", 0)
+    return off
+
+
 def build(folder):
     cfg = json.load(open(os.path.join(folder, "script.json"), encoding="utf-8"))
     work = os.path.join(folder, "_work"); os.makedirs(work, exist_ok=True)
     voice = cfg.get("voice", "ko-KR-SunHiNeural"); rate = cfg.get("rate", "+12%")
     apply_owner(cfg, folder)
     opening, drive_ai, drive_sig = apply_drive(cfg, folder)  # 드라이브 영상: 오프닝(0~3초) + 중간 장면 배경
+    expand_dialogue(cfg)  # 상황극 대사 → 대사별 장면
     scenes = cfg["scenes"]; clips = []; voiced = True
     for sc in scenes:
         sc["_pitch"] = cfg.get("pitch", "+0Hz")
@@ -505,7 +611,7 @@ def build(folder):
         zoom = "min(zoom+0.0007,1.07)" if i % 2 == 0 else "if(eq(on,0),1.07,max(zoom-0.0007,1.0))"
         if sc.get("clip"):
             src = os.path.join(ROOT, sc["clip"])
-            sh("ffmpeg", "-y", "-stream_loop", "-1", "-i", src, "-loop", "1", "-i", png, "-i", mp3,
+            sh("ffmpeg", "-y", "-stream_loop", "-1", "-ss", f"{clip_offset(scenes, i):.2f}", "-i", src, "-loop", "1", "-i", png, "-i", mp3,
                "-filter_complex",
                f"[0:v]scale={W}:{H}:force_original_aspect_ratio=increase,crop={W}:{H},fps={FPS},setsar=1[bg];"
                f"[bg][1:v]overlay=0:0,format=yuv420p[v];[2:a]aresample=44100,apad=pad_dur=0.35[a]",
