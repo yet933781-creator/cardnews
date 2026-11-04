@@ -1,12 +1,13 @@
 {
-  "collected_at": "2026-10-28T03:23:15.075542Z",
+  "collected_at": "2026-11-04T02:19:36.959448Z",
   "account": {
     "username": "bpj0901",
-    "name": "방학 폰 성지",
-    "biography": "📱✨도봉구 휴대폰 성지📱✨\n현금완납! 박리다매 방식으로\n최저가 + 투명한 거래 보장합니다",
+    "name": "방학 폰 성지 📱 아이폰·갤럭시 당일개통, 방학 폰 성지 | 휴대폰 싼 집",
+    "biography": "📱\"방학 폰 성지 | 도봉구 휴대폰 성지\"📱\n현금완납! 박리다매 방식으로\n최저가+투명한 거래 보장합니다\n주소: 서울시 도봉구 도당로13길 17 , 1층 방학 폰 성지\n영업 시간 : 10:00~20:00(월~일)",
+    "website": "http://pf.kakao.com/_WxixbDn",
     "followers_count": 3,
     "follows_count": 127,
-    "media_count": 8,
+    "media_count": 25,
     "account_type": "BUSINESS",
     "id": "39936838005907276"
   },
@@ -18,7 +19,7 @@
         "title": "Accounts reached",
         "description": "The number of unique accounts that have seen your content, at least once, including in ads. Content includes posts, stories, reels, videos and live videos. Reach is different from impressions, which may include multiple views of your content by the same accounts. This metric is estimated and in development.",
         "total_value": {
-          "value": 1
+          "value": 322
         },
         "id": "17841477145065441/insights/reach/day"
       },
@@ -28,7 +29,7 @@
         "title": "Profile visits",
         "description": "The number of times your profile was visited.",
         "total_value": {
-          "value": 2
+          "value": 6
         },
         "id": "17841477145065441/insights/profile_views/day"
       },
@@ -46,6 +47,295 @@
   },
   "media": [
     {
+      "id": "18647553100003499",
+      "caption": "휴대폰 판매점에서 이런 일 당했다면, 신고하고 보상금 받을 수 있어요 📱\n\n✔️ 10월 1일부터 '이용자 참여 신고제' 보상금이 5만원 → 신고 1건당 최대 40만원으로 올랐어요(위반 여러 개면 합산)\n✔️ 건당 1",
+      "media_type": "CAROUSEL_ALBUM",
+      "media_product_type": "FEED",
+      "timestamp": "2026-11-04T02:18:35+0000",
+      "like_count": 0,
+      "comments_count": 0,
+      "permalink": "https://www.instagram.com/p/DfTXdP4DpQT/",
+      "insights": {
+        "reach": 0,
+        "saved": 0,
+        "shares": 0,
+        "views": 0,
+        "total_interactions": 0
+      }
+    },
+    {
+      "id": "18151767568482112",
+      "caption": "통신비 감면 대상인데 못 받은 사람, 올 상반기만 210만명이에요 📱\n\n✔️ 감면 대상 1067만명 중 약 20%(210만명)가 감면을 못 받았어요. 직접 신청해야 하는 방식이 큰 이유로 꼽혀요(과기정통부 자료, 황",
+      "media_type": "CAROUSEL_ALBUM",
+      "media_product_type": "FEED",
+      "timestamp": "2026-11-04T02:17:20+0000",
+      "like_count": 0,
+      "comments_count": 0,
+      "permalink": "https://www.instagram.com/p/DfTXUAsDvTc/",
+      "insights": {
+        "reach": 0,
+        "saved": 0,
+        "shares": 0,
+        "views": 0,
+        "total_interactions": 0
+      }
+    },
+    {
+      "id": "18135689953593853",
+      "caption": "아이폰 시리, 드디어 한국어 AI로 바뀌었어요 📱\n\n✔️ 애플이 10월 27일 배포한 iOS 27.2부터 '시리 AI'가 한국어를 지원해요(베타)\n✔️ 메시지·메일·사진 속 정보 검색, 화면 속 내용 인식, 글 초안",
+      "media_type": "VIDEO",
+      "media_product_type": "REELS",
+      "timestamp": "2026-11-04T02:12:27+0000",
+      "like_count": 0,
+      "comments_count": 0,
+      "permalink": "https://www.instagram.com/reel/DfTWuQ_DDpa/",
+      "insights": {
+        "reach": 0,
+        "saved": 0,
+        "shares": 0,
+        "views": 0,
+        "total_interactions": 0
+      }
+    },
+    {
+      "id": "18120676546778910",
+      "caption": "유심 업데이트 문자, 링크가 있다면 누르지 마세요 📱\n\n✔️ LG유플러스, 10월 22일부터 유심(USIM·eSIM) 자동 업데이트 순차 시행 (평일 오전 10시~오후 5시, 매장 방문 불필요)\n✔️ 알뜰폰·eSIM",
+      "media_type": "VIDEO",
+      "media_product_type": "REELS",
+      "timestamp": "2026-11-04T02:11:17+0000",
+      "like_count": 0,
+      "comments_count": 0,
+      "permalink": "https://www.instagram.com/reel/DfTWmBxDNvs/",
+      "insights": {
+        "reach": 0,
+        "saved": 0,
+        "shares": 0,
+        "views": 0,
+        "total_interactions": 0
+      }
+    },
+    {
+      "id": "18143919124610204",
+      "caption": "부모님 폰이 아직 3G라면 꼭 확인하세요 📱\n\n✔️ KT도 11월 2일부터 3G·HD보이스 미지원 LTE 폰의 신규가입·번호이동·기기변경 중단 (SKT는 8월부터)\n✔️ 11월 2일 0시 기준 이용 고객은 셋 중 하",
+      "media_type": "VIDEO",
+      "media_product_type": "REELS",
+      "timestamp": "2026-11-04T02:10:36+0000",
+      "like_count": 0,
+      "comments_count": 0,
+      "permalink": "https://www.instagram.com/reel/DfTWgaCAokz/",
+      "insights": {
+        "reach": 0,
+        "saved": 0,
+        "shares": 0,
+        "views": 0,
+        "total_interactions": 0
+      }
+    },
+    {
+      "id": "18008108369791655",
+      "caption": "40만원대 새 갤럭시, 사기 전에 이것부터 체크하세요📱\n\n✔️ 갤럭시 A18 LTE 10월 30일 국내 출시, 출고가 42만5700원\n✔️ 6.7형 슈퍼 아몰레드 화면 + 배터리 5000mAh\n✔️ 제미나이·서클 투",
+      "media_type": "CAROUSEL_ALBUM",
+      "media_product_type": "FEED",
+      "timestamp": "2026-11-02T07:03:37+0000",
+      "like_count": 0,
+      "comments_count": 0,
+      "permalink": "https://www.instagram.com/p/DfOufRAFszt/",
+      "insights": {
+        "reach": 0,
+        "saved": 0,
+        "shares": 0,
+        "views": 0,
+        "total_interactions": 0
+      }
+    },
+    {
+      "id": "18038097791853248",
+      "caption": "\"접는 건 우리가 원조\"…삼성이 아이폰 듀오를 저격했어요 📱\n\n✔️ 삼성 캐나다, 토론토·밴쿠버 전광판과 인스타그램에 갤럭시 Z 폴드8 광고 공개\n✔️ 겨냥한 건 아이폰 듀오 일부 제품의 화면 균열·가로줄 논란 (원",
+      "media_type": "VIDEO",
+      "media_product_type": "REELS",
+      "timestamp": "2026-11-02T07:00:28+0000",
+      "like_count": 0,
+      "comments_count": 0,
+      "permalink": "https://www.instagram.com/reel/DfOuGkFjtXD/",
+      "insights": {
+        "reach": 130,
+        "saved": 0,
+        "shares": 0,
+        "views": 134,
+        "total_interactions": 0
+      }
+    },
+    {
+      "id": "18003460814797163",
+      "caption": "내 폰 먹통 되면? 재난 때 꼭 알아둘 통신 꿀팁 3가지 📵\n\n✔️ 재난로밍: 재난으로 재난로밍이 시행되면 다른 통신사 무선망을 쓸 수 있어요\n✔️ 재난 와이파이: 재난 때 열리는 와이파이는 통신사 상관없이 접속할 ",
+      "media_type": "CAROUSEL_ALBUM",
+      "media_product_type": "FEED",
+      "timestamp": "2026-10-30T06:30:00+0000",
+      "like_count": 0,
+      "comments_count": 0,
+      "permalink": "https://www.instagram.com/p/DfG8QRTFWn_/",
+      "insights": {
+        "reach": 0,
+        "saved": 0,
+        "shares": 0,
+        "views": 0,
+        "total_interactions": 0
+      }
+    },
+    {
+      "id": "17919328509462552",
+      "caption": "📱 폴드8 지원금 최대 60만원으로 올랐다는데, 누구나 받을까요?\n\n✔️ 통신 3사 폴드8 공통지원금 최대 60만원으로 상향(SKT 최대 50만→60만원)\n✔️ 최대 금액은 월 8만원대 이상 요금제 기준\n✔️ 유통점",
+      "media_type": "VIDEO",
+      "media_product_type": "REELS",
+      "timestamp": "2026-10-29T09:39:13+0000",
+      "like_count": 0,
+      "comments_count": 0,
+      "permalink": "https://www.instagram.com/reel/DfEtFM_APxR/",
+      "insights": {
+        "reach": 26,
+        "saved": 0,
+        "shares": 0,
+        "views": 26,
+        "total_interactions": 0
+      }
+    },
+    {
+      "id": "17879675967564001",
+      "caption": "접는 폰 화면 깨지면 수리비 얼마일까요? 📱\n\n✔️ 아이폰 듀오 내부 화면 예상 수리비 164만9000원 (손상 범위 넓으면 246만9000원)\n✔️ 갤럭시 Z 폴드8 내부 화면 77만4000원 (기존 부품 미반납 ",
+      "media_type": "CAROUSEL_ALBUM",
+      "media_product_type": "FEED",
+      "timestamp": "2026-10-29T09:01:56+0000",
+      "like_count": 0,
+      "comments_count": 0,
+      "permalink": "https://www.instagram.com/p/DfEo2JglgCu/",
+      "insights": {
+        "reach": 0,
+        "saved": 0,
+        "shares": 0,
+        "views": 0,
+        "total_interactions": 0
+      }
+    },
+    {
+      "id": "18110081111244889",
+      "caption": "📶 SKT 유심 해킹 1년 반, 고객들은 정말 떠났을까요?\n\n✔️ 월 평균 해지율: 사고 전 0.7% → 사고 직후(2025년 2분기) 1.6% → 2026년 2분기 0.8%\n✔️ 유심 무료 교체·유심보호서비스·떠나",
+      "media_type": "VIDEO",
+      "media_product_type": "REELS",
+      "timestamp": "2026-10-29T07:01:58+0000",
+      "like_count": 0,
+      "comments_count": 0,
+      "permalink": "https://www.instagram.com/reel/DfEbFsujcaH/",
+      "insights": {
+        "reach": 0,
+        "saved": 0,
+        "shares": 0,
+        "views": 0,
+        "total_interactions": 0
+      }
+    },
+    {
+      "id": "18054910112591652",
+      "caption": "💻 애플 첫 '터치 맥북 프로' 공개! 가격은 479만원부터\n\n✔️ 맥북 최초 터치스크린 + OLED 화면(14·16인치)\n✔️ 노치 대신 다이내믹 아일랜드, 14인치 220g 가벼워짐\n✔️ 국내 14인치 479만원",
+      "media_type": "VIDEO",
+      "media_product_type": "REELS",
+      "timestamp": "2026-10-29T06:06:52+0000",
+      "like_count": 0,
+      "comments_count": 0,
+      "permalink": "https://www.instagram.com/reel/DfEUyXNkSQo/",
+      "insights": {
+        "reach": 105,
+        "saved": 0,
+        "shares": 0,
+        "views": 113,
+        "total_interactions": 0
+      }
+    },
+    {
+      "id": "18131035435810359",
+      "caption": "월 10원 알뜰폰, 7개월 뒤에도 10원일까요? 📱\n\n✔️ 월 10원(10GB·200분) 요금제 → 7개월 뒤 월 1만8700원\n✔️ 월 990원(4.5GB) 요금제 → 12개월 뒤 월 9900원\n✔️ 일부 상품은 ",
+      "media_type": "CAROUSEL_ALBUM",
+      "media_product_type": "FEED",
+      "timestamp": "2026-10-29T06:04:22+0000",
+      "like_count": 0,
+      "comments_count": 0,
+      "permalink": "https://www.instagram.com/p/DfEUhwInFES/",
+      "insights": {
+        "reach": 0,
+        "saved": 0,
+        "shares": 0,
+        "views": 0,
+        "total_interactions": 0
+      }
+    },
+    {
+      "id": "17915204103281501",
+      "caption": "아이패드 미니가 확 바뀌었어요. 그런데 가격이 40만원 올랐습니다 📱\n\n✔️ 아이패드 미니 첫 OLED, 화면 8.5인치로 커짐\n✔️ 아이패드 최초 IP67 방수·방진, A20 프로 칩\n✔️ 국내 와이파이 114만9",
+      "media_type": "CAROUSEL_ALBUM",
+      "media_product_type": "FEED",
+      "timestamp": "2026-10-29T04:40:47+0000",
+      "like_count": 0,
+      "comments_count": 0,
+      "permalink": "https://www.instagram.com/p/DfEK9bmEQwJ/",
+      "insights": {
+        "reach": 0,
+        "saved": 0,
+        "shares": 0,
+        "views": 0,
+        "total_interactions": 0
+      }
+    },
+    {
+      "id": "17876695977583939",
+      "caption": "📶 통신사 오래 쓰면 요금이 깎인다? 이제는 쿠폰·추첨이에요\n\n✔️ 통신 3사 장기고객 혜택, 요금 직접 할인 → 쿠폰·체험 행사 중심으로 변화\n✔️ SKT 'T끼리 온가족할인' 8월 1일부터 신규 가입 중단(기존 ",
+      "media_type": "VIDEO",
+      "media_product_type": "REELS",
+      "timestamp": "2026-10-28T09:44:34+0000",
+      "like_count": 0,
+      "comments_count": 0,
+      "permalink": "https://www.instagram.com/reel/DfCI57-EaHm/",
+      "insights": {
+        "reach": 12,
+        "saved": 0,
+        "shares": 0,
+        "views": 16,
+        "total_interactions": 0
+      }
+    },
+    {
+      "id": "18377737735244813",
+      "caption": "📱 329만원 아이폰 듀오, 받자마자 이것부터 확인하세요!\n\n출시 직후 해외에서 안쪽 화면 접힘부 균열·흰 선 사례가 잇따라 보도됐어요.\n\n✔️ 개봉 직후 화면·힌지 상태를 사진과 영상으로 기록\n✔️ 흰 화면을 띄워",
+      "media_type": "CAROUSEL_ALBUM",
+      "media_product_type": "FEED",
+      "timestamp": "2026-10-28T09:03:23+0000",
+      "like_count": 0,
+      "comments_count": 0,
+      "permalink": "https://www.instagram.com/p/DfCEN7PFlMZ/",
+      "insights": {
+        "reach": 2,
+        "saved": 0,
+        "shares": 0,
+        "views": 7,
+        "total_interactions": 0
+      }
+    },
+    {
+      "id": "18114508403034166",
+      "caption": "🎧 귀에 거는 갤럭시 이어폰, '갤럭시 버즈 온' 출시!\n\n✔️ 10월 27일 국내 출시, 29만9000원 (블랙 단일)\n✔️ 버즈 시리즈 첫 클립형, 귀를 막지 않는 오픈형\n✔️ 1억1900만 개 귀 데이터로 착용",
+      "media_type": "VIDEO",
+      "media_product_type": "REELS",
+      "timestamp": "2026-10-28T03:37:34+0000",
+      "like_count": 0,
+      "comments_count": 0,
+      "permalink": "https://www.instagram.com/reel/DfBe5fSAscj/",
+      "insights": {
+        "reach": 50,
+        "saved": 0,
+        "shares": 0,
+        "views": 56,
+        "total_interactions": 0
+      }
+    },
+    {
       "id": "18015553826969758",
       "caption": "📦 아이폰 듀오, 지금 주문하면 언제 받을까?\n\n애플 첫 폴더블 '아이폰 듀오'가 출시 직후부터 품귀예요.\n\n✔️ 10월 23일 국내 출시, 통신 3사 사전예약 완판\n✔️ 미국 온라인 주문 평균 배송 대기 92일, ",
       "media_type": "CAROUSEL_ALBUM",
@@ -55,10 +345,10 @@
       "comments_count": 0,
       "permalink": "https://www.instagram.com/p/DfBcrAlDs3P/",
       "insights": {
-        "reach": 0,
+        "reach": 1,
         "saved": 0,
         "shares": 0,
-        "views": 0,
+        "views": 1,
         "total_interactions": 0
       }
     },
@@ -72,10 +362,10 @@
       "comments_count": 0,
       "permalink": "https://www.instagram.com/p/DfBSvOZDsP3/",
       "insights": {
-        "reach": 1,
+        "reach": 2,
         "saved": 0,
         "shares": 0,
-        "views": 3,
+        "views": 6,
         "total_interactions": 0
       }
     },
