@@ -5,7 +5,7 @@ lines.json 형식:
 {
   "voices": {"엄마": "ko-KR-SunHiNeural", "아들": "ko-KR-InJoonNeural"},
   "rate": "+10%",
-  "lines": [{"id": "s2_1", "who": "엄마", "text": "...", "rate": "+5%", "pitch": "+0Hz"}, ...]
+  "lines": [{"id": "s2_1", "who": "엄마", "text": "...", "rate": "+5%", "pitch": "+0Hz", "volume": "+0%"}, ...]
 }
 - 같은 폴더에 <id>.mp3 를 만든다. 이미 있고 대사가 그대로면 건너뛴다.
 - durations.json 에 대사별 길이(초)를 적는다 (영상 타이밍 맞추기용).
@@ -24,8 +24,8 @@ def dur(path):
     return round(float(r.stdout.strip() or 0), 3)
 
 
-async def say(text, voice, rate, pitch, out):
-    await edge_tts.Communicate(text, voice, rate=rate, pitch=pitch).save(out)
+async def say(text, voice, rate, pitch, out, volume="+0%"):
+    await edge_tts.Communicate(text, voice, rate=rate, pitch=pitch, volume=volume).save(out)
 
 
 def main(path):
@@ -38,16 +38,16 @@ def main(path):
     result = {}
     for ln in cfg["lines"]:
         out = os.path.join(folder, ln["id"] + ".mp3")
-        key = f'{ln["who"]}|{ln["text"]}|{ln.get("rate", base_rate)}|{ln.get("pitch", "+0Hz")}'
+        key = f'{ln["who"]}|{ln["text"]}|{ln.get("rate", base_rate)}|{ln.get("pitch", "+0Hz")}|{ln.get("volume", "+0%")}'
         if os.path.exists(out) and old.get(ln["id"], {}).get("key") == key:
             result[ln["id"]] = old[ln["id"]]
             continue
         voice = voices.get(ln["who"], FALLBACK)
         try:
-            asyncio.run(say(ln["text"], voice, ln.get("rate", base_rate), ln.get("pitch", "+0Hz"), out))
+            asyncio.run(say(ln["text"], voice, ln.get("rate", base_rate), ln.get("pitch", "+0Hz"), out, ln.get("volume", "+0%")))
         except Exception as e:  # 목소리 이름이 안 맞으면 기본 목소리로 다시
             print("다시 시도:", ln["id"], e)
-            asyncio.run(say(ln["text"], FALLBACK, ln.get("rate", base_rate), ln.get("pitch", "+0Hz"), out))
+            asyncio.run(say(ln["text"], FALLBACK, ln.get("rate", base_rate), ln.get("pitch", "+0Hz"), out, ln.get("volume", "+0%")))
         result[ln["id"]] = {"key": key, "seconds": dur(out), "voice": voice}
         print("만듦:", out, result[ln["id"]]["seconds"], "초")
     json.dump(result, open(stamp_path, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
