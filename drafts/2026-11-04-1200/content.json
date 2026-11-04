@@ -1,0 +1,30 @@
+{
+  "brand": "@bpj0901",
+  "store_tag": ["방학", "폰 성지"],
+  "store_name": "방학 폰 성지",
+  "store_sub": "도봉구 방학동 · 휴대폰 구매 상담",
+  "profile_lines": ["· 방학 도깨비시장 인근", "· 365일 연중무휴 10:00~20:00", "· 24시간 카톡·DM 상담"],
+  "post_at": "2026-11-04T12:00:00+09:00",
+  "slides": [
+    {"type": "hero", "title": "갤럭시 S27 기다릴까?\n사기 전 체크 4가지",
+     "visual": {"kind": "photo", "src": "photo_1.jpg", "max_h": 760, "credit": "AI 생성 이미지 · 실제 제품 아님"}},
+    {"type": "point", "label": "출시 시기", "title": "내년 초 공개 전망",
+     "desc": "1월 조기 출시설도 있지만\n삼성 공식 발표는 아직 없어요.",
+     "visual": {"kind": "photo", "src": "photo_2.jpg", "max_h": 740, "credit": "AI 생성 이미지",
+       "overlay": {"text": "1~2월", "sub": "공개 예상 · 보도 기준", "color": [255, 212, 56], "size": 170}}},
+    {"type": "point", "label": "가격", "title": "울트라 200만원 육박?",
+     "desc": "256GB 1499달러 전망(약 199만원).\n국내 출고가는 미정이에요.",
+     "visual": {"kind": "photo", "src": "photo_3.jpg", "max_h": 740, "credit": "AI 생성 이미지 · 실제 제품 아님",
+       "overlay": {"text": "1499달러", "sub": "울트라 256GB · 팁스터 전망", "color": [255, 112, 102], "size": 150}}},
+    {"type": "point", "label": "라인업", "title": "'프로' 새로 추가",
+     "desc": "기본·플러스·프로·울트라\n4종으로 나온다는 보도예요.",
+     "visual": {"kind": "photo", "src": "photo_4.jpg", "max_h": 740, "credit": "AI 생성 이미지",
+       "overlay": {"text": "4종", "sub": "기본·플러스·프로·울트라 · 보도 기준", "color": [80, 226, 186], "size": 190}}},
+    {"type": "point", "label": "기능", "title": "2억 화소·사생활 화면",
+     "desc": "프로·울트라에 2억 화소와\n더 밝은 사생활 보호 화면 전망.",
+     "visual": {"kind": "photo", "src": "photo_5.jpg", "max_h": 740, "credit": "AI 생성 이미지",
+       "overlay": {"text": "2억 화소", "sub": "프로·울트라 · 유출 정보 기준", "color": [255, 212, 56], "size": 150}},
+     "note": "모두 2026년 11월 3일까지 보도된 전망이에요."},
+    {"type": "follow"}
+  ]
+}
