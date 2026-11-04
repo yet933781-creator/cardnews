@@ -1,0 +1,77 @@
+{
+ "op_1": {
+  "key": "엄마|아들! 가습기 또 안 씻었지?!|+5%|+12Hz|+10%",
+  "seconds": 3.96,
+  "voice": "ko-KR-SunHiNeural"
+ },
+ "op_2": {
+  "key": "아들|아 씻을 거야~ 이따가...|+18%|-5Hz|-10%",
+  "seconds": 1.872,
+  "voice": "ko-KR-HyunsuMultilingualNeural"
+ },
+ "s1_1": {
+  "key": "아들|아니 근데 이거... 손이 안 들어간다니까.|+15%|-3Hz|-15%",
+  "seconds": 3.528,
+  "voice": "ko-KR-HyunsuMultilingualNeural"
+ },
+ "s2_1": {
+  "key": "엄마|물때 낀 거 좀 봐. 이거 그대로 틀면, 그 물 다 마시는 거야.|+10%|+0Hz|+0%",
+  "seconds": 4.824,
+  "voice": "ko-KR-SunHiNeural"
+ },
+ "s2_2": {
+  "key": "아들|아 알았어, 알았어...|+25%|+0Hz|-10%",
+  "seconds": 2.16,
+  "voice": "ko-KR-HyunsuMultilingualNeural"
+ },
+ "s2_3": {
+  "key": "엄마|요즘 건 물통을 통째로 빼서 헹군다더라.|+8%|+0Hz|+0%",
+  "seconds": 3.456,
+  "voice": "ko-KR-SunHiNeural"
+ },
+ "s2_4": {
+  "key": "아들|통째로? ...진짜?|+12%|+18Hz|+0%",
+  "seconds": 2.328,
+  "voice": "ko-KR-HyunsuMultilingualNeural"
+ },
+ "s3_1": {
+  "key": "아들|어, 뭐야. 진짜 쑥 빠지네?|+12%|+10Hz|+0%",
+  "seconds": 3.384,
+  "voice": "ko-KR-HyunsuMultilingualNeural"
+ },
+ "s3_2": {
+  "key": "아들|그냥 물로 헹구면 끝이네. 솔도 필요 없고.|+15%|+0Hz|+0%",
+  "seconds": 3.96,
+  "voice": "ko-KR-HyunsuMultilingualNeural"
+ },
+ "s4_1": {
+  "key": "엄마|밤엔 불도 은은하게 들어와~|+5%|+0Hz|+0%",
+  "seconds": 2.496,
+  "voice": "ko-KR-SunHiNeural"
+ },
+ "s4_2": {
+  "key": "아들|오, 다이얼 하나로 세기 조절하는 거네.|+15%|+0Hz|+0%",
+  "seconds": 3.264,
+  "voice": "ko-KR-HyunsuMultilingualNeural"
+ },
+ "s5_1": {
+  "key": "아들|후기가... 천육백 개가 넘어? 한 달에 천 명 넘게 샀대.|+12%|+0Hz|+0%",
+  "seconds": 5.112,
+  "voice": "ko-KR-HyunsuMultilingualNeural"
+ },
+ "s5_2": {
+  "key": "아들|엄마. 나 이거 시켰어.|+10%|+0Hz|+0%",
+  "seconds": 2.688,
+  "voice": "ko-KR-HyunsuMultilingualNeural"
+ },
+ "s5_3": {
+  "key": "엄마|어휴, 진작 좀 하지!|+12%|+10Hz|+0%",
+  "seconds": 2.712,
+  "voice": "ko-KR-SunHiNeural"
+ },
+ "s6_1": {
+  "key": "아들|링크는 프로필에 있어요. 저장해 두고 나중에 보세요~|+10%|+0Hz|+0%",
+  "seconds": 4.896,
+  "voice": "ko-KR-HyunsuMultilingualNeural"
+ }
+}
