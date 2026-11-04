@@ -1,0 +1,138 @@
+{
+  "brand": "@jangbaguni0916",
+  "ad_label": "광고 · 쿠팡 파트너스",
+  "store_tag": [
+    "장바구니",
+    "구출작전"
+  ],
+  "store_name": "장바구니 구출작전",
+  "store_sub": "살림 꿀템만 골라 구출해요",
+  "avatar_text": "장",
+  "profile_lines": [
+    "· 매일 13시·18시 살림 꿀템",
+    "· 프로필 링크에 번호별 모음",
+    "· 궁금한 건 댓글로"
+  ],
+  "theme": {
+    "frame1": [
+      22,
+      30,
+      26
+    ],
+    "frame2": [
+      36,
+      50,
+      42
+    ],
+    "accent": [
+      255,
+      120,
+      96
+    ],
+    "card": [
+      44,
+      60,
+      52
+    ],
+    "sub": [
+      214,
+      226,
+      218
+    ]
+  },
+  "post_at": "2026-11-04T13:00:00+09:00",
+  "link_no": 15,
+  "slides": [
+    {
+      "type": "hero",
+      "title": "겨울 설거지,\n손 시리지 않으세요?",
+      "visual": {
+        "kind": "photo",
+        "src": "p_main.jpg",
+        "card": true,
+        "size": 620,
+        "top": 130
+      }
+    },
+    {
+      "type": "point",
+      "label": "이런 불편 있죠?",
+      "title": "찬물 설거지에 손이 꽁꽁",
+      "desc": "겨울엔 고무장갑을 껴도\n찬 기운이 그대로 느껴질 때가 있죠.",
+      "visual": {
+        "kind": "photo",
+        "src": "p_glove.jpg",
+        "card": true,
+        "size": 620,
+        "top": 130
+      }
+    },
+    {
+      "type": "point",
+      "label": "오늘의 꿀템 15번",
+      "title": "크린랩 기모 고무장갑",
+      "desc": "안쪽에 기모 안감이 있는 고무장갑이에요.\n겨울 설거지·김장 준비 때\n손이 덜 차갑게 느껴지는 데 도움돼요.",
+      "visual": {
+        "kind": "photo",
+        "src": "p_two.jpg",
+        "card": true,
+        "size": 620,
+        "top": 130
+      }
+    },
+    {
+      "type": "point",
+      "label": "고를 때 팁",
+      "title": "FREE 사이즈 · 여러 켤레 구성",
+      "desc": "사이즈는 FREE(상품 정보 기준)예요.\n주방용·청소용으로 나눠 두면\n위생적으로 쓰기 좋아요.",
+      "visual": {
+        "kind": "photo",
+        "src": "p_set.jpg",
+        "card": true,
+        "size": 620,
+        "top": 130
+      }
+    },
+    {
+      "type": "point",
+      "label": "쓸 때 꼭!",
+      "title": "안쪽까지 잘 말려 주기",
+      "desc": "① 쓰고 나면 뒤집어서 말리기\n② 뜨거운 물·불 가까이 두지 않기\n③ 찢어지면 새 장갑으로 바꾸기",
+      "visual": {
+        "kind": "photo",
+        "src": "p_five.jpg",
+        "card": true,
+        "size": 620,
+        "top": 130
+      }
+    },
+    {
+      "type": "point",
+      "label": "어디서 봐요?",
+      "title": "프로필 링크 → 15번",
+      "desc": "가격은 시기마다 달라요.\n링크에서 오늘 가격을 확인하세요.",
+      "visual": {
+        "kind": "big",
+        "text": "15번",
+        "sub": "프로필 링크에서 찾기",
+        "color": [
+          255,
+          120,
+          96
+        ],
+        "glow": [
+          255,
+          120,
+          96
+        ]
+      }
+    },
+    {
+      "type": "follow",
+      "head": [
+        "매일 살림 꿀템이 궁금하다면",
+        "@jangbaguni0916 팔로우하세요!"
+      ]
+    }
+  ]
+}

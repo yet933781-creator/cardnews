@@ -1,5 +1,0 @@
-src_1.jpg https://thumbnail.coupangcdn.com/thumbnails/remote/780x780ex/image/vendor_inventory/497d/1fb08e285143d7f7b7a888c7ab6fc879e25272e5db217d02ec95f511a21d.jpg
-src_2.jpg https://thumbnail.coupangcdn.com/thumbnails/remote/780x780ex/image/vendor_inventory/e1ba/cb5934ac874f421cf2847d6e2b8f8801c8949d20b02d33f760efadf0ee5c.jpg
-src_3.png https://thumbnail.coupangcdn.com/thumbnails/remote/780x780ex/image/vendor_inventory/a852/1cf4f32c84d3f54d900ab23427d971ef736de6641e31c3606542584301fd.png
-src_4.jpg https://thumbnail.coupangcdn.com/thumbnails/remote/780x780ex/image/vendor_inventory/ba48/a1db76a6ffff065e31c1b38376e62edca6eee6b6016af0472beb620d3873.jpg
-src_5.png https://thumbnail.coupangcdn.com/thumbnails/remote/780x780ex/image/vendor_inventory/44d7/27d87c41f8a3030c786396a6b0840febf42d84786a0e44525817958f9a1b.png
