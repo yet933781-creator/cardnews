@@ -1,0 +1,62 @@
+{
+ "s1_1": {
+  "key": "내레이션|가습기 청소, 솔 들고 삼십 분 하는 사람?|+12%|+0Hz",
+  "seconds": 3.672,
+  "voice": "ko-KR-HyunsuMultilingualNeural"
+ },
+ "s1_2": {
+  "key": "아들|그거 나야...|+12%|+0Hz",
+  "seconds": 1.872,
+  "voice": "ko-KR-InJoonNeural"
+ },
+ "s2_1": {
+  "key": "엄마|아들, 가습기 또 안 씻었지? 물때 다 꼈더라.|+12%|+0Hz",
+  "seconds": 5.232,
+  "voice": "ko-KR-SunHiNeural"
+ },
+ "s2_2": {
+  "key": "아들|아 그거 입구가 좁아서 손이 안 들어가.|+12%|+0Hz",
+  "seconds": 3.552,
+  "voice": "ko-KR-InJoonNeural"
+ },
+ "s2_3": {
+  "key": "엄마|요즘 건 물통째로 헹군다던데?|+12%|+0Hz",
+  "seconds": 2.76,
+  "voice": "ko-KR-SunHiNeural"
+ },
+ "s2_4": {
+  "key": "아들|통째로?|+12%|+15Hz",
+  "seconds": 1.872,
+  "voice": "ko-KR-InJoonNeural"
+ },
+ "s3_1": {
+  "key": "내레이션|물통이 통째로 분리돼서, 물로 헹구면 끝. 솔 필요 없어요.|+12%|+0Hz",
+  "seconds": 4.536,
+  "voice": "ko-KR-HyunsuMultilingualNeural"
+ },
+ "s4_1": {
+  "key": "내레이션|밤엔 은은한 무드등. 다이얼 하나로 분무량 조절.|+12%|+0Hz",
+  "seconds": 4.44,
+  "voice": "ko-KR-HyunsuMultilingualNeural"
+ },
+ "s5_1": {
+  "key": "내레이션|쿠팡 상품평 천육백 개 넘고, 한 달에 천 명 넘게 샀대요.|+12%|+0Hz",
+  "seconds": 4.632,
+  "voice": "ko-KR-HyunsuMultilingualNeural"
+ },
+ "s5_2": {
+  "key": "아들|엄마, 나 이거 주문함.|+12%|+0Hz",
+  "seconds": 3.312,
+  "voice": "ko-KR-InJoonNeural"
+ },
+ "s5_3": {
+  "key": "엄마|진작 좀 하지!|+12%|+0Hz",
+  "seconds": 1.968,
+  "voice": "ko-KR-SunHiNeural"
+ },
+ "s6_1": {
+  "key": "내레이션|링크는 프로필에! 저장하고 팔로우하면 꿀템 계속 알려드릴게요.|+12%|+0Hz",
+  "seconds": 5.52,
+  "voice": "ko-KR-HyunsuMultilingualNeural"
+ }
+}
