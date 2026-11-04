@@ -1,0 +1,138 @@
+{
+  "brand": "@jangbaguni0916",
+  "ad_label": "광고 · 쿠팡 파트너스",
+  "store_tag": [
+    "장바구니",
+    "구출작전"
+  ],
+  "store_name": "장바구니 구출작전",
+  "store_sub": "살림 꿀템만 골라 구출해요",
+  "avatar_text": "장",
+  "profile_lines": [
+    "· 매일 13시·18시 살림 꿀템",
+    "· 프로필 링크에 번호별 모음",
+    "· 궁금한 건 댓글로"
+  ],
+  "theme": {
+    "frame1": [
+      20,
+      30,
+      40
+    ],
+    "frame2": [
+      34,
+      50,
+      66
+    ],
+    "accent": [
+      120,
+      200,
+      255
+    ],
+    "card": [
+      40,
+      58,
+      76
+    ],
+    "sub": [
+      210,
+      224,
+      236
+    ]
+  },
+  "post_at": "2026-11-04T18:00:00+09:00",
+  "link_no": 17,
+  "slides": [
+    {
+      "type": "hero",
+      "title": "샤워 후 배수구,\n머리카락 그대로?",
+      "visual": {
+        "kind": "photo",
+        "src": "p_main.jpg",
+        "card": true,
+        "size": 620,
+        "top": 130
+      }
+    },
+    {
+      "type": "point",
+      "label": "이런 불편 있죠?",
+      "title": "배수구에 엉킨 머리카락",
+      "desc": "샤워할 때마다 배수구에 머리카락이 쌓이고\n손으로 꺼내기는 영 찝찝하죠.",
+      "visual": {
+        "kind": "photo",
+        "src": "p_hair.jpg",
+        "card": true,
+        "size": 620,
+        "top": 130
+      }
+    },
+    {
+      "type": "point",
+      "label": "오늘의 꿀템 17번",
+      "title": "리빙트리 배수구 거름망",
+      "desc": "배수구 위에 붙이는 일회용 그물망이에요.\n머리카락이 망 위에 걸리도록 도와줘서\n배수구 청소 부담을 줄이는 데 도움돼요.",
+      "visual": {
+        "kind": "photo",
+        "src": "p_fit.jpg",
+        "card": true,
+        "size": 620,
+        "top": 130
+      }
+    },
+    {
+      "type": "point",
+      "label": "쓰는 법",
+      "title": "붙이고, 떼서 버리기",
+      "desc": "① 배수구 물기를 닦고 가운데 맞춰 붙이기\n② 가장자리를 꾹 눌러 들뜨지 않게\n③ 머리카락이 쌓이면 손잡이로 떼서 버리기",
+      "visual": {
+        "kind": "photo",
+        "src": "p_toss.jpg",
+        "card": true,
+        "size": 620,
+        "top": 130
+      }
+    },
+    {
+      "type": "point",
+      "label": "고를 때 팁",
+      "title": "15×15cm · 20개 구성",
+      "desc": "크기·구성은 상품 정보 기준이에요.\n우리 집 배수구 크기를 먼저 재 보고\n맞는 사이즈인지 확인하세요.",
+      "visual": {
+        "kind": "photo",
+        "src": "p_peel.jpg",
+        "card": true,
+        "size": 620,
+        "top": 130
+      }
+    },
+    {
+      "type": "point",
+      "label": "어디서 봐요?",
+      "title": "프로필 링크 → 17번",
+      "desc": "가격은 시기마다 달라요.\n링크에서 오늘 가격을 확인하세요.",
+      "visual": {
+        "kind": "big",
+        "text": "17번",
+        "sub": "프로필 링크에서 찾기",
+        "color": [
+          120,
+          200,
+          255
+        ],
+        "glow": [
+          120,
+          200,
+          255
+        ]
+      }
+    },
+    {
+      "type": "follow",
+      "head": [
+        "매일 살림 꿀템이 궁금하다면",
+        "@jangbaguni0916 팔로우하세요!"
+      ]
+    }
+  ]
+}
