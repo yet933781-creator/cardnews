@@ -18,7 +18,6 @@ unbox/unbox_02 https://videos.pexels.com/video-files/7308298/7308298-hd_1080_192
 unbox/unbox_03 https://videos.pexels.com/video-files/8938178/8938178-hd_1080_1920_30fps.mp4 1
 unbox/unbox_04 https://videos.pexels.com/video-files/7191510/7191510-hd_1080_1920_25fps.mp4 1
 phone/phone_01 https://videos.pexels.com/video-files/7191514/7191514-hd_1080_1920_25fps.mp4 1
-phone/phone_02 https://videos.pexels.com/video-files/6115070/6115070-hd_1080_2048_25fps.mp4 1
 phone/phone_03 https://videos.pexels.com/video-files/8166027/8166027-hd_1080_2048_25fps.mp4 1
 phone/phone_04 https://videos.pexels.com/video-files/6278948/6278948-hd_1080_1920_30fps.mp4 1
 phone/phone_05 https://videos.pexels.com/video-files/6279146/6279146-hd_1080_1920_30fps.mp4 1

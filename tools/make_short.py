@@ -272,15 +272,59 @@ def apply_drive(cfg, folder):
         sc.pop("image", None)
         ai |= not real
     opening = None
+    if 0 not in clips:  # 드라이브에 오프닝이 없으면 무료 영상 라이브러리에서 고른다 (2026-11-04 추가)
+        lib = library_opening(cfg, folder)
+        if lib:
+            clips[0] = (lib, True)
+            sig = dict(sig or {}, library=os.path.relpath(lib, ROOT))
     if 0 in clips:
         path, real = clips[0]
         op = cfg.get("opening") or {}
+        headline = op.get("headline", "")
+        if not headline and "opening" not in cfg:  # 라이브러리 오프닝만 붙은 경우: 제목을 크게 보여준다
+            headline = cfg.get("title", "")
         opening = {"clip": os.path.relpath(path, ROOT), "min_dur": float(op.get("seconds", 3)), "opening": True,
                    "ai_label": not real,
-                   "headline": op.get("headline", ""), "caption": op.get("caption", ""), "narration": op.get("narration", "")}
+                   "headline": headline, "caption": op.get("caption", ""), "narration": op.get("narration", "")}
         scenes.insert(0, opening)
         ai |= not real
     return opening, ai, sig
+
+
+# ---------- 오프닝 영상 라이브러리 (assets/openings, Pexels 무료 영상, 2026-11-04 추가) ----------
+# 드라이브에 오프닝 파일이 없을 때 쓴다. 모든 쇼츠(매장·꿀템)에 3초 실사 오프닝이 붙는다.
+# script.json 으로 조절 (모두 선택):
+#   "opening": false                       → 오프닝 없이 만든다
+#   "opening": {"library": "phone"}        → 분류 지정 (phone / home / clean / unbox)
+#   "opening": {"library": "home/home_03"} → 특정 클립 지정
+# 지정이 없으면: 매장 쇼츠 = phone, 꿀템 쇼츠 = 대본 내용으로 clean / unbox / home 중 고른다.
+# 같은 분류 안에서는 폴더 이름(날짜·시간)으로 돌아가며 골라 매일 다른 클립이 나온다.
+LIB = os.path.join(ROOT, "assets", "openings")
+LIB_WORDS = {"clean": ("청소", "세척", "설거지", "주방", "물때", "곰팡이", "닦아"),
+             "unbox": ("택배", "언박싱", "박스", "포장", "선물", "개봉")}
+
+
+def library_opening(cfg, folder):
+    op = cfg.get("opening")
+    if op is False or not os.path.isdir(LIB):
+        return None
+    want = (op or {}).get("library", "") if isinstance(op, dict) else ""
+    if want and os.path.exists(os.path.join(LIB, want + ".mp4")):
+        return os.path.join(LIB, want + ".mp4")
+    cat = want
+    if not cat:
+        if "picks" not in os.path.abspath(folder).split(os.sep):
+            cat = "phone"
+        else:
+            text = json.dumps(cfg, ensure_ascii=False)
+            cat = next((c for c, words in LIB_WORDS.items() if any(w in text for w in words)), "home")
+    clips = sorted(f for f in os.listdir(os.path.join(LIB, cat)) if f.endswith(".mp4")) if os.path.isdir(os.path.join(LIB, cat)) else []
+    if not clips:
+        return None
+    import hashlib
+    i = int(hashlib.md5(os.path.basename(os.path.abspath(folder)).encode()).hexdigest(), 16) % len(clips)
+    print(f"오프닝 라이브러리 사용: {cat}/{clips[i]}")
+    return os.path.join(LIB, cat, clips[i])
 
 
 def scene_audio(sc, mp3, voice, rate):
@@ -527,7 +571,8 @@ def needs_build(folder):
         cfg = json.load(open(os.path.join(folder, "script.json"), encoding="utf-8"))
         if drive_wanted(cfg):
             try:
-                return drive_signature(drive_files(cfg, folder)) != info.get("drive", {})
+                old = {k: v for k, v in info.get("drive", {}).items() if k != "library"}  # 라이브러리 오프닝은 비교에서 뺀다
+                return drive_signature(drive_files(cfg, folder)) != old
             except Exception as e:
                 print("::warning::드라이브 확인 실패:", str(e)[:200])
     return False
