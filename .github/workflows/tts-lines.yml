@@ -1,0 +1,39 @@
+name: 상황극 대사 음성 만들기
+
+# tts/**/lines.json 을 push 하면 대사별 AI 음성(mp3)을 만들어 같은 폴더에 커밋한다.
+# 기존 카드뉴스·쇼츠 자동 게시 작업과는 별개 파일이며, 아무것도 게시하지 않는다.
+on:
+  push:
+    branches: [main]
+    paths: ["tts/**/lines.json"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: tts-lines
+  cancel-in-progress: false
+
+jobs:
+  voice:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: 도구 설치
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg > /dev/null
+          pip install -q edge-tts
+      - name: 대사 음성 만들기
+        run: python tools/tts_lines.py $(git ls-files 'tts/**/lines.json')
+      - name: 커밋
+        run: |
+          git config user.name "cardnews-bot"
+          git config user.email "cardnews-bot@users.noreply.github.com"
+          git add tts
+          git diff --cached --quiet && exit 0
+          git commit -m "상황극 대사 음성 만들기 [skip ci]"
+          for i in 1 2 3; do git pull --rebase -q origin main && git push -q && break; sleep 5; done
