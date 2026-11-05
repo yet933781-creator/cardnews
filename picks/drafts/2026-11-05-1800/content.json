@@ -1,0 +1,138 @@
+{
+  "brand": "@jangbaguni0916",
+  "ad_label": "광고 · 쿠팡 파트너스",
+  "store_tag": [
+    "장바구니",
+    "구출작전"
+  ],
+  "store_name": "장바구니 구출작전",
+  "store_sub": "살림 꿀템만 골라 구출해요",
+  "avatar_text": "장",
+  "profile_lines": [
+    "· 매일 13시·18시 살림 꿀템",
+    "· 프로필 링크에 번호별 모음",
+    "· 궁금한 건 댓글로"
+  ],
+  "theme": {
+    "frame1": [
+      24,
+      30,
+      36
+    ],
+    "frame2": [
+      38,
+      48,
+      58
+    ],
+    "accent": [
+      120,
+      200,
+      230
+    ],
+    "card": [
+      44,
+      56,
+      66
+    ],
+    "sub": [
+      214,
+      224,
+      232
+    ]
+  },
+  "post_at": "2026-11-05T18:00:00+09:00",
+  "link_no": 21,
+  "slides": [
+    {
+      "type": "hero",
+      "title": "씻고 나온 발,\n욕실 앞이 축축하다면",
+      "visual": {
+        "kind": "photo",
+        "src": "p_main.jpg",
+        "card": true,
+        "size": 620,
+        "top": 130
+      }
+    },
+    {
+      "type": "point",
+      "label": "이런 불편 있죠?",
+      "title": "천 발매트가 늘 눅눅해요",
+      "desc": "겨울엔 욕실이 잘 안 말라서\n천 발매트가 하루 종일\n축축하게 남아 있을 때가 있죠.",
+      "visual": {
+        "kind": "photo",
+        "src": "p_wet.jpg",
+        "card": true,
+        "size": 620,
+        "top": 130
+      }
+    },
+    {
+      "type": "point",
+      "label": "오늘의 꿀템 21번",
+      "title": "코멧 홈 규조토 욕실 매트",
+      "desc": "60×39×0.9cm 단단한 판형(상품 정보 기준)\n물기를 빨아들이는 규조토 소재라\n밟고 나오면 발 물기에 도움 돼요.",
+      "visual": {
+        "kind": "photo",
+        "src": "p_step.jpg",
+        "card": true,
+        "size": 620,
+        "top": 130
+      }
+    },
+    {
+      "type": "point",
+      "label": "이렇게 관리해요",
+      "title": "빨래 대신 헹구고 말리기",
+      "desc": "천 매트처럼 세탁기에 넣는 게 아니라\n물로 헹군 뒤 세워서 말리는 방식이에요.\n자세한 관리법은 상품 상세를 확인하세요.",
+      "visual": {
+        "kind": "photo",
+        "src": "p_rinse.jpg",
+        "card": true,
+        "size": 620,
+        "top": 130
+      }
+    },
+    {
+      "type": "point",
+      "label": "살 때 꼭!",
+      "title": "놓을 자리부터 재 보기",
+      "desc": "① 욕실 문 앞 공간에 60×39cm가 맞는지\n② 판형이라 접거나 구부리지 않기\n③ 떨어뜨리면 깨질 수 있으니 조심",
+      "visual": {
+        "kind": "photo",
+        "src": "p_edge.jpg",
+        "card": true,
+        "size": 620,
+        "top": 130
+      }
+    },
+    {
+      "type": "point",
+      "label": "어디서 봐요?",
+      "title": "프로필 링크 → 21번",
+      "desc": "가격은 시기마다 달라요.\n링크에서 오늘 가격을 확인하세요.",
+      "visual": {
+        "kind": "big",
+        "text": "21번",
+        "sub": "프로필 링크에서 찾기",
+        "color": [
+          120,
+          200,
+          230
+        ],
+        "glow": [
+          120,
+          200,
+          230
+        ]
+      }
+    },
+    {
+      "type": "follow",
+      "head": [
+        "매일 살림 꿀템이 궁금하다면",
+        "@jangbaguni0916 팔로우하세요!"
+      ]
+    }
+  ]
+}
