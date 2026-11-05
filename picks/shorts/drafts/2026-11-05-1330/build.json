@@ -1,0 +1,14 @@
+{
+  "engine": "remotion",
+  "seconds": 42.3,
+  "ai_voice": true,
+  "size_mb": 13.2,
+  "script_sha": "1a4a674a057b2d672f278f29363a84fb4a277575",
+  "owner_end": false,
+  "ai_images": false,
+  "opening": true,
+  "drive_ai": false,
+  "drive": {
+    "library": "assets/openings/clean/clean_04.mp4"
+  }
+}
