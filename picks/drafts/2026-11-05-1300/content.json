@@ -1,0 +1,138 @@
+{
+  "brand": "@jangbaguni0916",
+  "ad_label": "광고 · 쿠팡 파트너스",
+  "store_tag": [
+    "장바구니",
+    "구출작전"
+  ],
+  "store_name": "장바구니 구출작전",
+  "store_sub": "살림 꿀템만 골라 구출해요",
+  "avatar_text": "장",
+  "profile_lines": [
+    "· 매일 13시·18시 살림 꿀템",
+    "· 프로필 링크에 번호별 모음",
+    "· 궁금한 건 댓글로"
+  ],
+  "theme": {
+    "frame1": [
+      34,
+      22,
+      22
+    ],
+    "frame2": [
+      54,
+      34,
+      32
+    ],
+    "accent": [
+      255,
+      196,
+      92
+    ],
+    "card": [
+      66,
+      42,
+      40
+    ],
+    "sub": [
+      232,
+      214,
+      210
+    ]
+  },
+  "post_at": "2026-11-05T13:00:00+09:00",
+  "link_no": 19,
+  "slides": [
+    {
+      "type": "hero",
+      "title": "김장 시즌,\n김장봉투 준비하셨어요?",
+      "visual": {
+        "kind": "photo",
+        "src": "p_main.jpg",
+        "card": true,
+        "size": 620,
+        "top": 130
+      }
+    },
+    {
+      "type": "point",
+      "label": "이런 불편 있죠?",
+      "title": "김치통 안에서 국물 새는 걱정",
+      "desc": "김치를 통에 바로 담으면\n뚜껑 틈으로 국물이 샐까\n신경 쓰일 때가 있죠.",
+      "visual": {
+        "kind": "photo",
+        "src": "p_tied.jpg",
+        "card": true,
+        "size": 620,
+        "top": 130
+      }
+    },
+    {
+      "type": "point",
+      "label": "오늘의 꿀템 19번",
+      "title": "착한 김장봉투 대형",
+      "desc": "65×95cm, 약 15포기용(상품 정보 기준)\n김치통에 봉투를 깔고 담은 뒤\n입구를 묶어 보관할 수 있어요.",
+      "visual": {
+        "kind": "photo",
+        "src": "p_open.jpg",
+        "card": true,
+        "size": 620,
+        "top": 130
+      }
+    },
+    {
+      "type": "point",
+      "label": "이렇게도 써요",
+      "title": "김장 끝나도 쓸 데 많아요",
+      "desc": "10개입 구성이라\n수건·이불 정리, 짐 보관 등\n다용도로 나눠 쓰기 좋아요.",
+      "visual": {
+        "kind": "photo",
+        "src": "p_towel.jpg",
+        "card": true,
+        "size": 620,
+        "top": 130
+      }
+    },
+    {
+      "type": "point",
+      "label": "쓸 때 꼭!",
+      "title": "사이즈부터 확인하기",
+      "desc": "① 김치통 크기에 맞는 사이즈 고르기\n② 너무 꽉 채우지 말고 여유 두고 묶기\n③ 날카로운 모서리에 닿지 않게 주의",
+      "visual": {
+        "kind": "photo",
+        "src": "p_store.jpg",
+        "card": true,
+        "size": 620,
+        "top": 130
+      }
+    },
+    {
+      "type": "point",
+      "label": "어디서 봐요?",
+      "title": "프로필 링크 → 19번",
+      "desc": "가격은 시기마다 달라요.\n링크에서 오늘 가격을 확인하세요.",
+      "visual": {
+        "kind": "big",
+        "text": "19번",
+        "sub": "프로필 링크에서 찾기",
+        "color": [
+          255,
+          196,
+          92
+        ],
+        "glow": [
+          255,
+          196,
+          92
+        ]
+      }
+    },
+    {
+      "type": "follow",
+      "head": [
+        "매일 살림 꿀템이 궁금하다면",
+        "@jangbaguni0916 팔로우하세요!"
+      ]
+    }
+  ]
+}
