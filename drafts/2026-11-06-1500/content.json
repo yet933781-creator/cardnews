@@ -1,0 +1,119 @@
+{
+ "brand": "@bpj0901",
+ "store_tag": [
+  "방학",
+  "폰 성지"
+ ],
+ "store_name": "방학 폰 성지",
+ "store_sub": "도봉구 방학동 · 휴대폰 구매 상담",
+ "profile_lines": [
+  "· 방학 도깨비시장 인근",
+  "· 365일 연중무휴 10:00~20:00",
+  "· 24시간 카톡·DM 상담"
+ ],
+ "post_at": "2026-11-06T15:00:00+09:00",
+ "slides": [
+  {
+   "type": "hero",
+   "title": "부모님 폰 아직 3G?\n전환 지원 3가지",
+   "visual": {
+    "kind": "photo",
+    "src": "photo_1.jpg",
+    "max_h": 760,
+    "credit": "AI 생성 이미지"
+   }
+  },
+  {
+   "type": "point",
+   "label": "종료 수순",
+   "title": "SKT·KT 3G 신규 중단",
+   "desc": "KT 11월 2일, SKT 8월 20일부터.\n기존 가입자는 당분간 계속 써요.",
+   "visual": {
+    "kind": "photo",
+    "src": "photo_2.jpg",
+    "max_h": 740,
+    "credit": "AI 생성 이미지",
+    "overlay": {
+     "text": "25만2591",
+     "sub": "국내 3G 휴대전화 회선 · 2026년 8월 말",
+     "color": [
+      255,
+      212,
+      56
+     ],
+     "size": 140
+    }
+   }
+  },
+  {
+   "type": "point",
+   "label": "선택 1",
+   "title": "지정 단말 무료 교체",
+   "desc": "LTE·5G 단말 3종 중 하나로 교체,\n24개월간 월 최대 1만2000원 할인.",
+   "visual": {
+    "kind": "photo",
+    "src": "photo_3.jpg",
+    "max_h": 740,
+    "credit": "AI 생성 이미지",
+    "overlay": {
+     "text": "월 1만2000원",
+     "sub": "최대 요금 할인 · 24개월 · 지정 단말 교체",
+     "color": [
+      80,
+      226,
+      186
+     ],
+     "size": 120
+    }
+   }
+  },
+  {
+   "type": "point",
+   "label": "선택 2",
+   "title": "원하는 폰 직접 구매",
+   "desc": "SKT 구매 지원금 최대 38만원,\nKT 기변포인트 15만원(휴대전화 기준).",
+   "visual": {
+    "kind": "photo",
+    "src": "photo_4.jpg",
+    "max_h": 740,
+    "credit": "AI 생성 이미지",
+    "overlay": {
+     "text": "최대 38만원",
+     "sub": "SKT 구매 지원금 · KT 기변포인트 15만원",
+     "color": [
+      120,
+      180,
+      255
+     ],
+     "size": 120
+    }
+   }
+  },
+  {
+   "type": "point",
+   "label": "선택 3·체크",
+   "title": "요금 할인만 받기",
+   "desc": "SKT 월정액 최대 70%, KT 월 1만4000원\n(24개월). 해지·이동 시 4만원.",
+   "visual": {
+    "kind": "photo",
+    "src": "photo_5.jpg",
+    "max_h": 740,
+    "credit": "AI 생성 이미지",
+    "overlay": {
+     "text": "70% / 1만4천원",
+     "sub": "요금 할인만 선택 시 · SKT / KT · 24개월",
+     "color": [
+      255,
+      112,
+      102
+     ],
+     "size": 100
+    }
+   },
+   "note": "해지·타사 이동 시 회선당 4만원·위약금 면제 · 3G 알뜰폰은 지원책 논의 중"
+  },
+  {
+   "type": "follow"
+  }
+ ]
+}
