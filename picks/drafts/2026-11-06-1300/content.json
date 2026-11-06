@@ -1,0 +1,138 @@
+{
+  "brand": "@jangbaguni0916",
+  "ad_label": "광고 · 쿠팡 파트너스",
+  "store_tag": [
+    "장바구니",
+    "구출작전"
+  ],
+  "store_name": "장바구니 구출작전",
+  "store_sub": "살림 꿀템만 골라 구출해요",
+  "avatar_text": "장",
+  "profile_lines": [
+    "· 매일 13시·18시 살림 꿀템",
+    "· 프로필 링크에 번호별 모음",
+    "· 궁금한 건 댓글로"
+  ],
+  "theme": {
+    "frame1": [
+      34,
+      22,
+      22
+    ],
+    "frame2": [
+      54,
+      34,
+      32
+    ],
+    "accent": [
+      255,
+      196,
+      92
+    ],
+    "card": [
+      66,
+      42,
+      40
+    ],
+    "sub": [
+      232,
+      214,
+      210
+    ]
+  },
+  "post_at": "2026-11-06T13:00:00+09:00",
+  "link_no": 23,
+  "slides": [
+    {
+      "type": "hero",
+      "title": "김장 김치,\n어디에 담으세요?",
+      "visual": {
+        "kind": "photo",
+        "src": "p_main.jpg",
+        "card": true,
+        "size": 620,
+        "top": 130
+      }
+    },
+    {
+      "type": "point",
+      "label": "이런 불편 있죠?",
+      "title": "김치통이 모자라거나 제각각",
+      "desc": "김장하고 나면 통이 모자라고\n크기도 모양도 달라서\n냉장고 정리가 어수선해지죠.",
+      "visual": {
+        "kind": "photo",
+        "src": "p_kimchi.jpg",
+        "card": true,
+        "size": 620,
+        "top": 130
+      }
+    },
+    {
+      "type": "point",
+      "label": "오늘의 꿀템 23번",
+      "title": "락앤락 숨쉬는 김치통 4.5L",
+      "desc": "4.5L 김치통 2개 구성(상품 정보 기준)\n뚜껑 위 손잡이가 있어\n꺼내고 옮길 때 잡기 편해요.",
+      "visual": {
+        "kind": "photo",
+        "src": "p_fridge.jpg",
+        "card": true,
+        "size": 620,
+        "top": 130
+      }
+    },
+    {
+      "type": "point",
+      "label": "이렇게도 써요",
+      "title": "직사각형이라 쌓아 두기 좋아요",
+      "desc": "네모난 모양이라 냉장고 칸에\n나란히 넣거나 겹쳐 두기 좋고\n투명해서 안에 든 게 보여요.",
+      "visual": {
+        "kind": "photo",
+        "src": "p_lineup.jpg",
+        "card": true,
+        "size": 620,
+        "top": 130
+      }
+    },
+    {
+      "type": "point",
+      "label": "쓸 때 꼭!",
+      "title": "용량·구성부터 확인하기",
+      "desc": "① 2.6L~14L 등 용량 옵션이 달라요\n② 누름판은 포함되지 않아요\n③ 너무 꽉 채우지 말고 여유 두기",
+      "visual": {
+        "kind": "photo",
+        "src": "p_side.jpg",
+        "card": true,
+        "size": 620,
+        "top": 130
+      }
+    },
+    {
+      "type": "point",
+      "label": "어디서 봐요?",
+      "title": "프로필 링크 → 23번",
+      "desc": "가격은 시기마다 달라요.\n링크에서 오늘 가격을 확인하세요.",
+      "visual": {
+        "kind": "big",
+        "text": "23번",
+        "sub": "프로필 링크에서 찾기",
+        "color": [
+          255,
+          196,
+          92
+        ],
+        "glow": [
+          255,
+          196,
+          92
+        ]
+      }
+    },
+    {
+      "type": "follow",
+      "head": [
+        "매일 살림 꿀템이 궁금하다면",
+        "@jangbaguni0916 팔로우하세요!"
+      ]
+    }
+  ]
+}
