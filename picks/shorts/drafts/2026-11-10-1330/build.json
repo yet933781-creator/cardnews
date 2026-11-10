@@ -1,0 +1,14 @@
+{
+  "engine": "remotion",
+  "seconds": 38.7,
+  "ai_voice": true,
+  "size_mb": 12.08,
+  "script_sha": "18e363b964ba0c99b1cd9c9fd7abcb0a3be183ff",
+  "owner_end": false,
+  "ai_images": false,
+  "opening": true,
+  "drive_ai": false,
+  "drive": {
+    "library": "assets/openings/home/home_07.mp4"
+  }
+}
