@@ -1,0 +1,66 @@
+{
+  "brand": "@bpj0901",
+  "store_tag": ["방학", "폰 성지"],
+  "store_name": "방학 폰 성지",
+  "store_sub": "도봉구 방학동 · 휴대폰 구매 상담",
+  "profile_lines": ["· 방학 도깨비시장 인근", "· 365일 연중무휴 10:00~20:00", "· 24시간 카톡·DM 상담"],
+  "post_at": "2026-11-10T15:00:00+09:00",
+  "cast": {"폰이": {"char": "phone"}, "동전이": {"char": "coin", "side": "right"}},
+  "slides": [
+    {
+      "type": "hero",
+      "title": "은행 알뜰폰 블프\n조건부터 확인하세요",
+      "visual": {"kind": "photo", "src": "photo_1.jpg", "max_h": 720, "credit": "AI 생성 이미지"}
+    },
+    {
+      "type": "chat",
+      "label": "폰이와 동전이",
+      "title": "우리WON모바일\n11월 한 달 블프 이벤트",
+      "visual": {"kind": "photo", "src": "photo_2.jpg", "max_h": 560,
+                 "overlay": {"text": "11종", "sub": "이벤트 대상 요금제", "color": [255, 200, 60]},
+                 "credit": "AI 생성 이미지"},
+      "lines": [
+        {"who": "폰이", "text": "은행에서 하는 알뜰폰이 블프래?", "face": "wow"},
+        {"who": "동전이", "text": "응, 우리은행 우리WON모바일이야."},
+        {"who": "동전이", "text": "11월 한 달, 요금제 11종이 대상이야."}
+      ],
+      "note": "청년드림 5종·더블쿠폰 2종·멤버십 데이터업 2종·우리WON셀럽 2종 · 보도 기준"
+    },
+    {
+      "type": "chat",
+      "label": "폰이와 동전이",
+      "title": "할인이 아니라\n포인트로 돌려받는 구조",
+      "visual": {"kind": "photo", "src": "photo_3.jpg", "max_h": 560,
+                 "overlay": {"text": "월 최대 2만9500원", "sub": "꿀머니 6개월 (요금제별 상이)", "color": [255, 112, 102]},
+                 "credit": "AI 생성 이미지"},
+      "lines": [
+        {"who": "폰이", "text": "그럼 요금이 바로 깎이는 거야?", "face": "normal"},
+        {"who": "동전이", "text": "아니, 개통하고 응모해야 꿀머니 줘."},
+        {"who": "동전이", "text": "6개월간 월 1만500원~2만9500원!"}
+      ],
+      "note": "꿀머니 = 우리금융 통합포인트 · 응모 필수 · 금액은 요금제별로 다름 · 월 5000원 상당 멤버십 쿠폰 별도"
+    },
+    {
+      "type": "chat",
+      "label": "폰이와 동전이",
+      "title": "가성비 3종 신규 개통\n네이버페이 5만원",
+      "visual": {"kind": "photo", "src": "photo_4.jpg", "max_h": 560,
+                 "overlay": {"text": "5만원", "sub": "가성비 3종 신규 개통 시", "color": [120, 200, 255]},
+                 "credit": "AI 생성 이미지"},
+      "lines": [
+        {"who": "폰이", "text": "새로 가입하면 더 주는 거 있어?", "face": "wow"},
+        {"who": "동전이", "text": "가성비 요금제 3종 신규 개통 시"},
+        {"who": "동전이", "text": "네이버페이 5만원권이래. 유심비도 면제!"}
+      ],
+      "note": "대상: 500MB/50분, 멤버십 데이터업 10GB+, 17GB+ · 유심·eSIM 발급 비용 면제 · 보도 기준"
+    },
+    {
+      "type": "point",
+      "label": "체크리스트",
+      "title": "갈아타기 전 3가지 확인",
+      "desc": "응모 방법·포인트 지급 시기 확인하고\n7개월째부터 내는 월 요금도 계산하세요",
+      "visual": {"kind": "photo", "src": "photo_5.jpg", "max_h": 600, "credit": "AI 생성 이미지"}
+    },
+    {"type": "follow"}
+  ]
+}
