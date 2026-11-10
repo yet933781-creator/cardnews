@@ -1,0 +1,8 @@
+src_1.jpg https://thumbnail.coupangcdn.com/thumbnails/remote/780x780ex/image/rs_quotation_api/4046/7feb7ab9f1f265e7eaf70fb03d813e6acbc25f95d025cd91e6f9b8be24f0.jpg
+src_2.jpg https://thumbnail.coupangcdn.com/thumbnails/remote/780x780ex/image/retail/images/469547290154419-78857223-2e65-4b1a-9fcf-ce682bd66b48.jpg
+src_3.jpg https://thumbnail.coupangcdn.com/thumbnails/remote/780x780ex/image/retail/images/470394129122940-b67be5ff-8316-43a1-a711-f491ce3fd633.jpg
+src_4.jpg https://thumbnail.coupangcdn.com/thumbnails/remote/780x780ex/image/retail/images/9189401242717008-f0ae4fc6-6238-47f8-bf64-d2dc4fb4d248.jpg
+src_5.jpg https://thumbnail.coupangcdn.com/thumbnails/remote/780x780ex/image/retail/images/9189401263500520-f8b4449f-26e3-4790-a52d-fccdd2b73ecb.jpg
+src_6.jpg https://thumbnail.coupangcdn.com/thumbnails/remote/780x780ex/image/retail/images/9188297190119124-e31b228e-0315-48c0-9a93-4eca1d69ab0d.jpg
+src_7.jpg https://thumbnail.coupangcdn.com/thumbnails/remote/780x780ex/image/retail/images/9189401260976501-dea47a1b-6299-48bf-9f89-cde9ffadc364.jpg
+src_8.jpg https://thumbnail.coupangcdn.com/thumbnails/remote/780x780ex/image/retail/images/470394262328798-8150f368-3c80-4731-8684-85afcf48c8a9.jpg
