@@ -1,0 +1,191 @@
+{
+  "brand": "@jangbaguni0916",
+  "ad_label": "광고 · 쿠팡 파트너스",
+  "store_tag": [
+    "장바구니",
+    "구출작전"
+  ],
+  "store_name": "장바구니 구출작전",
+  "store_sub": "살림 꿀템만 골라 구출해요",
+  "avatar_text": "장",
+  "profile_lines": [
+    "· 매일 13시·18시 살림 꿀템",
+    "· 프로필 링크에 번호별 모음",
+    "· 궁금한 건 댓글로"
+  ],
+  "theme": {
+    "frame1": [
+      40,
+      34,
+      30
+    ],
+    "frame2": [
+      62,
+      54,
+      46
+    ],
+    "accent": [
+      240,
+      190,
+      120
+    ],
+    "card": [
+      70,
+      62,
+      54
+    ],
+    "sub": [
+      232,
+      226,
+      218
+    ]
+  },
+  "post_at": "2026-11-10T18:00:00+09:00",
+  "link_no": 27,
+  "cast": {
+    "택배": {
+      "char": "box"
+    },
+    "뽀득이": {
+      "char": "sponge",
+      "side": "right"
+    }
+  },
+  "slides": [
+    {
+      "type": "hero",
+      "title": "오늘의 꿀템 27번\n그릇 위에 쏙, 돔 덮개",
+      "visual": {
+        "kind": "photo",
+        "src": "p_main.jpg",
+        "card": true,
+        "size": 620,
+        "top": 130
+      }
+    },
+    {
+      "type": "chat",
+      "label": "택배와 뽀득이",
+      "title": "전자레인지 데울 때 고민",
+      "visual": {
+        "kind": "photo",
+        "src": "p_plate.jpg",
+        "card": true,
+        "size": 470,
+        "top": 120
+      },
+      "lines": [
+        {
+          "who": "택배",
+          "text": "반찬 데울 때마다 뭘 덮어야 할지 모르겠어...",
+          "face": "sad"
+        },
+        {
+          "who": "뽀득이",
+          "text": "그럴 때 쓰는 돔 모양 덮개가 있어."
+        },
+        {
+          "who": "택배",
+          "text": "그릇 위에 그냥 얹는 거야?",
+          "face": "wow"
+        }
+      ]
+    },
+    {
+      "type": "chat",
+      "label": "위쪽을 보면",
+      "title": "손잡이 + 작은 구멍 부분",
+      "visual": {
+        "kind": "photo",
+        "src": "p_top.jpg",
+        "card": true,
+        "size": 470,
+        "top": 120
+      },
+      "lines": [
+        {
+          "who": "뽀득이",
+          "text": "위에 손잡이가 있어서 잡고 들기 편해."
+        },
+        {
+          "who": "택배",
+          "text": "옆에 구멍 난 부분도 보이네?",
+          "face": "talk"
+        },
+        {
+          "who": "뽀득이",
+          "text": "응, 상품 사진에 그렇게 나와 있어."
+        }
+      ]
+    },
+    {
+      "type": "chat",
+      "label": "전자레인지 말고도",
+      "title": "식탁·냉장고에서도 덮개로",
+      "visual": {
+        "kind": "photo",
+        "src": "p_lift.jpg",
+        "card": true,
+        "size": 470,
+        "top": 120
+      },
+      "lines": [
+        {
+          "who": "택배",
+          "text": "전자레인지에서만 써?",
+          "face": "talk"
+        },
+        {
+          "who": "뽀득이",
+          "text": "상품명에 냉장고용이라고도 적혀 있어."
+        },
+        {
+          "who": "택배",
+          "text": "식탁에서 음식 덮어 두기도 좋겠다!",
+          "face": "happy"
+        }
+      ]
+    },
+    {
+      "type": "point",
+      "label": "살 때 꼭!",
+      "title": "이것만 확인하세요",
+      "desc": "① 크기 약 240×115mm(그릇 지름 확인)\n② 색상·수량 옵션 확인(링크는 베이지 1개)\n③ 사용 가능 온도·관리법은 상세 확인",
+      "visual": {
+        "kind": "photo",
+        "src": "p_size.jpg",
+        "card": true,
+        "size": 620,
+        "top": 130
+      }
+    },
+    {
+      "type": "point",
+      "label": "어디서 봐요?",
+      "title": "프로필 링크 → 27번",
+      "desc": "가격은 시기마다 달라요.\n링크에서 오늘 가격을 확인하세요.",
+      "visual": {
+        "kind": "big",
+        "text": "27번",
+        "sub": "프로필 링크에서 찾기",
+        "color": [
+          240,
+          190,
+          120
+        ],
+        "glow": [
+          240,
+          190,
+          120
+        ]
+      }
+    },
+    {
+      "type": "follow",
+      "head": [
+        "매일 살림 꿀템이 궁금하다면",
+        "@jangbaguni0916 팔로우하세요!"
+      ]
+    }
+  ]
+}
