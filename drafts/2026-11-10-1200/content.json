@@ -1,0 +1,66 @@
+{
+  "brand": "@bpj0901",
+  "store_tag": ["방학", "폰 성지"],
+  "store_name": "방학 폰 성지",
+  "store_sub": "도봉구 방학동 · 휴대폰 구매 상담",
+  "profile_lines": ["· 방학 도깨비시장 인근", "· 365일 연중무휴 10:00~20:00", "· 24시간 카톡·DM 상담"],
+  "post_at": "2026-11-10T12:00:00+09:00",
+  "cast": {"유심이": {"char": "sim"}, "동전이": {"char": "coin", "side": "right"}},
+  "slides": [
+    {
+      "type": "hero",
+      "title": "아이폰 듀오 중고값\n보름 만에 뚝?",
+      "visual": {"kind": "photo", "src": "photo_1.jpg", "max_h": 720, "credit": "사진: Apple 뉴스룸"}
+    },
+    {
+      "type": "chat",
+      "label": "유심이와 동전이",
+      "title": "미국 중고 매입가\n출고가보다 최대 38% 낮아",
+      "visual": {"kind": "photo", "src": "photo_2.jpg", "max_h": 560,
+                 "overlay": {"text": "-38.4%", "sub": "2TB 최상급 최고 매입가", "color": [255, 112, 102]},
+                 "credit": "사진: Apple 뉴스룸"},
+      "lines": [
+        {"who": "유심이", "text": "듀오 벌써 중고값 떨어졌어?", "face": "wow"},
+        {"who": "동전이", "text": "미국 셀셀 집계로 2TB가 1971달러래."},
+        {"who": "유심이", "text": "출고가 3199달러였잖아! 헐", "face": "sad"}
+      ],
+      "note": "셀셀(SellCell) 11/10 집계 · 업체 최고 매입 제시가를 출고가와 비교 · 보도 기준"
+    },
+    {
+      "type": "chat",
+      "label": "유심이와 동전이",
+      "title": "국내 중고 호가도\n나흘 만에 40만원 내려",
+      "visual": {"kind": "photo", "src": "photo_3.jpg", "max_h": 560,
+                 "overlay": {"text": "382만→342만", "sub": "국내 중고 호가 (보도 기준)", "color": [255, 200, 60]},
+                 "credit": "사진: Apple 뉴스룸"},
+      "lines": [
+        {"who": "유심이", "text": "우리나라는? 출고가 329만원이잖아.", "face": "normal"},
+        {"who": "동전이", "text": "초반엔 웃돈 붙어 382만원 호가였어."},
+        {"who": "동전이", "text": "나흘 만에 342만원까지 내려왔대."}
+      ],
+      "note": "국내 출고가 256GB 기준 · 미개봉 310만~320만원대 매물도 보도됨"
+    },
+    {
+      "type": "chat",
+      "label": "유심이와 동전이",
+      "title": "왜 떨어졌을까?\n화면·힌지 내구성 논란",
+      "visual": {"kind": "photo", "src": "photo_4.jpg", "max_h": 560,
+                 "overlay": {"text": "164.9만", "sub": "국내 내부 화면 수리비", "color": [120, 200, 255]},
+                 "credit": "사진: Apple 뉴스룸"},
+      "lines": [
+        {"who": "유심이", "text": "인기 많았는데 왜 내려간 거야?", "face": "sad"},
+        {"who": "동전이", "text": "내부 화면 균열·힌지 논란 때문이래."},
+        {"who": "동전이", "text": "애플도 일부 인정, 교체 안내 중.", "face": "normal"}
+      ],
+      "note": "결함 비율은 공개되지 않음 · 수리비는 보증 미적용 기준"
+    },
+    {
+      "type": "point",
+      "label": "체크리스트",
+      "title": "듀오 중고 거래 전 체크",
+      "desc": "접힘부 균열·교체 대상·보증 기간 확인\n시세는 2~3곳 비교하고 결정하세요",
+      "visual": {"kind": "photo", "src": "photo_1.jpg", "max_h": 600, "credit": "사진: Apple 뉴스룸"}
+    },
+    {"type": "follow"}
+  ]
+}
