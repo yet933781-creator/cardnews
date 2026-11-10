@@ -1,9 +1,9 @@
 {
   "engine": "remotion",
-  "seconds": 43.4,
-  "ai_voice": false,
-  "size_mb": 19.69,
-  "script_sha": "e15278dd5f9a903aa274359c9ebeeec2b20630a9",
+  "seconds": 42.0,
+  "ai_voice": true,
+  "size_mb": 19.44,
+  "script_sha": "903dc5e3256d77260042164db82b6d3c0c066f6f",
   "owner_end": false,
   "ai_images": false,
   "opening": true,
