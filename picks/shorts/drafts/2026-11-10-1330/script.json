@@ -1,0 +1,42 @@
+{
+ "title": "아침마다 창문 물방울 줄줄? 길이조절 스퀴지",
+ "voice": "ko-KR-SunHiNeural",
+ "rate": "+12%",
+ "store_tag": ["장바구니", "구출작전"],
+ "ad_label": "광고 · 쿠팡 파트너스",
+ "post_at": "2026-11-10T13:30:00+09:00",
+ "link_no": 26,
+ "cast": {
+  "택배": {"voice": "ko-KR-SunHiNeural", "char": "box", "pitch": "+12Hz"},
+  "장구": {"voice": "ko-KR-HyunsuMultilingualNeural", "char": "basket", "side": "right"}
+ },
+ "opening": {"headline": "아침마다 창문에\n물방울 줄줄?", "library": "home"},
+ "scenes": [
+  {"clip": "picks/shorts/drafts/2026-11-10-1330/photo_glass.mp4", "ai_label": false, "headline": "유리·거울 물기는\n스퀴지로 쓱",
+   "lines": [
+    {"who": "택배", "text": "장구야! 창문에 물방울 또 줄줄이야...", "face": "sad", "fx": "far", "gap": 0.1},
+    {"who": "장구", "text": "걸레로 닦고 있었어? 스퀴지로 밀어 봐.", "gap": 0.3},
+    {"who": "택배", "text": "스퀴지? 그 유리 닦는 거?", "face": "wow", "pitch": "+15Hz"}
+   ]},
+  {"clip": "picks/shorts/drafts/2026-11-10-1330/photo_length.mp4", "ai_label": false, "headline": "길이 조절\n긴 봉 · 짧게",
+   "lines": [
+    {"who": "택배", "text": "근데 창문 위쪽은 손이 안 닿는데?", "face": "talk"},
+    {"who": "장구", "text": "이건 길이 조절이 돼. 길게도, 짧게도.", "gap": 0.2},
+    {"who": "택배", "text": "오, 의자 안 올라가도 되겠다!", "face": "happy", "rate": "+18%"}
+   ]},
+  {"clip": "picks/shorts/drafts/2026-11-10-1330/photo_joint.mp4", "ai_label": false, "headline": "헤드 아래가\n꺾이는 모양",
+   "lines": [
+    {"who": "장구", "text": "목 부분도 꺾이게 생겼어. 사진 봐 봐."},
+    {"who": "택배", "text": "어, 진짜 각도가 달라지네?", "face": "wow", "pitch": "+15Hz", "gap": 0.3}
+   ]},
+  {"clip": "picks/shorts/drafts/2026-11-10-1330/photo_floor.mp4", "ai_label": false, "headline": "프로필 링크\n26번에서 확인",
+   "lines": [
+    {"who": "택배", "text": "욕실 바닥 물기 미는 사진도 있네?", "face": "talk"},
+    {"who": "장구", "text": "응, 색상이랑 구성은 상세에서 꼭 확인해.", "gap": 0.2},
+    {"who": "택배", "text": "링크는 프로필 26번! 도움 됐다면 좋아요, 구독·팔로우 부탁드려요!", "face": "happy", "rate": "+10%"}
+   ]}
+ ],
+ "caption": "아침마다 창문·거울에 맺힌 물방울, 걸레로 닦고 계셨나요? 🪟\n\n✔️ 유리·거울 물기를 밀어내는 피니셔 스퀴지\n✔️ 봉 길이를 조절해서 높은 곳도 쓸 수 있어요\n✔️ 헤드 아래가 꺾이는 모양 (상품 사진 기준)\n\n🛒 프로필 링크 → 26번에서 확인 (가격은 링크에서 오늘 가격 확인)\n\n여러분은 창문 물기 뭘로 닦으세요? 댓글로 알려주세요 👇\n📌 겨울 창문 관리할 때 보려면 저장해 두세요\n\n#살림템 #살림꿀템 #스퀴지 #유리창청소 #결로 #욕실청소 #겨울살림 #자취꿀템 #Shorts",
+ "yt_title": "아침마다 창문 물방울 줄줄? 길이조절 스퀴지 #Shorts",
+ "yt_tags": ["스퀴지", "유리창청소", "결로", "욕실청소", "살림템", "살림꿀템"]
+}
