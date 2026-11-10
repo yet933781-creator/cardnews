@@ -1,0 +1,46 @@
+{
+  "title": "새 친구 소개: 폰이와 동전이",
+  "voice": "ko-KR-SunHiNeural",
+  "rate": "+12%",
+  "store_tag": ["방학", "폰 성지"],
+  "post_at": "2026-11-10T10:45:00+09:00",
+  "cast": {
+    "폰이": {"voice": "ko-KR-SunHiNeural", "char": "phone", "pitch": "+10Hz"},
+    "동전이": {"voice": "ko-KR-HyunsuMultilingualNeural", "char": "coin", "side": "right"},
+    "사장님": {"voice": "ko-KR-HyunsuMultilingualNeural", "side": "right"}
+  },
+  "opening": {"headline": "방학 폰 성지에\n새 친구가 왔어요"},
+  "scenes": [
+    {
+      "clip": "assets/openings/phone/phone_03.mp4",
+      "ai_label": false,
+      "headline": "폰이 & 동전이",
+      "lines": [
+        {"who": "폰이", "text": "안녕! 나는 폰이야. 새 폰 소식 담당!", "face": "happy"},
+        {"who": "동전이", "text": "나는 동전이. 요금이랑 지원금 얘기는 내가 할게.", "face": "happy"},
+        {"who": "폰이", "text": "근데 요금제... 그거 너무 어렵지 않아?", "face": "sad"},
+        {"who": "동전이", "text": "그래서 우리가 쉽게 풀어주려고 온 거잖아."}
+      ]
+    },
+    {
+      "clip": "assets/openings/phone/phone_04.mp4",
+      "ai_label": false,
+      "headline": "매일 다른 형식으로",
+      "lines": [
+        {"who": "폰이", "text": "헐, 그럼 우리 매일 나오는 거야?!", "face": "wow"},
+        {"who": "동전이", "text": "화요일엔 우리, 다른 날은 퀴즈랑 랭킹도 한대."},
+        {"who": "폰이", "text": "오~ 궁금한 건 댓글로 물어봐 줘!", "face": "happy"}
+      ]
+    },
+    {
+      "headline": "구매 상담은\n방학 폰 성지",
+      "lines": [
+        {"who": "사장님", "text": "휴대폰 고민은 방학 폰 성지로 DM이나 카톡 주세요.", "rate": "+12%"},
+        {"who": "사장님", "text": "좋아요, 구독도 부탁드려요!", "rate": "+12%"}
+      ]
+    }
+  ],
+  "caption": "방학 폰 성지에 새 친구가 왔어요📱🪙\n\n✔️ 폰이: 새 휴대폰·신제품 소식 담당\n✔️ 동전이: 요금제·지원금 이야기 담당\n✔️ 앞으로 요일마다 다른 형식(캐릭터 대화·퀴즈·랭킹·상황극)으로 찾아올게요\n\n폰이랑 동전이한테 물어보고 싶은 것, 댓글로 남겨 주세요!\n가족·친구에게 공유해 주세요🙌\n\n휴대폰 고민은 DM 주세요!\n\n※ 연출된 상황극입니다.\n\n#방학폰성지 #휴대폰 #요금제 #휴대폰성지 #도봉구휴대폰 #방학동 #Shorts",
+  "yt_title": "방학 폰 성지 새 친구 폰이·동전이를 소개합니다 #Shorts",
+  "yt_tags": ["방학폰성지", "휴대폰", "요금제", "폰이", "동전이"]
+}
