@@ -1,0 +1,191 @@
+{
+  "brand": "@jangbaguni0916",
+  "ad_label": "광고 · 쿠팡 파트너스",
+  "store_tag": [
+    "장바구니",
+    "구출작전"
+  ],
+  "store_name": "장바구니 구출작전",
+  "store_sub": "살림 꿀템만 골라 구출해요",
+  "avatar_text": "장",
+  "profile_lines": [
+    "· 매일 13시·18시 살림 꿀템",
+    "· 프로필 링크에 번호별 모음",
+    "· 궁금한 건 댓글로"
+  ],
+  "theme": {
+    "frame1": [
+      34,
+      36,
+      40
+    ],
+    "frame2": [
+      52,
+      56,
+      62
+    ],
+    "accent": [
+      150,
+      205,
+      235
+    ],
+    "card": [
+      58,
+      62,
+      70
+    ],
+    "sub": [
+      222,
+      226,
+      232
+    ]
+  },
+  "post_at": "2026-11-10T13:00:00+09:00",
+  "link_no": 25,
+  "cast": {
+    "뽀득이": {
+      "char": "sponge"
+    },
+    "장구": {
+      "char": "basket",
+      "side": "right"
+    }
+  },
+  "slides": [
+    {
+      "type": "hero",
+      "title": "오늘의 꿀템 25번\n구름 모양 실리콘 수세미",
+      "visual": {
+        "kind": "photo",
+        "src": "p_main.jpg",
+        "card": true,
+        "size": 620,
+        "top": 130
+      }
+    },
+    {
+      "type": "chat",
+      "label": "뽀득이와 장구",
+      "title": "스펀지 수세미의 고민",
+      "visual": {
+        "kind": "photo",
+        "src": "p_table.jpg",
+        "card": true,
+        "size": 470,
+        "top": 120
+      },
+      "lines": [
+        {
+          "who": "뽀득이",
+          "text": "나 설거지 끝나도 하루 종일 축축해...",
+          "face": "sad"
+        },
+        {
+          "who": "장구",
+          "text": "그래서 요즘 실리콘 수세미 많이 찾더라."
+        },
+        {
+          "who": "뽀득이",
+          "text": "실리콘? 그걸로 닦여?!",
+          "face": "wow"
+        }
+      ]
+    },
+    {
+      "type": "chat",
+      "label": "앞뒤가 달라요",
+      "title": "한 면은 촘촘한 솔,\n다른 면은 동글 돌기",
+      "visual": {
+        "kind": "photo",
+        "src": "p_bump.jpg",
+        "card": true,
+        "size": 470,
+        "top": 120
+      },
+      "lines": [
+        {
+          "who": "장구",
+          "text": "앞은 가는 솔, 뒤는 동글동글 돌기야."
+        },
+        {
+          "who": "뽀득이",
+          "text": "오, 그릇 따라 면을 바꿔 쓰면 되겠네?",
+          "face": "happy"
+        },
+        {
+          "who": "장구",
+          "text": "응, 상품 사진에도 양면으로 나와 있어."
+        }
+      ]
+    },
+    {
+      "type": "chat",
+      "label": "다 쓰고 나면",
+      "title": "헹궈서 걸어 두기",
+      "visual": {
+        "kind": "photo",
+        "src": "p_dish.jpg",
+        "card": true,
+        "size": 470,
+        "top": 120
+      },
+      "lines": [
+        {
+          "who": "뽀득이",
+          "text": "근데 다 쓰고 어디 둬?",
+          "face": "talk"
+        },
+        {
+          "who": "장구",
+          "text": "위에 구멍이 있어서 고리에 걸 수 있어."
+        },
+        {
+          "who": "뽀득이",
+          "text": "헹구고 걸어 두면 되는 거구나!",
+          "face": "happy"
+        }
+      ]
+    },
+    {
+      "type": "point",
+      "label": "살 때 꼭!",
+      "title": "이것만 확인하세요",
+      "desc": "① 구름 모양 1개 구성(옵션 확인)\n② 양면: 가는 솔 / 동글 돌기\n③ 사용·관리법은 상품 상세 확인",
+      "visual": {
+        "kind": "photo",
+        "src": "p_brush.jpg",
+        "card": true,
+        "size": 620,
+        "top": 130
+      }
+    },
+    {
+      "type": "point",
+      "label": "어디서 봐요?",
+      "title": "프로필 링크 → 25번",
+      "desc": "가격은 시기마다 달라요.\n링크에서 오늘 가격을 확인하세요.",
+      "visual": {
+        "kind": "big",
+        "text": "25번",
+        "sub": "프로필 링크에서 찾기",
+        "color": [
+          150,
+          205,
+          235
+        ],
+        "glow": [
+          150,
+          205,
+          235
+        ]
+      }
+    },
+    {
+      "type": "follow",
+      "head": [
+        "매일 살림 꿀템이 궁금하다면",
+        "@jangbaguni0916 팔로우하세요!"
+      ]
+    }
+  ]
+}
