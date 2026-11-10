@@ -1,0 +1,149 @@
+{
+ "title": "맨 밑 박스 꺼내려고 다 내리세요? 5면 오픈 리빙박스",
+ "voice": "ko-KR-SunHiNeural",
+ "rate": "+12%",
+ "store_tag": [
+  "장바구니",
+  "구출작전"
+ ],
+ "ad_label": "광고 · 쿠팡 파트너스",
+ "post_at": "2026-11-10T18:30:00+09:00",
+ "link_no": 28,
+ "cast": {
+  "장구": {
+   "voice": "ko-KR-HyunsuMultilingualNeural",
+   "char": "basket",
+   "pitch": "+10Hz"
+  },
+  "택배": {
+   "voice": "ko-KR-SunHiNeural",
+   "char": "box",
+   "side": "right"
+  }
+ },
+ "opening": {
+  "headline": "맨 밑 박스 꺼내려고\n위에 거 다 내리세요?",
+  "library": "home"
+ },
+ "scenes": [
+  {
+   "clip": "picks/shorts/drafts/2026-11-10-1830/photo_stack.mp4",
+   "ai_label": false,
+   "headline": "쌓아 둔 채로\n앞문 열고 꺼내기",
+   "lines": [
+    {
+     "who": "장구",
+     "text": "택배야! 맨 밑 박스에 패딩 있는데...",
+     "face": "sad",
+     "fx": "far",
+     "gap": 0.1
+    },
+    {
+     "who": "장구",
+     "text": "위에 거 다 내려야 돼?",
+     "face": "sad",
+     "rate": "+15%"
+    },
+    {
+     "who": "택배",
+     "text": "앞문 있는 박스면 안 내려도 돼.",
+     "gap": 0.3
+    },
+    {
+     "who": "장구",
+     "text": "앞문? 박스에 문이 있어?",
+     "face": "wow",
+     "pitch": "+18Hz"
+    }
+   ]
+  },
+  {
+   "clip": "picks/shorts/drafts/2026-11-10-1830/photo_front.mp4",
+   "ai_label": false,
+   "headline": "앞 · 옆 · 위\n5면이 열리는 구조",
+   "lines": [
+    {
+     "who": "택배",
+     "text": "앞, 양옆, 위까지 열리는 5면 오픈형이야."
+    },
+    {
+     "who": "장구",
+     "text": "오, 그럼 편한 쪽으로 열면 되네?",
+     "face": "happy",
+     "gap": 0.2
+    }
+   ]
+  },
+  {
+   "clip": "picks/shorts/drafts/2026-11-10-1830/photo_top.mp4",
+   "ai_label": false,
+   "headline": "위 뚜껑도\n들어 올려 열기",
+   "lines": [
+    {
+     "who": "장구",
+     "text": "위로 넣는 것도 돼?",
+     "face": "talk"
+    },
+    {
+     "who": "택배",
+     "text": "응, 사진 보면 윗판도 들어 올려서 열려."
+    },
+    {
+     "who": "장구",
+     "text": "이불은 위로 쓱 넣으면 되겠다!",
+     "face": "happy",
+     "rate": "+18%"
+    }
+   ]
+  },
+  {
+   "clip": "picks/shorts/drafts/2026-11-10-1830/photo_size.mp4",
+   "ai_label": false,
+   "headline": "사이즈 29L · 56L · 85L\n(옵션 확인)",
+   "lines": [
+    {
+     "who": "택배",
+     "text": "크기는 세 가지야. 놓을 자리부터 재 봐."
+    },
+    {
+     "who": "장구",
+     "text": "안 쓸 땐 접어 둬도 되고?",
+     "face": "talk"
+    },
+    {
+     "who": "택배",
+     "text": "응, 접이식 폴딩 박스야.",
+     "gap": 0.2
+    }
+   ]
+  },
+  {
+   "clip": "picks/shorts/drafts/2026-11-10-1830/photo_tall.mp4",
+   "ai_label": false,
+   "headline": "프로필 링크\n28번에서 확인",
+   "lines": [
+    {
+     "who": "장구",
+     "text": "겨울옷 정리할 때 딱 보면 되겠다.",
+     "face": "happy"
+    },
+    {
+     "who": "택배",
+     "text": "링크는 프로필 28번! 도움 됐다면 좋아요, 구독·팔로우 부탁드려요!",
+     "face": "happy",
+     "rate": "+10%"
+    }
+   ]
+  }
+ ],
+ "caption": "맨 아래 박스에 든 겨울옷 꺼내려고 위 박스 전부 내려 본 적 있죠? 📦\n\n✔️ 앞·양옆·위가 열리는 5면 오픈형 리빙박스\n✔️ 쌓아 둔 채로 앞문을 열어 꺼낼 수 있는 구조 (상품 사진 기준)\n✔️ 접이식이라 안 쓸 땐 접어 둘 수 있어요 · 사이즈 옵션 확인\n\n🛒 프로필 링크 → 28번에서 확인 (가격은 링크에서 오늘 가격 확인)\n\n여러분은 겨울옷·이불 어디에 보관하세요? 댓글로 알려주세요 👇\n📌 옷장 정리하는 날 보려면 저장해 두세요\n\n#살림템 #살림꿀템 #리빙박스 #수납정리 #옷정리 #겨울옷정리 #이불정리 #자취꿀템 #Shorts",
+ "yt_title": "맨 밑 박스 꺼내려고 다 내리세요? 5면 오픈 리빙박스 #Shorts",
+ "yt_tags": [
+  "리빙박스",
+  "수납정리",
+  "옷정리",
+  "겨울옷정리",
+  "살림템",
+  "살림꿀템"
+ ]
+}
