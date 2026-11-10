@@ -488,7 +488,7 @@ def scene_image(sc, idx, total, cfg, out, text=True):
             R.pill(d, 60, 232 if (clip and sc.get("ai_label", True)) else 180, "※ 연출된 상황극입니다",
                    R.font("bold", 26), (235, 235, 235), (16, 18, 30), padx=14)
     if sc.get("_line") and not sc.get("owner"):  # 캐릭터 상황극: cast 에 "char" 가 있으면 마스코트가 대화한다
-        draw_cast(img, cfg, sc["_line"])
+        draw_cast(img, cfg, sc["_line"], small=bool(clip and (sc.get("visual") or {}).get("kind") == "big"))
         d = ImageDraw.Draw(img)
     if sc.get("image") and sc.get("ai_label", True):  # AI 생성 이미지 표시 (오른쪽 위)
         R.pill(d, W - 60, 62, "AI 생성 이미지", R.font("bold", 26), (255, 255, 255), (16, 18, 30), padx=14, anchor_right=True)
@@ -521,7 +521,7 @@ def scene_image(sc, idx, total, cfg, out, text=True):
     img.save(out)
 
 
-def draw_cast(img, cfg, line, base=1050):
+def draw_cast(img, cfg, line, base=1050, small=False):
     """캐릭터 상황극 (2026-11-10): cast 인물에 "char": "phone|basket|coin|box|sim|sponge" 를 쓰면
     직접 그린 마스코트가 화면 좌우에 서서 대화한다. 말하는 쪽은 크고 밝게, 듣는 쪽은 작고 어둡게.
     표정은 대사의 "face"(normal/talk/wow/happy/angry/sad), 없으면 문장으로 자동 선택."""
@@ -535,7 +535,7 @@ def draw_cast(img, cfg, line, base=1050):
         c = cast[n]
         right = (c.get("side") == "right") or (not c.get("side") and all_names and n != all_names[0])
         talking = n == line["who"]
-        size = 330 if talking else 230
+        size = (260 if talking else 190) if small else (330 if talking else 230)  # 수치 박스가 있는 장면은 작게
         mood = (line.get("face") or CH.guess_mood(line["text"])) if talking else "normal"
         im = CH.draw(c["char"], size, mood, dim=not talking, flip=right)
         x = W - 40 - size if right else 40
