@@ -9,6 +9,7 @@
   checklist : 라벨·제목 + 체크 항목
 """
 import json, sys, os
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
 
 W, H = 1080, 1350
@@ -589,9 +590,123 @@ def owner_enabled_card(cfg):
     return cfg.get("brand") == "@bpj0901" and cfg.get("owner_end", True)
 
 
+# ---------- 재미 형식 장 (2026-11-10 추가: 요일별 스타일 로테이션, STYLES.md) ----------
+def _top(s, shade=560):
+    """위쪽 사진(visual)이 있으면 깔고, 없으면 어두운 배경만. 사진 유무와 상관없이 같은 장을 쓸 수 있다."""
+    img = dark_frame()
+    if s.get("visual"):
+        visual(img, s["visual"])
+        bottom_shade(img, shade)
+    return img
+
+
+def render_chat(s, i, n, brand, cfg):
+    """대화형 장: 캐릭터(또는 이름) 두 명이 말풍선으로 주고받는다.
+    {"type":"chat","label":"..","title":"..","visual":{..선택..},
+     "cast":{"폰이":{"char":"phone"},"동전이":{"char":"coin","side":"right"}},
+     "lines":[{"who":"폰이","text":"..","face":"wow"}, ...]}  (사진 있으면 3개, 없으면 5개까지)"""
+    import characters as CH
+    has_v = bool(s.get("visual"))
+    img = _top(s, 430)
+    d = ImageDraw.Draw(img)
+    y = 600 if has_v else 130
+    if s.get("label"):
+        pill(d, M, y, s["label"], font("black", 30), C["accent"], (16, 20, 38), padx=18)
+        y += 70
+    if s.get("title"):
+        y = text_block(d, M, y, s["title"], font("black", 62), C["text"], W - 2 * M, 1.2) + 26
+    cast = s.get("cast") or cfg.get("cast") or {}
+    names = list(cast.keys())
+    f = font("bold", 40); fn = font("bold", 26)
+    av = 118
+    for ln in s.get("lines", []):
+        c = cast.get(ln["who"], {})
+        right = c.get("side") == "right" or (not c.get("side") and names and ln["who"] != names[0])
+        ls = wrap(d, ln["text"], f, W - 2 * M - av - 110)
+        bw = int(max(d.textlength(l, font=f) for l in ls)) + 64
+        bh = len(ls) * 56 + 40
+        ax = W - M - av if right else M
+        if c.get("char"):
+            im = CH.draw(c["char"], av, ln.get("face") or CH.guess_mood(ln["text"]), flip=right)
+            img.paste(im, (ax, y), im)
+            d = ImageDraw.Draw(img)
+        else:
+            d.ellipse([ax, y, ax + av, y + av], fill=C["card"])
+            ini = ln["who"][:1]
+            d.text((ax + av / 2 - d.textlength(ini, font=font("black", 50)) / 2, y + 22), ini, font=font("black", 50), fill=C["text"])
+        nm = ln["who"]
+        bx = (ax - 22 - bw) if right else (ax + av + 22)
+        d.text((bx + bw - d.textlength(nm, font=fn) - 6 if right else bx + 6, y), nm, font=fn, fill=C["sub"])
+        by = y + 36
+        d.rounded_rectangle([bx, by, bx + bw, by + bh], 30, fill=C["accent"] if right else (255, 255, 255))
+        for k, l in enumerate(ls):
+            d.text((bx + 32, by + 18 + k * 56), l, font=f, fill=(22, 24, 34))
+        y = max(by + bh, y + av) + 26
+    if s.get("note"):
+        text_block(d, M, max(y, H - 150), s["note"], font("regular", 24), C["sub"], W - 2 * M, 1.4)
+    footer(d, i, n, brand)
+    return img
+
+
+def render_quiz(s, i, n, brand, cfg):
+    """퀴즈 장: 질문 + 보기(O/X 또는 A/B). 정답은 다음 장(point)에서 알려준다.
+    {"type":"quiz","label":"OX 퀴즈","title":"질문","options":["O 맞다","X 아니다"],"hint":"정답은 다음 장 →","visual":{..선택..}}"""
+    img = _top(s, 520)
+    d = ImageDraw.Draw(img)
+    y = 690 if s.get("visual") else 300
+    pill(d, M, y, s.get("label", "QUIZ"), font("black", 34), C["accent"], (16, 20, 38), padx=20)
+    y = text_block(d, M, y + 84, s["title"], font("black", 68), C["text"], W - 2 * M, 1.22) + 40
+    opts = s.get("options", ["O", "X"])
+    gap = 28; ow = (W - 2 * M - gap * (len(opts) - 1)) // len(opts)
+    cols = [C["sky"], C["coral"], C["mint"]]
+    fo = font("black", 50)
+    for k, o in enumerate(opts):
+        x = M + k * (ow + gap)
+        d.rounded_rectangle([x, y, x + ow, y + 150], 34, fill=cols[k % 3])
+        ls = wrap(d, o, fo, ow - 40)[:2]
+        yy = y + 75 - len(ls) * 32
+        for l in ls:
+            d.text((x + (ow - d.textlength(l, font=fo)) / 2, yy), l, font=fo, fill=(14, 16, 30))
+            yy += 64
+    hint = s.get("hint", "정답은 다음 장에서 →")
+    d.text((W - M - d.textlength(hint, font=font("bold", 34)), y + 186), hint, font=font("bold", 34), fill=C["sub"])
+    footer(d, i, n, brand)
+    return img
+
+
+def render_rank(s, i, n, brand, cfg):
+    """순위 장: TOP 3~4. {"type":"rank","label":"..","title":"..","items":[["제목","설명"],...],"note":".."}
+    순위는 근거(출처·기준)를 note 에 꼭 적는다."""
+    img = _top(s, 430)
+    d = ImageDraw.Draw(img)
+    y = 560 if s.get("visual") else 130
+    if s.get("label"):
+        pill(d, M, y, s["label"], font("black", 30), C["accent"], (16, 20, 38), padx=18)
+        y += 70
+    y = text_block(d, M, y, s["title"], font("black", 62), C["text"], W - 2 * M, 1.2) + 30
+    medal = [C["accent"], (200, 208, 224), (214, 150, 96), C["sky"]]
+    items = s.get("items", [])[: (3 if s.get("visual") else 4)]
+    for k, it in enumerate(items):
+        t, sub = (it + [""])[:2] if isinstance(it, list) else (it, "")
+        h = 150 if sub else 112
+        d.rounded_rectangle([M, y, W - M, y + h], 28, fill=C["card"])
+        d.ellipse([M + 22, y + h / 2 - 42, M + 106, y + h / 2 + 42], fill=medal[k % 4])
+        num = str(k + 1)
+        d.text((M + 64 - d.textlength(num, font=font("black", 54)) / 2, y + h / 2 - 40), num, font=font("black", 54), fill=(14, 16, 30))
+        d.text((M + 134, y + (24 if sub else 30)), t, font=font("black", 44), fill=C["text"])
+        if sub:
+            d.text((M + 134, y + 88), sub, font=font("medium", 30), fill=C["sub"])
+        y += h + 20
+    if s.get("note"):
+        text_block(d, M, max(y + 4, H - 150), s["note"], font("regular", 24), C["sub"], W - 2 * M, 1.4)
+    footer(d, i, n, brand)
+    return img
+
+
 R = {"cover": render_cover, "list": render_list, "timeline": render_timeline,
      "compare": render_compare, "checklist": render_checklist}
-R3 = {"hero": render_hero, "point": render_point, "follow": render_follow, "owner": render_owner}
+R3 = {"hero": render_hero, "point": render_point, "follow": render_follow, "owner": render_owner,
+      "chat": render_chat, "quiz": render_quiz, "rank": render_rank}
 
 
 def main(cfg_path, out):

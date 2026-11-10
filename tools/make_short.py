@@ -360,7 +360,7 @@ def expand_dialogue(cfg):
             side = c.get("side") or ("right" if names and ln["who"] != names[0] else "left")
             sub = {key: v for key, v in sc.items() if key not in ("lines", "caption", "narration")}
             sub.update({"narration": ln["text"], "caption": "", "_gi": gi, "_cont": k > 0,
-                        "_line": {"who": ln["who"], "text": ln["text"], "right": side == "right"},
+                        "_line": {"who": ln["who"], "text": ln["text"], "right": side == "right", "face": ln.get("face")},
                         "_voice": ln.get("voice") or c.get("voice", CAST_DEFAULT["voice"]),
                         "_rate": ln.get("rate", c.get("rate", cfg.get("rate", "+12%"))),
                         "_lpitch": ln.get("pitch", c.get("pitch", "+0Hz")),
@@ -487,6 +487,9 @@ def scene_image(sc, idx, total, cfg, out, text=True):
         else:
             R.pill(d, 60, 232 if (clip and sc.get("ai_label", True)) else 180, "※ 연출된 상황극입니다",
                    R.font("bold", 26), (235, 235, 235), (16, 18, 30), padx=14)
+    if sc.get("_line") and not sc.get("owner"):  # 캐릭터 상황극: cast 에 "char" 가 있으면 마스코트가 대화한다
+        draw_cast(img, cfg, sc["_line"])
+        d = ImageDraw.Draw(img)
     if sc.get("image") and sc.get("ai_label", True):  # AI 생성 이미지 표시 (오른쪽 위)
         R.pill(d, W - 60, 62, "AI 생성 이미지", R.font("bold", 26), (255, 255, 255), (16, 18, 30), padx=14, anchor_right=True)
     if clip and (sc.get("visual") or {}).get("kind") == "big" and (sc["visual"].get("text") or "").strip():
@@ -516,6 +519,32 @@ def scene_image(sc, idx, total, cfg, out, text=True):
             d.text(((W - d.textlength(ln, font=f)) / 2, yy), ln, font=f, fill=(16, 18, 30))
             yy += 74
     img.save(out)
+
+
+def draw_cast(img, cfg, line, base=1050):
+    """캐릭터 상황극 (2026-11-10): cast 인물에 "char": "phone|basket|coin|box|sim|sponge" 를 쓰면
+    직접 그린 마스코트가 화면 좌우에 서서 대화한다. 말하는 쪽은 크고 밝게, 듣는 쪽은 작고 어둡게.
+    표정은 대사의 "face"(normal/talk/wow/happy/angry/sad), 없으면 문장으로 자동 선택."""
+    cast = cfg.get("cast") or {}
+    names = [n for n in cast if cast[n].get("char")]
+    if not names:
+        return
+    import characters as CH
+    all_names = list(cast.keys())
+    for n in names:
+        c = cast[n]
+        right = (c.get("side") == "right") or (not c.get("side") and all_names and n != all_names[0])
+        talking = n == line["who"]
+        size = 330 if talking else 230
+        mood = (line.get("face") or CH.guess_mood(line["text"])) if talking else "normal"
+        im = CH.draw(c["char"], size, mood, dim=not talking, flip=right)
+        x = W - 40 - size if right else 40
+        layer = Image.new("RGBA", img.size, (0, 0, 0, 0))
+        layer.paste(im, (x, base - size))
+        if img.mode == "RGBA":
+            img.alpha_composite(layer)
+        else:
+            img.paste(layer, (0, 0), layer)
 
 
 def bubble_lines(text, f, d, maxw=760):
