@@ -1,0 +1,36 @@
+{
+  "title": "캐릭터 대화 형식 샘플 (게시 안 함)",
+  "voice": "ko-KR-SunHiNeural",
+  "rate": "+12%",
+  "store_tag": ["방학", "폰 성지"],
+  "owner_end": false,
+  "opening": false,
+  "cast": {
+    "폰이": {"voice": "ko-KR-SunHiNeural", "char": "phone", "pitch": "+10Hz"},
+    "동전이": {"voice": "ko-KR-HyunsuMultilingualNeural", "char": "coin", "side": "right"}
+  },
+  "scenes": [
+    {
+      "clip": "assets/openings/phone/phone_01.mp4",
+      "ai_label": false,
+      "headline": "형식 샘플:\n캐릭터 대화",
+      "lines": [
+        {"who": "폰이", "text": "동전아, 나 오늘부터 쇼츠에 나온대!", "face": "happy"},
+        {"who": "동전이", "text": "헐, 진짜? 나도 같이 나와?", "pitch": "+12Hz"},
+        {"who": "폰이", "text": "응. 네가 요금 얘기 담당이래."},
+        {"who": "동전이", "text": "좋아. 어려운 건 내가 쉽게 알려줄게.", "face": "happy"}
+      ]
+    },
+    {
+      "clip": "assets/openings/phone/phone_03.mp4",
+      "ai_label": false,
+      "headline": "매일 다른 형식으로",
+      "visual": {"kind": "big", "text": "요일별 7가지", "sub": "퀴즈 · 캐릭터 · 랭킹 · 상황극 · 공감 · 팩트체크 · 연재"},
+      "lines": [
+        {"who": "폰이", "text": "근데 매일 똑같으면 지겹지 않아?", "face": "sad"},
+        {"who": "동전이", "text": "그래서 요일마다 형식이 바뀐대."},
+        {"who": "폰이", "text": "오~ 그건 좀 기대된다!", "face": "wow"}
+      ]
+    }
+  ]
+}
