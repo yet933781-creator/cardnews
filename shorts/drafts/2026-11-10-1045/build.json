@@ -1,0 +1,14 @@
+{
+  "engine": "remotion",
+  "seconds": 32.3,
+  "ai_voice": true,
+  "size_mb": 8.99,
+  "script_sha": "7a0f5a12bafa236c8f074d91b47047c41ca7b15e",
+  "owner_end": true,
+  "ai_images": false,
+  "opening": true,
+  "drive_ai": false,
+  "drive": {
+    "library": "assets/openings/phone/phone_04.mp4"
+  }
+}
