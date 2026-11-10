@@ -604,46 +604,63 @@ def render_chat(s, i, n, brand, cfg):
     """대화형 장: 캐릭터(또는 이름) 두 명이 말풍선으로 주고받는다.
     {"type":"chat","label":"..","title":"..","visual":{..선택..},
      "cast":{"폰이":{"char":"phone"},"동전이":{"char":"coin","side":"right"}},
-     "lines":[{"who":"폰이","text":"..","face":"wow"}, ...]}  (사진 있으면 3개, 없으면 5개까지)"""
+     "lines":[{"who":"폰이","text":"..","face":"wow"}, ...]}  (사진 있으면 3개, 없으면 5개까지)
+    내용이 길면 시작 위치를 자동으로 올려 아래 계정 이름·주석과 겹치지 않게 한다."""
     import characters as CH
     has_v = bool(s.get("visual"))
-    img = _top(s, 430)
-    d = ImageDraw.Draw(img)
-    y = 600 if has_v else 130
-    if s.get("label"):
-        pill(d, M, y, s["label"], font("black", 30), C["accent"], (16, 20, 38), padx=18)
-        y += 70
-    if s.get("title"):
-        y = text_block(d, M, y, s["title"], font("black", 62), C["text"], W - 2 * M, 1.2) + 26
-    cast = s.get("cast") or cfg.get("cast") or {}
-    names = list(cast.keys())
-    f = font("bold", 40); fn = font("bold", 26)
-    av = 118
-    for ln in s.get("lines", []):
-        c = cast.get(ln["who"], {})
-        right = c.get("side") == "right" or (not c.get("side") and names and ln["who"] != names[0])
-        ls = wrap(d, ln["text"], f, W - 2 * M - av - 110)
-        bw = int(max(d.textlength(l, font=f) for l in ls)) + 64
-        bh = len(ls) * 56 + 40
-        ax = W - M - av if right else M
-        if c.get("char"):
-            im = CH.draw(c["char"], av, ln.get("face") or CH.guess_mood(ln["text"]), flip=right)
-            img.paste(im, (ax, y), im)
-            d = ImageDraw.Draw(img)
-        else:
-            d.ellipse([ax, y, ax + av, y + av], fill=C["card"])
-            ini = ln["who"][:1]
-            d.text((ax + av / 2 - d.textlength(ini, font=font("black", 50)) / 2, y + 22), ini, font=font("black", 50), fill=C["text"])
-        nm = ln["who"]
-        bx = (ax - 22 - bw) if right else (ax + av + 22)
-        d.text((bx + bw - d.textlength(nm, font=fn) - 6 if right else bx + 6, y), nm, font=fn, fill=C["sub"])
-        by = y + 36
-        d.rounded_rectangle([bx, by, bx + bw, by + bh], 30, fill=C["accent"] if right else (255, 255, 255))
-        for k, l in enumerate(ls):
-            d.text((bx + 32, by + 18 + k * 56), l, font=f, fill=(22, 24, 34))
-        y = max(by + bh, y + av) + 26
+    limit = H - (200 if s.get("note") else 150)  # 말풍선이 끝나야 하는 높이
+
+    def lay(y0):
+        img = _top(s, max(300, y0 - 110))
+        d = ImageDraw.Draw(img)
+        y = y0
+        if s.get("label"):
+            pill(d, M, y, s["label"], font("black", 30), C["accent"], (16, 20, 38), padx=18)
+            y += 64
+        if s.get("title"):
+            y = text_block(d, M, y, s["title"], font("black", 54 if has_v else 62), C["text"], W - 2 * M, 1.2) + 22
+        cast = s.get("cast") or cfg.get("cast") or {}
+        names = list(cast.keys())
+        fs = 36 if has_v else 40; step = fs + 14  # 사진이 있는 장은 조금 작게
+        f = font("bold", fs); fn = font("bold", 24)
+        av = 100 if has_v else 118
+        for ln in s.get("lines", []):
+            c = cast.get(ln["who"], {})
+            right = c.get("side") == "right" or (not c.get("side") and names and ln["who"] != names[0])
+            ls = wrap(d, ln["text"], f, W - 2 * M - av - 110)
+            bw = int(max(d.textlength(l, font=f) for l in ls)) + 64
+            bh = len(ls) * step + 36
+            ax = W - M - av if right else M
+            if c.get("char"):
+                im = CH.draw(c["char"], av, ln.get("face") or CH.guess_mood(ln["text"]), flip=right)
+                img.paste(im, (ax, y), im)
+                d = ImageDraw.Draw(img)
+            else:
+                d.ellipse([ax, y, ax + av, y + av], fill=C["card"])
+                ini = ln["who"][:1]
+                d.text((ax + av / 2 - d.textlength(ini, font=font("black", 50)) / 2, y + 22), ini, font=font("black", 50), fill=C["text"])
+            nm = ln["who"]
+            bx = (ax - 22 - bw) if right else (ax + av + 22)
+            d.text((bx + bw - d.textlength(nm, font=fn) - 6 if right else bx + 6, y), nm, font=fn, fill=C["sub"])
+            by = y + 32
+            d.rounded_rectangle([bx, by, bx + bw, by + bh], 30, fill=C["accent"] if right else (255, 255, 255))
+            for k, l in enumerate(ls):
+                d.text((bx + 32, by + 16 + k * step), l, font=f, fill=(22, 24, 34))
+            y = max(by + bh, y + av) + 10
+        return img, d, y
+
+    y0 = 600 if has_v else 130
+    img, d, end = lay(y0)
+    if end > limit:  # 넘치면 위로 올려 다시 그린다
+        y0 = max(110 if not has_v else 380, y0 - (end - limit))
+        img, d, end = lay(y0)
+    if end > limit:
+        print(f"::warning::chat 장 {i}: 내용이 길어 아래와 겹칩니다. 대사를 줄이세요.")
     if s.get("note"):
-        text_block(d, M, max(y, H - 150), s["note"], font("regular", 24), C["sub"], W - 2 * M, 1.4)
+        nt = wrap(d, s["note"], font("regular", 24), W - 2 * M)[:2]
+        ny = H - 100 - len(nt) * 34
+        for k, l in enumerate(nt):
+            d.text((M, ny + k * 34), l, font=font("regular", 24), fill=C["sub"])
     footer(d, i, n, brand)
     return img
 
