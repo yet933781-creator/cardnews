@@ -14,10 +14,66 @@ export type Scene = {
   top?: number;        // 제목·자막 시작 높이 (기본 1080, 사장님 장면은 사진에 맞춰 1190)
   cont?: boolean;      // 상황극: 앞 장면에 이어지는 대사 (페이드·제목 애니메이션 없이 이어 붙임)
   bubble?: {who: string; text: string; right: boolean} | null;  // 상황극 대사 말풍선
+  punch?: boolean;     // 빠른 컷 형식 (script.json "style": "punch"): 바로 전환 + 위쪽 큰 글자 + 단어별 자막
+  words?: string;      // 단어별 자막 문장. [강조] 로 감싼 단어는 노란색으로 크게
 };
 export type ShortProps = {scenes: Scene[]; fps: number};
 
 const FONT = '"Noto Sans CJK KR", "Noto Sans KR", sans-serif';
+
+const STROKE = [[-5, -5], [5, -5], [-5, 5], [5, 5], [0, -6], [0, 6], [-6, 0], [6, 0]]
+  .map(([x, y]) => `${x}px ${y}px 0 #000`).join(', ') + ', 0 8px 16px rgba(0,0,0,0.7)';
+
+// 빠른 컷 장면: 페이드 없이 바로 바뀌고, 처음 6프레임 동안 살짝 당겨졌다 돌아온다(스냅 줌).
+const PunchView: React.FC<{s: Scene}> = ({s}) => {
+  const frame = useCurrentFrame();
+  const {fps} = useVideoConfig();
+  const snap = interpolate(frame, [0, 6], [1.09, 1], {extrapolateRight: 'clamp'});
+  const head = spring({frame, fps, config: {damping: 10, mass: 0.6, stiffness: 240}});
+  const lines = (s.headline || '').split('\n');
+  const words = (s.words || '').split(' ').filter(Boolean).map((w) => ({
+    text: w.replace(/[\[\]]/g, ''), hl: w.includes('['),
+  }));
+  return (
+    <AbsoluteFill style={{backgroundColor: '#060814'}}>
+      {s.clip ? (
+        <AbsoluteFill style={{transform: `scale(${snap})`}}>
+          <OffthreadVideo src={staticFile(s.clip)} muted
+            style={{width: '100%', height: '100%', objectFit: 'cover'}} />
+        </AbsoluteFill>
+      ) : null}
+      <AbsoluteFill>
+        <Img src={staticFile(s.bg)} style={{width: '100%', height: '100%'}} />
+      </AbsoluteFill>
+      {s.headline ? (
+        <div style={{
+          position: 'absolute', left: 50, right: 50, top: 200, textAlign: 'center', fontFamily: FONT,
+          color: '#FFE812', fontWeight: 900, fontSize: 132, lineHeight: 1.12, textShadow: STROKE,
+          transform: `scale(${0.5 + 0.5 * head})`, opacity: Math.min(1, head * 2), wordBreak: 'keep-all',
+        }}>
+          {lines.map((l, i) => <div key={i}>{l}</div>)}
+        </div>
+      ) : null}
+      <div style={{
+        position: 'absolute', left: 80, right: 80, bottom: 440, display: 'flex', flexWrap: 'wrap',
+        justifyContent: 'center', alignItems: 'center', gap: '10px 18px', fontFamily: FONT, lineHeight: 1.25,
+      }}>
+        {words.map((w, i) => {
+          const spr = spring({frame: frame - 2 - i * 2.5, fps, config: {damping: 12, mass: 0.6, stiffness: 180}});
+          const scale = interpolate(spr, [0, 1], [0.3, w.hl ? 1.14 : 1]);
+          return (
+            <span key={i} style={{
+              display: 'inline-block', fontWeight: 900, fontSize: 74, color: w.hl ? '#FFE812' : '#fff',
+              opacity: Math.min(1, spr * 2.5), textShadow: STROKE, transformOrigin: 'center bottom',
+              transform: `scale(${scale}) rotate(${w.hl ? interpolate(spr, [0, 1], [-12, -3]) : 0}deg)`,
+            }}>{w.text}</span>
+          );
+        })}
+      </div>
+      <Audio src={staticFile(s.audio)} />
+    </AbsoluteFill>
+  );
+};
 
 const SceneView: React.FC<{s: Scene; index: number}> = ({s, index}) => {
   const frame = useCurrentFrame();
@@ -86,7 +142,7 @@ export const Short: React.FC<ShortProps> = ({scenes}) => (
     <Series>
       {scenes.map((s, i) => (
         <Series.Sequence key={i} durationInFrames={s.frames}>
-          <SceneView s={s} index={i} />
+          {s.punch ? <PunchView s={s} /> : <SceneView s={s} index={i} />}
         </Series.Sequence>
       ))}
     </Series>

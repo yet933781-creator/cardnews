@@ -391,7 +391,10 @@ def scene_audio(sc, mp3, voice, rate):
     text = sc.get("narration") or ("" if sc.get("opening") else sc.get("caption", ""))
     if text:
         ok = tts(text, mp3, voice, rate, sc.get("_pitch", "+0Hz"))
-        dur = duration(mp3) + 0.35
+        if ok and sc.get("_punch"):  # 빠른 컷 형식: 음성 앞뒤 빈 소리를 잘라 장면을 바짝 붙인다
+            raw = mp3 + ".raw.mp3"; os.replace(mp3, raw)
+            sh("ffmpeg", "-y", "-i", raw, "-af", TRIM, "-ar", "24000", "-ac", "1", mp3); os.remove(raw)
+        dur = duration(mp3) + (0.1 if sc.get("_punch") else 0.35)
     else:
         sh("ffmpeg", "-y", "-f", "lavfi", "-i", "anullsrc=r=24000:cl=mono", "-t", f"{sc.get('min_dur', 3):.2f}", mp3)
         ok, dur = True, 0
@@ -591,7 +594,8 @@ def remotion_voice(cfg, scenes, work):
               "headline": "" if sc.get("image") else sc.get("headline", ""),
               "caption": "" if sc.get("image") else sc.get("caption", ""),
               "top": 1190 if sc.get("owner") else 1080,
-              "cont": bool(sc.get("_cont")), "bubble": sc.get("_line")}
+              "cont": bool(sc.get("_cont")), "bubble": sc.get("_line"),
+              "punch": bool(sc.get("_punch")), "words": sc.get("_words", "")}
         off = clip_offset(scenes, i)
         if sc.get("clip"):
             sh("ffmpeg", "-y", "-stream_loop", "-1", "-ss", f"{off:.2f}", "-i", os.path.join(ROOT, sc["clip"]), "-t", f"{dur:.2f}", "-an",
@@ -626,6 +630,15 @@ def build(folder):
     opening, drive_ai, drive_sig = apply_drive(cfg, folder)  # 드라이브 영상: 오프닝(0~3초) + 중간 장면 배경
     expand_dialogue(cfg)  # 상황극 대사 → 대사별 장면
     scenes = cfg["scenes"]; clips = []; voiced = True
+    # 빠른 컷 형식 (2026-11-11 추가, script.json 맨 위 "style": "punch" 일 때만):
+    #   장면 2~3초, 페이드 없이 바로 전환, 위쪽 큰 글자(headline) + 단어가 하나씩 튀어나오는 자막("sub", [강조] 표시).
+    #   "sub" 가 없으면 narration 을 자막으로 쓴다. 다른 쇼츠(style 없음)는 지금까지와 똑같이 만들어진다.
+    if cfg.get("style") == "punch":
+        for sc in scenes:
+            if not sc.get("opening") and not sc.get("_line") and not sc.get("owner"):
+                sc["_punch"] = True
+                sc["_words"] = sc.get("sub") or sc.get("narration", "")
+                sc.setdefault("caption", sc["_words"].replace("[", "").replace("]", ""))  # 리모션 실패 시 기존 자막 박스로
     for sc in scenes:
         sc["_pitch"] = cfg.get("pitch", "+0Hz")
     engine = "ffmpeg"
