@@ -16,10 +16,24 @@
       "side": "right"
     }
   },
-  "opening": {
-    "headline": "6개월 요금제 유지\n끝난 줄 모르면 손해"
-  },
+  "opening": false,
   "scenes": [
+    {
+      "clip": "shorts/drafts/2026-11-11-1530/ai_scene.mp4",
+      "ai_label": true,
+      "headline": "6개월 요금제 유지\n끝난 줄 모르면 손해",
+      "caption": "단통법 폐지 후 바뀌는 것 TOP 3",
+      "lines": [
+        {
+          "who": "손님",
+          "text": "사장님, 6개월 유지하라던 요금제 아직 쓰고 있어요."
+        },
+        {
+          "who": "손님",
+          "text": "단통법 폐지 후에 뭐가 바뀌어요?"
+        }
+      ]
+    },
     {
       "clip": "shorts/drafts/2026-11-11-1530/photo_1.mp4",
       "ai_label": true,
@@ -40,10 +54,6 @@
         ]
       },
       "lines": [
-        {
-          "who": "손님",
-          "text": "사장님, 단통법 폐지 후에 뭐가 바뀌어요?"
-        },
         {
           "who": "사장님",
           "text": "3위부터 갈게요. 계약서 점검이요."
@@ -74,10 +84,6 @@
         ]
       },
       "lines": [
-        {
-          "who": "손님",
-          "text": "2위는요?"
-        },
         {
           "who": "사장님",
           "text": "매장 추가지원금도 정해진 양식으로 공개해요."
