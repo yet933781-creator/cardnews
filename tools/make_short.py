@@ -632,13 +632,14 @@ def build(folder):
     scenes = cfg["scenes"]; clips = []; voiced = True
     # 빠른 컷 형식 (2026-11-11 추가, script.json 맨 위 "style": "punch" 일 때만):
     #   장면 2~3초, 페이드 없이 바로 전환, 위쪽 큰 글자(headline) + 단어가 하나씩 튀어나오는 자막("sub", [강조] 표시).
-    #   "sub" 가 없으면 narration 을 자막으로 쓴다. 다른 쇼츠(style 없음)는 지금까지와 똑같이 만들어진다.
+    #   자막은 "sub" 또는 "caption"(둘 다 [강조] 가능), 없으면 narration. 다른 쇼츠(style 없음)는 지금까지와 똑같이 만들어진다.
     if cfg.get("style") == "punch":
         for sc in scenes:
             if not sc.get("opening") and not sc.get("_line") and not sc.get("owner"):
                 sc["_punch"] = True
-                sc["_words"] = sc.get("sub") or sc.get("narration", "")
-                sc.setdefault("caption", sc["_words"].replace("[", "").replace("]", ""))  # 리모션 실패 시 기존 자막 박스로
+                # 자막 문장: "sub" → [강조]가 들어 있는 "caption" → narration 순서로 쓴다
+                sc["_words"] = sc.get("sub") or sc.get("caption") or sc.get("narration", "")
+                sc["caption"] = sc["_words"].replace("[", "").replace("]", "")  # 리모션 실패 시 기존 자막 박스로
     for sc in scenes:
         sc["_pitch"] = cfg.get("pitch", "+0Hz")
     engine = "ffmpeg"

@@ -31,9 +31,13 @@ const PunchView: React.FC<{s: Scene}> = ({s}) => {
   const snap = interpolate(frame, [0, 6], [1.09, 1], {extrapolateRight: 'clamp'});
   const head = spring({frame, fps, config: {damping: 10, mass: 0.6, stiffness: 240}});
   const lines = (s.headline || '').split('\n');
-  const words = (s.words || '').split(' ').filter(Boolean).map((w) => ({
-    text: w.replace(/[\[\]]/g, ''), hl: w.includes('['),
-  }));
+  let inside = false;  // [여러 단어] 처럼 대괄호가 여러 단어에 걸쳐도 전부 강조한다
+  const words = (s.words || '').split(' ').filter(Boolean).map((w) => {
+    const hl = inside || w.includes('[');
+    if (w.includes('[')) inside = true;
+    if (w.includes(']')) inside = false;
+    return {text: w.replace(/[\[\]]/g, ''), hl};
+  });
   return (
     <AbsoluteFill style={{backgroundColor: '#060814'}}>
       {s.clip ? (
