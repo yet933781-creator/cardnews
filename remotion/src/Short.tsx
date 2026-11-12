@@ -51,7 +51,7 @@ const PunchView: React.FC<{s: Scene}> = ({s}) => {
       </AbsoluteFill>
       {s.headline ? (
         <div style={{
-          position: 'absolute', left: 50, right: 50, top: 200, textAlign: 'center', fontFamily: FONT,
+          position: 'absolute', left: 50, right: 50, top: 250, textAlign: 'center', fontFamily: FONT,
           color: '#FFE812', fontWeight: 900, fontSize: 132, lineHeight: 1.12, textShadow: STROKE,
           transform: `scale(${0.5 + 0.5 * head})`, opacity: Math.min(1, head * 2), wordBreak: 'keep-all',
         }}>

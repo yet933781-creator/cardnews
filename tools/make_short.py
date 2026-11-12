@@ -388,6 +388,14 @@ def scene_audio(sc, mp3, voice, rate):
         ok = line_audio(sc, mp3)
         sc["_dur"] = duration(mp3) + sc.get("_gap", 0.2)
         return sc["_dur"], ok
+    if sc.get("clip_audio") and sc.get("clip"):
+        # AI 드라마 장면 (2026-11-11 추가): 영상에 들어 있는 인물 목소리를 그대로 쓴다 (AI 음성 내레이션 없음).
+        #   "clip_start": 시작 위치(초), "clip_dur": 쓸 길이(초, 없으면 끝까지)
+        src = os.path.join(ROOT, sc["clip"]); st = float(sc.get("clip_start", 0))
+        dur = float(sc.get("clip_dur") or max(0.5, duration(src) - st))
+        sh("ffmpeg", "-y", "-ss", f"{st:.2f}", "-t", f"{dur:.2f}", "-i", src, "-vn", "-ar", "24000", "-ac", "1", mp3)
+        sc["_dur"] = dur
+        return dur, True
     text = sc.get("narration") or ("" if sc.get("opening") else sc.get("caption", ""))
     if text:
         ok = tts(text, mp3, voice, rate, sc.get("_pitch", "+0Hz"))
@@ -596,7 +604,7 @@ def remotion_voice(cfg, scenes, work):
               "top": 1190 if sc.get("owner") else 1080,
               "cont": bool(sc.get("_cont")), "bubble": sc.get("_line"),
               "punch": bool(sc.get("_punch")), "words": sc.get("_words", "")}
-        off = clip_offset(scenes, i)
+        off = clip_offset(scenes, i) + float(sc.get("clip_start", 0))
         if sc.get("clip"):
             sh("ffmpeg", "-y", "-stream_loop", "-1", "-ss", f"{off:.2f}", "-i", os.path.join(ROOT, sc["clip"]), "-t", f"{dur:.2f}", "-an",
                "-vf", f"scale={W}:{H}:force_original_aspect_ratio=increase,crop={W}:{H},fps={FPS}",
@@ -658,7 +666,7 @@ def build(folder):
         zoom = "min(zoom+0.0007,1.07)" if i % 2 == 0 else "if(eq(on,0),1.07,max(zoom-0.0007,1.0))"
         if sc.get("clip"):
             src = os.path.join(ROOT, sc["clip"])
-            sh("ffmpeg", "-y", "-stream_loop", "-1", "-ss", f"{clip_offset(scenes, i):.2f}", "-i", src, "-loop", "1", "-i", png, "-i", mp3,
+            sh("ffmpeg", "-y", "-stream_loop", "-1", "-ss", f"{clip_offset(scenes, i) + float(sc.get('clip_start', 0)):.2f}", "-i", src, "-loop", "1", "-i", png, "-i", mp3,
                "-filter_complex",
                f"[0:v]scale={W}:{H}:force_original_aspect_ratio=increase,crop={W}:{H},fps={FPS},setsar=1[bg];"
                f"[bg][1:v]overlay=0:0,format=yuv420p[v];[2:a]aresample=44100,apad=pad_dur=0.35[a]",
