@@ -1,0 +1,135 @@
+{
+  "brand": "@bpj0901",
+  "store_tag": [
+    "방학",
+    "폰 성지"
+  ],
+  "store_name": "방학 폰 성지",
+  "store_sub": "도봉구 방학동 · 휴대폰 구매 상담",
+  "profile_lines": [
+    "· 방학 도깨비시장 인근",
+    "· 365일 연중무휴 10:00~20:00",
+    "· 24시간 카톡·DM 상담"
+  ],
+  "post_at": "2026-11-12T15:00:00+09:00",
+  "cast": {
+    "손님": {},
+    "사장님": {
+      "side": "right"
+    }
+  },
+  "slides": [
+    {
+      "type": "hero",
+      "title": "12월부터 '진짜 5G'\n내 폰도 바뀔까?",
+      "visual": {
+        "kind": "photo",
+        "src": "photo_1.jpg",
+        "max_h": 720,
+        "credit": "AI 생성 이미지",
+        "overlay": {
+          "text": "5G SA 시작",
+          "sub": "저장해 두고 확인하세요",
+          "color": [
+            255,
+            200,
+            60
+          ]
+        }
+      }
+    },
+    {
+      "type": "chat",
+      "label": "손님 vs 사장님",
+      "title": "'진짜 5G'가 뭐예요?",
+      "visual": {
+        "kind": "photo",
+        "src": "photo_2.jpg",
+        "max_h": 420,
+        "credit": "AI 생성 이미지"
+      },
+      "lines": [
+        {
+          "who": "손님",
+          "text": "사장님, 12월에 '진짜 5G' 나온대요?"
+        },
+        {
+          "who": "사장님",
+          "text": "SKT·LG유플러스도 5G 단독모드 시작해요."
+        },
+        {
+          "who": "손님",
+          "text": "헐, 그럼 지금 건 가짜예요?!",
+          "face": "wow"
+        }
+      ],
+      "note": "※ 연출된 상황극 · 머니투데이 11.12 · 이코노믹리뷰 11.10"
+    },
+    {
+      "type": "point",
+      "label": "차이",
+      "title": "LTE 도움 없이 5G만",
+      "desc": "가짜는 아니고 LTE망을 같이 쓰는 방식(NSA)\nKT는 2021년부터 SA 서비스 중",
+      "visual": {
+        "kind": "photo",
+        "src": "photo_3.jpg",
+        "max_h": 560,
+        "credit": "AI 생성 이미지",
+        "overlay": {
+          "text": "NSA → SA",
+          "sub": "5G 단독모드 (보도 기준)",
+          "color": [
+            120,
+            200,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "type": "point",
+      "label": "배터리",
+      "title": "배터리 최대 1시간6분 더",
+      "desc": "KT·TTA 시험, 갤럭시S20+ 기준\nNSA보다 최대 8.8% 길었어요",
+      "visual": {
+        "kind": "photo",
+        "src": "photo_4.jpg",
+        "max_h": 560,
+        "credit": "AI 생성 이미지",
+        "overlay": {
+          "text": "+1시간 6분",
+          "sub": "KT 상용화 당시 시험 결과",
+          "color": [
+            120,
+            230,
+            150
+          ]
+        }
+      }
+    },
+    {
+      "type": "point",
+      "label": "체크",
+      "title": "내 폰도 바로 될까?",
+      "desc": "연말엔 5G 가입자 약 3분의 1 지원\n내년 말 전체로 확대 전망(보도 기준)",
+      "visual": {
+        "kind": "photo",
+        "src": "photo_5.jpg",
+        "max_h": 560,
+        "credit": "AI 생성 이미지 · 실제 제품 아님",
+        "overlay": {
+          "text": "약 3분의 1",
+          "sub": "올해 말 지원 전망 (업계)",
+          "color": [
+            255,
+            200,
+            60
+          ]
+        }
+      }
+    },
+    {
+      "type": "follow"
+    }
+  ]
+}
