@@ -1,0 +1,157 @@
+{
+  "brand": "@jangbaguni0916",
+  "ad_label": "광고 · 쿠팡 파트너스",
+  "store_tag": [
+    "장바구니",
+    "구출작전"
+  ],
+  "store_name": "장바구니 구출작전",
+  "store_sub": "살림 꿀템만 골라 구출해요",
+  "avatar_text": "장",
+  "profile_lines": [
+    "· 매일 13시·18시 살림 꿀템",
+    "· 프로필 링크에 번호별 모음",
+    "· 궁금한 건 댓글로"
+  ],
+  "theme": {
+    "frame1": [
+      30,
+      36,
+      40
+    ],
+    "frame2": [
+      48,
+      58,
+      64
+    ],
+    "accent": [
+      150,
+      210,
+      220
+    ],
+    "card": [
+      58,
+      70,
+      78
+    ],
+    "sub": [
+      220,
+      230,
+      234
+    ]
+  },
+  "post_at": "2026-11-12T18:00:00+09:00",
+  "link_no": 31,
+  "cast": {
+    "엄마": {},
+    "아들": {
+      "side": "right"
+    }
+  },
+  "slides": [
+    {
+      "type": "hero",
+      "title": "오늘의 꿀템 31번\n수건걸이 위에 얹는 선반",
+      "visual": {
+        "kind": "photo",
+        "src": "p_main.jpg",
+        "card": true,
+        "size": 620,
+        "top": 130
+      }
+    },
+    {
+      "type": "chat",
+      "label": "엄마와 아들",
+      "title": "욕실 선반이 모자랄 때",
+      "visual": {
+        "kind": "photo",
+        "src": "p_bar.jpg",
+        "card": true,
+        "size": 470,
+        "top": 120
+      },
+      "lines": [
+        {
+          "who": "엄마",
+          "text": "샴푸 둘 데가 없어서 바닥에 놨어..."
+        },
+        {
+          "who": "아들",
+          "text": "선반 달려면 벽 뚫어야 하잖아."
+        },
+        {
+          "who": "엄마",
+          "text": "이건 수건걸이 위에 거는 거래!"
+        }
+      ]
+    },
+    {
+      "type": "point",
+      "label": "이렇게 써요",
+      "title": "기존 수건걸이에 걸기",
+      "desc": "양쪽 고리를 수건걸이 바에 걸어\n위쪽에 작은 선반 한 칸이 생겨요.\n일반적인 수건걸이에 걸 수 있다고 해요(판매자 답변).",
+      "visual": {
+        "kind": "photo",
+        "src": "p_shelf.jpg",
+        "card": true,
+        "size": 620,
+        "top": 130
+      }
+    },
+    {
+      "type": "point",
+      "label": "아래 칸은 그대로",
+      "title": "수건은 아래 바에",
+      "desc": "선반 아래 기존 바에는 지금처럼\n수건을 걸어 둘 수 있어요.\n위 칸엔 욕실 용품을 올려 두기 좋아요.",
+      "visual": {
+        "kind": "photo",
+        "src": "p_towel.jpg",
+        "card": true,
+        "size": 620,
+        "top": 130
+      }
+    },
+    {
+      "type": "point",
+      "label": "살 때 꼭!",
+      "title": "이것만 확인하세요",
+      "desc": "① 크기 약 480×100×200mm\n② 우리 집 수건걸이 바 굵기·길이\n③ 수량 옵션(링크는 실버 1개)",
+      "visual": {
+        "kind": "photo",
+        "src": "p_size.jpg",
+        "card": true,
+        "size": 620,
+        "top": 130
+      }
+    },
+    {
+      "type": "point",
+      "label": "어디서 봐요?",
+      "title": "프로필 링크 → 31번",
+      "desc": "가격은 시기마다 달라요.\n링크에서 오늘 가격을 확인하세요.",
+      "visual": {
+        "kind": "big",
+        "text": "31번",
+        "sub": "프로필 링크에서 찾기",
+        "color": [
+          150,
+          210,
+          220
+        ],
+        "glow": [
+          150,
+          210,
+          220
+        ]
+      }
+    },
+    {
+      "type": "follow",
+      "head": [
+        "매일 살림 꿀템이 궁금하다면",
+        "@jangbaguni0916 팔로우하세요!"
+      ]
+    }
+  ]
+}
