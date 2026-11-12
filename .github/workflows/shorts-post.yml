@@ -42,4 +42,6 @@ jobs:
           git config user.name "cardnews-bot"
           git config user.email "cardnews-bot@users.noreply.github.com"
           git add shorts/approved/*/posted.json 2>/dev/null || true
-          git diff --cached --quiet || (git commit -m "쇼츠 게시 기록 [skip ci]" && git push)
+          git diff --cached --quiet || git commit -m "쇼츠 게시 기록 [skip ci]"
+          # 다른 작업이 먼저 push 했어도 게시 기록이 반드시 저장되게 한다 (기록이 빠지면 같은 영상이 다시 게시됨)
+          for i in 1 2 3 4 5; do git pull --rebase origin main && git push && break; sleep 5; done
