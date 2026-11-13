@@ -1,0 +1,49 @@
+{
+  "brand": "@bpj0901",
+  "store_tag": ["방학", "폰 성지"],
+  "store_name": "방학 폰 성지",
+  "store_sub": "도봉구 방학동 · 휴대폰 구매 상담",
+  "profile_lines": ["· 방학 도깨비시장 인근", "· 365일 연중무휴 10:00~20:00", "· 24시간 카톡·DM 상담"],
+  "post_at": "2026-11-13T15:00:00+09:00",
+  "slides": [
+    {
+      "type": "hero",
+      "title": "수능 끝난 날 내 표정\n멤버십 쿠폰부터 챙김",
+      "visual": {"kind": "photo", "src": "photo_1.jpg", "max_h": 720, "credit": "AI 생성 이미지",
+        "overlay": {"text": "11/16~20", "sub": "LG유플러스 멤버십 쿠폰 주간 (보도 기준)", "color": [255, 200, 60]}}
+    },
+    {
+      "type": "point",
+      "label": "POV",
+      "title": "시험 끝, 친구랑 카페 갈 때",
+      "desc": "멤버십 쓰는 거 깜빡하고 정가 결제\n알고 보니 아메리카노 1+1 쿠폰이…",
+      "visual": {"kind": "photo", "src": "photo_2.jpg", "max_h": 560, "credit": "AI 생성 이미지",
+        "overlay": {"text": "1+1", "sub": "스타벅스 아메리카노 (쿠폰)", "color": [120, 230, 150]}}
+    },
+    {
+      "type": "point",
+      "label": "POV",
+      "title": "놀이공원 가자는데 지갑 사정",
+      "desc": "롯데월드 종일권 47% 할인\n서울랜드 이용권 55% 할인 쿠폰(보도 기준)",
+      "visual": {"kind": "photo", "src": "photo_3.jpg", "max_h": 560, "credit": "AI 생성 이미지",
+        "overlay": {"text": "최대 55%", "sub": "놀이공원 할인 쿠폰", "color": [120, 200, 255]}}
+    },
+    {
+      "type": "rank",
+      "label": "한눈에 정리",
+      "title": "저장해 두고 쓰세요",
+      "items": [["카페·간식", "공차 최대 50% · 파리바게뜨 최대 8000원"], ["생활·쇼핑", "다이소 최대 3000원 금액권"], ["여행", "여기어때 국내 숙소 3만원 할인"]],
+      "note": "LG유플러스 '유플투쁠 플러스 위크' · 파이낸셜뉴스·아시아경제 11.08 보도 기준",
+      "visual": {"kind": "photo", "src": "photo_4.jpg", "max_h": 360, "credit": "AI 생성 이미지"}
+    },
+    {
+      "type": "point",
+      "label": "받는 법",
+      "title": "U+one 앱에서 기간 안에",
+      "desc": "11월 16~20일, 제휴사별 1인 1회\n수량 소진 시 조기 종료될 수 있어요",
+      "visual": {"kind": "photo", "src": "photo_5.jpg", "max_h": 560, "credit": "AI 생성 이미지",
+        "overlay": {"text": "50여 개 쿠폰", "sub": "LG유플러스 멤버십 고객 대상", "color": [255, 200, 60]}}
+    },
+    {"type": "follow"}
+  ]
+}
