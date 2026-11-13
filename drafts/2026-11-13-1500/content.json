@@ -40,9 +40,9 @@
       "type": "point",
       "label": "받는 법",
       "title": "U+one 앱에서 기간 안에",
-      "desc": "11월 16~20일, 제휴사별 1인 1회\n수량 소진 시 조기 종료될 수 있어요",
+      "desc": "11월 16~20일, 제휴사별 1인 1회\n제휴사별 조건 다름 · 소진 시 조기 종료",
       "visual": {"kind": "photo", "src": "photo_5.jpg", "max_h": 560, "credit": "AI 생성 이미지",
-        "overlay": {"text": "50여 개 쿠폰", "sub": "LG유플러스 멤버십 고객 대상", "color": [255, 200, 60]}}
+        "overlay": {"text": "50여 개 쿠폰", "sub": "수험생 전용 아님 · 멤버십 고객 대상", "color": [255, 200, 60]}}
     },
     {"type": "follow"}
   ]
