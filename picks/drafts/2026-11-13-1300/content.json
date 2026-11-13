@@ -1,0 +1,138 @@
+{
+  "brand": "@jangbaguni0916",
+  "ad_label": "광고 · 쿠팡 파트너스",
+  "store_tag": [
+    "장바구니",
+    "구출작전"
+  ],
+  "store_name": "장바구니 구출작전",
+  "store_sub": "살림 꿀템만 골라 구출해요",
+  "avatar_text": "장",
+  "profile_lines": [
+    "· 매일 13시·18시 살림 꿀템",
+    "· 프로필 링크에 번호별 모음",
+    "· 궁금한 건 댓글로"
+  ],
+  "theme": {
+    "frame1": [
+      44,
+      34,
+      46
+    ],
+    "frame2": [
+      66,
+      52,
+      70
+    ],
+    "accent": [
+      245,
+      170,
+      190
+    ],
+    "card": [
+      78,
+      62,
+      82
+    ],
+    "sub": [
+      236,
+      226,
+      236
+    ]
+  },
+  "post_at": "2026-11-13T13:00:00+09:00",
+  "link_no": 32,
+  "slides": [
+    {
+      "type": "hero",
+      "title": "꿀템 32번\n변기 앉을 때 내 표정",
+      "visual": {
+        "kind": "photo",
+        "src": "p_main.jpg",
+        "card": true,
+        "size": 620,
+        "top": 130
+      }
+    },
+    {
+      "type": "point",
+      "label": "POV",
+      "title": "새벽에 화장실 간 당신",
+      "desc": "앉는 순간 '헉' 소리가 절로…\n잠이 확 깨 버리는 그 차가움,\n겨울마다 겪는 사람 손!",
+      "visual": {
+        "kind": "photo",
+        "src": "p_seat.jpg",
+        "card": true,
+        "size": 620,
+        "top": 130
+      }
+    },
+    {
+      "type": "point",
+      "label": "공감 2",
+      "title": "커버 사긴 귀찮고…",
+      "desc": "씌우는 커버는 빨 때마다\n벗기고 다시 끼우기 번거롭죠.\n그래서 붙이는 시트를 찾게 돼요.",
+      "visual": {
+        "kind": "photo",
+        "src": "p_pink.jpg",
+        "card": true,
+        "size": 620,
+        "top": 130
+      }
+    },
+    {
+      "type": "point",
+      "label": "해결 1",
+      "title": "붙이고 떼는 쿠션 시트",
+      "desc": "변기 시트에 붙여 쓰는\n탈부착 보온 쿠션 시트예요.\n손잡이 탭을 잡고 떼어 낼 수 있어요.",
+      "visual": {
+        "kind": "photo",
+        "src": "p_peel.jpg",
+        "card": true,
+        "size": 620,
+        "top": 130
+      }
+    },
+    {
+      "type": "point",
+      "label": "해결 2",
+      "title": "살 때 이것만 확인!",
+      "desc": "① 우리 집 변기 시트 모양·크기\n② 붙일 자리 물기·먼지 닦고 붙이기\n③ 구성은 링크 옵션(3+1 세트)에서 확인",
+      "visual": {
+        "kind": "photo",
+        "src": "p_cut.jpg",
+        "card": true,
+        "size": 620,
+        "top": 130
+      }
+    },
+    {
+      "type": "point",
+      "label": "어디서 봐요?",
+      "title": "프로필 링크 → 32번",
+      "desc": "가격은 시기마다 달라요.\n링크에서 오늘 가격을 확인하세요.",
+      "visual": {
+        "kind": "big",
+        "text": "32번",
+        "sub": "프로필 링크에서 찾기",
+        "color": [
+          245,
+          170,
+          190
+        ],
+        "glow": [
+          245,
+          170,
+          190
+        ]
+      }
+    },
+    {
+      "type": "follow",
+      "head": [
+        "매일 살림 꿀템이 궁금하다면",
+        "@jangbaguni0916 팔로우하세요!"
+      ]
+    }
+  ]
+}
