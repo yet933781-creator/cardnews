@@ -1,0 +1,49 @@
+{
+  "brand": "@bpj0901",
+  "store_tag": ["방학", "폰 성지"],
+  "store_name": "방학 폰 성지",
+  "store_sub": "도봉구 방학동 · 휴대폰 구매 상담",
+  "profile_lines": ["· 방학 도깨비시장 인근", "· 365일 연중무휴 10:00~20:00", "· 24시간 카톡·DM 상담"],
+  "post_at": "2026-11-13T12:00:00+09:00",
+  "slides": [
+    {
+      "type": "hero",
+      "title": "폰만 보는 사람 특\n이제 안경한테 물어봄",
+      "visual": {"kind": "photo", "src": "photo_main.jpg", "max_h": 720, "credit": "사진: 삼성전자 뉴스룸",
+        "overlay": {"text": "삼성 AI 안경", "sub": "12월 10일 국내 출시 (보도 기준)", "color": [255, 200, 60]}}
+    },
+    {
+      "type": "point",
+      "label": "POV",
+      "title": "외국 메뉴판 앞, 폰 꺼내 번역 중",
+      "desc": "이젠 안경 쓰고 보면 메뉴 번역\n지도 앱 길 안내도 된대요(보도 기준)",
+      "visual": {"kind": "photo", "src": "photo_gm.jpg", "max_h": 560, "credit": "사진: 삼성전자 뉴스룸",
+        "overlay": {"text": "제미나이 탑재", "sub": "보고 묻고, 바로 답", "color": [120, 200, 255]}}
+    },
+    {
+      "type": "point",
+      "label": "POV",
+      "title": "화이트보드 찍고 정리 귀찮을 때",
+      "desc": "찍으면 요약해서 삼성 노트에 저장\n알림 읽어주기·메시지 답장도 핸즈프리",
+      "visual": {"kind": "photo", "src": "photo_main.jpg", "max_h": 560, "credit": "사진: 삼성전자 뉴스룸",
+        "overlay": {"text": "1200만 화소", "sub": "프레임 왼쪽 카메라", "color": [120, 230, 150]}}
+    },
+    {
+      "type": "rank",
+      "label": "한눈에 스펙",
+      "title": "저장해 두고 비교하세요",
+      "items": [["무게 약 41g", "일반 안경처럼 가볍게"], ["배터리 최대 9시간", "충전 케이스 포함 최대 72시간"], ["촬영 표시 LED", "벗으면 카메라 꺼짐 · 만 18세 이상"]],
+      "note": "삼성전자 발표 · 테크M·머니투데이 11.12 보도 기준",
+      "visual": {"kind": "photo", "src": "photo_gm2.jpg", "max_h": 360, "credit": "사진: 삼성전자 뉴스룸"}
+    },
+    {
+      "type": "point",
+      "label": "가격·출시",
+      "title": "국내는 젠틀몬스터 16종",
+      "desc": "65만~70만원(디자인별), 12월 10일 출시\n아이폰13 이상도 연결(보도 기준)",
+      "visual": {"kind": "photo", "src": "photo_gm.jpg", "max_h": 560, "credit": "사진: 삼성전자 뉴스룸",
+        "overlay": {"text": "65만~70만원", "sub": "도수 렌즈 교체 비용 별도", "color": [255, 200, 60]}}
+    },
+    {"type": "follow"}
+  ]
+}
