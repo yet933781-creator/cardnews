@@ -1,0 +1,138 @@
+{
+  "brand": "@jangbaguni0916",
+  "ad_label": "광고 · 쿠팡 파트너스",
+  "store_tag": [
+    "장바구니",
+    "구출작전"
+  ],
+  "store_name": "장바구니 구출작전",
+  "store_sub": "살림 꿀템만 골라 구출해요",
+  "avatar_text": "장",
+  "profile_lines": [
+    "· 매일 13시·18시 살림 꿀템",
+    "· 프로필 링크에 번호별 모음",
+    "· 궁금한 건 댓글로"
+  ],
+  "theme": {
+    "frame1": [
+      28,
+      34,
+      44
+    ],
+    "frame2": [
+      44,
+      54,
+      70
+    ],
+    "accent": [
+      150,
+      200,
+      235
+    ],
+    "card": [
+      54,
+      66,
+      84
+    ],
+    "sub": [
+      222,
+      230,
+      240
+    ]
+  },
+  "post_at": "2026-11-13T18:00:00+09:00",
+  "link_no": 33,
+  "slides": [
+    {
+      "type": "hero",
+      "title": "꿀템 33번\n현관 지날 때 내 표정",
+      "visual": {
+        "kind": "photo",
+        "src": "p_main.jpg",
+        "card": true,
+        "size": 620,
+        "top": 130
+      }
+    },
+    {
+      "type": "point",
+      "label": "POV",
+      "title": "겨울만 되면 현관이 냉장고",
+      "desc": "신발 신으러 나갈 때마다 '으…'\n현관 쪽 찬 기운이 거실까지\n넘어오는 것 같은 그 느낌!",
+      "visual": {
+        "kind": "photo",
+        "src": "p_xl.jpg",
+        "card": true,
+        "size": 620,
+        "top": 130
+      }
+    },
+    {
+      "type": "point",
+      "label": "공감 2",
+      "title": "문 닫아도 어딘가 서늘…",
+      "desc": "현관과 거실 사이가 뻥 뚫린 집,\n문풍지만으론 아쉬울 때가 있죠.\n그래서 문틀에 커튼을 달아요.",
+      "visual": {
+        "kind": "photo",
+        "src": "p_magnet.jpg",
+        "card": true,
+        "size": 620,
+        "top": 130
+      }
+    },
+    {
+      "type": "point",
+      "label": "해결 1",
+      "title": "문틀에 다는 누빔 방풍커튼",
+      "desc": "앞뒤 원단 사이에 솜을 넣은 누빔 커튼이에요.\n가운데 자석으로 드나든 뒤 다시 붙는 양문형,\n외풍 막는 데 도움될 수 있어요.",
+      "visual": {
+        "kind": "photo",
+        "src": "p_quilt.jpg",
+        "card": true,
+        "size": 620,
+        "top": 130
+      }
+    },
+    {
+      "type": "point",
+      "label": "해결 2",
+      "title": "달기 전 이것만 확인!",
+      "desc": "① 문틀 크기 재기 (M 100×220 / XL 350×250cm)\n② 벨크로는 벽지 말고 문틀에 붙이기\n③ 환기할 땐 고정고리로 묶어 두기",
+      "visual": {
+        "kind": "photo",
+        "src": "p_m.jpg",
+        "card": true,
+        "size": 620,
+        "top": 130
+      }
+    },
+    {
+      "type": "point",
+      "label": "어디서 봐요?",
+      "title": "프로필 링크 → 33번",
+      "desc": "가격은 시기마다 달라요.\n링크에서 오늘 가격을 확인하세요.",
+      "visual": {
+        "kind": "big",
+        "text": "33번",
+        "sub": "프로필 링크에서 찾기",
+        "color": [
+          150,
+          200,
+          235
+        ],
+        "glow": [
+          150,
+          200,
+          235
+        ]
+      }
+    },
+    {
+      "type": "follow",
+      "head": [
+        "매일 살림 꿀템이 궁금하다면",
+        "@jangbaguni0916 팔로우하세요!"
+      ]
+    }
+  ]
+}
