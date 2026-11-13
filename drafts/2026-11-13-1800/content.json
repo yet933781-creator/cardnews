@@ -1,0 +1,49 @@
+{
+  "brand": "@bpj0901",
+  "store_tag": ["방학", "폰 성지"],
+  "store_name": "방학 폰 성지",
+  "store_sub": "도봉구 방학동 · 휴대폰 구매 상담",
+  "profile_lines": ["· 방학 도깨비시장 인근", "· 365일 연중무휴 10:00~20:00", "· 24시간 카톡·DM 상담"],
+  "post_at": "2026-11-13T18:00:00+09:00",
+  "slides": [
+    {
+      "type": "hero",
+      "title": "'업데이트 필요' 뜨면\n바로 누르는 사람 특",
+      "visual": {"kind": "photo", "src": "photo_3.jpg", "max_h": 720, "credit": "AI 생성 이미지",
+        "overlay": {"text": "누르지 마세요", "sub": "삼성 브라우저 사칭 악성앱 (보안업계 분석)", "color": [255, 110, 90]}}
+    },
+    {
+      "type": "point",
+      "label": "POV",
+      "title": "병원 예약하다 뜬 안내창",
+      "desc": "'삼성 브라우저 플러그인 설치 필요'\n평소 가던 정상 사이트인데…?",
+      "visual": {"kind": "photo", "src": "photo_1.jpg", "max_h": 560, "credit": "AI 생성 이미지",
+        "overlay": {"text": "가짜 안내창", "sub": "정상 사이트에 몰래 심은 외부 스크립트", "color": [255, 200, 60]}}
+    },
+    {
+      "type": "point",
+      "label": "POV",
+      "title": "설치했더니 또 '업데이트'",
+      "desc": "'출처를 알 수 없는 앱' 허용 유도\n두 번째 앱은 앱 목록에 안 보임",
+      "visual": {"kind": "photo", "src": "photo_4.jpg", "max_h": 560, "credit": "AI 생성 이미지",
+        "overlay": {"text": "2단계 설치", "sub": "설정 앱 메뉴에 'Samsung' 이름만 표시", "color": [120, 200, 255]}}
+    },
+    {
+      "type": "rank",
+      "label": "체크리스트",
+      "title": "지금 폰에서 확인할 3가지",
+      "items": [["안내창", "사이트에서 뜬 설치·업데이트 누르지 않기"], ["권한", "'출처를 알 수 없는 앱 설치' 허용 끄기"], ["앱 목록", "설정 > 애플리케이션에 낯선 'Samsung' 확인"]],
+      "note": "에버스핀 분석 · 지디넷코리아·전자신문 11.04 보도 기준",
+      "visual": {"kind": "photo", "src": "photo_2.jpg", "max_h": 360, "credit": "AI 생성 이미지"}
+    },
+    {
+      "type": "point",
+      "label": "해결",
+      "title": "업데이트는 공식 스토어로만",
+      "desc": "브라우저 업데이트는 Galaxy Store·\nPlay 스토어에서 직접 하세요",
+      "visual": {"kind": "photo", "src": "photo_5.jpg", "max_h": 560, "credit": "AI 생성 이미지",
+        "overlay": {"text": "공식 스토어", "sub": "방문만으로 감염되진 않음 (보도 기준)", "color": [120, 230, 150]}}
+    },
+    {"type": "follow"}
+  ]
+}
