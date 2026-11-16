@@ -1,0 +1,130 @@
+{
+  "brand": "@jangbaguni0916",
+  "ad_label": "광고 · 쿠팡 파트너스",
+  "store_tag": [
+    "장바구니",
+    "구출작전"
+  ],
+  "store_name": "장바구니 구출작전",
+  "store_sub": "살림 꿀템만 골라 구출해요",
+  "avatar_text": "장",
+  "profile_lines": [
+    "· 매일 13시·18시 살림 꿀템",
+    "· 프로필 링크에 번호별 모음",
+    "· 궁금한 건 댓글로"
+  ],
+  "theme": {
+    "frame1": [
+      36,
+      32,
+      28
+    ],
+    "frame2": [
+      62,
+      54,
+      46
+    ],
+    "accent": [
+      236,
+      200,
+      140
+    ],
+    "card": [
+      72,
+      64,
+      56
+    ],
+    "sub": [
+      236,
+      228,
+      216
+    ]
+  },
+  "post_at": "2026-11-16T13:00:00+09:00",
+  "link_no": 36,
+  "slides": [
+    {
+      "type": "quiz",
+      "label": "OX 퀴즈 · 꿀템 36번",
+      "title": "니트는 옷걸이에\n걸어 두는 게 제일 좋다?",
+      "options": [
+        "O 맞다",
+        "X 아니다"
+      ],
+      "visual": {
+        "kind": "photo",
+        "src": "p_rod.jpg",
+        "card": true,
+        "size": 500,
+        "top": 120
+      }
+    },
+    {
+      "type": "point",
+      "label": "정답 X",
+      "title": "니트는 접어서 보관!",
+      "desc": "오래 걸어 두면 니트 무게 때문에\n어깨·목 부분이 늘어날 수 있어요.\n그래서 접어서 두는 걸 많이 권해요.",
+      "visual": {
+        "kind": "photo",
+        "src": "p_closet.jpg",
+        "card": true,
+        "size": 620,
+        "top": 130
+      }
+    },
+    {
+      "type": "point",
+      "label": "이유 1",
+      "title": "서랍은 이미 꽉 찼다면?",
+      "desc": "접어 둘 자리가 없어서\n결국 다시 옷걸이에 거는 분 많죠.\n옷장 '봉'의 빈 공간을 써 보세요.",
+      "visual": {
+        "kind": "photo",
+        "src": "p_dark.jpg",
+        "card": true,
+        "size": 620,
+        "top": 130
+      }
+    },
+    {
+      "type": "point",
+      "label": "이유 2 · 해결",
+      "title": "봉에 거는 4단 칸 수납함",
+      "desc": "옷장 봉에 걸어 쓰는 부직포 칸 수납함이에요.\n니트·티셔츠를 접어서 칸마다 나눠 둘 수 있어요.\n단 수·색상은 링크 옵션에서 확인!",
+      "visual": {
+        "kind": "photo",
+        "src": "p_main.jpg",
+        "card": true,
+        "size": 620,
+        "top": 130
+      }
+    },
+    {
+      "type": "point",
+      "label": "어디서 봐요?",
+      "title": "프로필 링크 → 36번",
+      "desc": "가격은 시기마다 달라요.\n링크에서 오늘 가격을 확인하세요.",
+      "visual": {
+        "kind": "big",
+        "text": "36번",
+        "sub": "프로필 링크에서 찾기",
+        "color": [
+          236,
+          200,
+          140
+        ],
+        "glow": [
+          236,
+          200,
+          140
+        ]
+      }
+    },
+    {
+      "type": "follow",
+      "head": [
+        "매일 살림 꿀템이 궁금하다면",
+        "@jangbaguni0916 팔로우하세요!"
+      ]
+    }
+  ]
+}
