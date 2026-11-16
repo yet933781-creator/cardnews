@@ -27,6 +27,9 @@ def pending():
             f = os.path.join(d, fname)
             if not os.path.isfile(f) or os.path.exists(os.path.join(d, "posted.json")):
                 continue
+            if os.path.exists(os.path.join(d, "attempt.json")):  # 게시 잠금(이전 시도 실패·미확인): 사람이 확인할 때까지 실행하지 않음
+                print(f"::warning::게시 잠금 상태라 건너뜀: {d}")
+                continue
             try:
                 at = json.load(open(f, encoding="utf-8")).get("post_at")
                 when = datetime.fromisoformat(at) if at else datetime.now(timezone.utc)

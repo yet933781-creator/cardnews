@@ -62,7 +62,8 @@ jobs:
         run: |
           git config user.name "cardnews-bot"
           git config user.email "cardnews-bot@users.noreply.github.com"
-          for f in picks/approved/*/posted.json picks/shorts/approved/*/posted.json; do if [ -f "$f" ]; then git add "$f"; fi; done
+          for f in picks/approved/*/posted.json picks/shorts/approved/*/posted.json picks/approved/*/attempt.json picks/shorts/approved/*/attempt.json; do if [ -f "$f" ]; then git add "$f"; fi; done
+          git add -u picks/approved picks/shorts/approved   # 풀린 게시 잠금(attempt.json 삭제)도 기록
           git diff --cached --quiet && exit 0
           git commit -m "꿀템 게시 기록 [skip ci]"
           for i in 1 2 3; do git pull --rebase -q origin main && git push && break; sleep 5; done

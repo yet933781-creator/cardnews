@@ -2,6 +2,11 @@
 
 - approved/<날짜>/ 안에 card_*.jpg 와 caption.txt 가 있어야 한다.
 - 이미 posted.json 이 있는 폴더는 건너뛴다 (중복 게시 방지).
+- 중복 게시 방지 3중 장치 (2026-11-16, 꿀템 33번 카드가 15분마다 반복 게시된 사고 이후 추가):
+  1) 게시 전에 계정의 최근 게시물을 조회해 같은 캡션이 이미 있으면 올리지 않고 기록만 남긴다.
+  2) 게시(media_publish)를 누르기 직전에 attempt.json 을 남긴다. 그 뒤 결과를 확인하지 못하면
+     그 폴더는 '게시 잠금' 상태가 되어 자동으로 다시 시도하지 않는다(사람이 확인 후 attempt.json 삭제).
+  3) 게시 API 가 오류를 돌려줘도 실제로 올라갔는지 다시 조회해, 올라갔으면 게시 완료로 기록한다.
 - 필요한 환경 변수(GitHub Secrets): IG_USER_ID, IG_ACCESS_TOKEN
 """
 import glob, json, os, sys, time, urllib.parse, urllib.request
@@ -64,6 +69,96 @@ def public_url(path):
     return f"https://raw.githubusercontent.com/{REPO}/{SHA}/{path}"
 
 
+# ───────── 중복 게시 방지: 게시 잠금(attempt.json) + 실제 게시 여부 조회 ─────────
+LOCK_FILE = "attempt.json"
+MAX_PREP_TRIES = 3   # 게시 버튼 전 단계(이미지 등록 등)에서 실패해도 자동 재시도는 3번까지만
+
+
+def _now():
+    from datetime import datetime, timezone
+    return datetime.now(timezone.utc)
+
+
+def lock_load(folder):
+    try:
+        return json.load(open(os.path.join(folder, LOCK_FILE), encoding="utf-8"))
+    except (FileNotFoundError, ValueError):
+        return {}
+
+
+def _lock_save(folder, data):
+    path = os.path.join(folder, LOCK_FILE)
+    if data:
+        json.dump(data, open(path, "w", encoding="utf-8"), ensure_ascii=False, indent=2)
+    elif os.path.exists(path):
+        os.remove(path)
+
+
+def lock_blocked(folder, target="instagram"):
+    """이 폴더·대상을 자동으로 다시 시도하면 안 되는 상태인지."""
+    a = lock_load(folder).get(target)
+    if not a:
+        return False
+    return a.get("stage") == "publish" or a.get("tries", 0) >= MAX_PREP_TRIES
+
+
+def lock_mark(folder, target, stage):
+    """stage: 'prepare'(게시 전 준비 시작, 시도 횟수 +1) / 'publish'(게시 버튼 누르기 직전 → 이후 자동 재시도 금지)."""
+    data = lock_load(folder)
+    a = data.get(target, {"tries": 0})
+    if stage == "prepare":
+        a["tries"] = a.get("tries", 0) + 1
+    a["stage"] = stage
+    a["at"] = _now().isoformat(timespec="seconds")
+    data[target] = a
+    _lock_save(folder, data)
+
+
+def lock_clear(folder, target):
+    data = lock_load(folder)
+    data.pop(target, None)
+    _lock_save(folder, data)
+
+
+def warn_blocked(folder, target):
+    a = lock_load(folder).get(target, {})
+    print(f"::warning::게시 잠금 — {folder} ({target}): 이전 시도({a.get('at')}, 단계 {a.get('stage')}, {a.get('tries')}회)가 "
+          f"실패했거나 결과를 확인하지 못해 자동으로 다시 올리지 않습니다. 계정에서 실제 게시 여부를 확인한 뒤 "
+          f"{LOCK_FILE} 을 지우면(이미 올라갔으면 posted.json 을 만들면) 풀립니다.")
+
+
+def recent_media(limit=25):
+    """계정의 최근 게시물 목록. 조회에 실패하면 None (오류 내용에 토큰이 섞이지 않게 종류만 출력)."""
+    q = urllib.parse.urlencode({"fields": "id,caption,timestamp,permalink", "limit": str(limit), "access_token": TOKEN})
+    try:
+        with urllib.request.urlopen(urllib.request.Request(f"{BASE}/{USER_ID}/media?{q}"), timeout=60) as r:
+            return json.load(r).get("data", [])
+    except Exception as e:
+        print("::warning::최근 게시물 조회 실패:", type(e).__name__, getattr(e, "code", ""))
+        return None
+
+
+def _norm(text):
+    return " ".join((text or "").split())
+
+
+def find_posted(caption, items):
+    """최근 게시물 중 캡션 전체가 같은 것(= 같은 콘텐츠가 이미 올라간 것)."""
+    want = _norm(caption)
+    for it in items or []:
+        if want and _norm(it.get("caption")) == want:
+            return it
+    return None
+
+
+def already_posted(caption):
+    """게시 전 확인. 이미 올라가 있으면 그 게시물, 없으면 None. 조회 자체가 안 되면 게시하지 않고 멈춘다."""
+    items = recent_media()
+    if items is None:
+        fail("최근 게시물을 조회하지 못해 중복 여부를 확인할 수 없습니다. 게시하지 않고 멈춥니다(다음 실행 때 다시 확인).")
+    return find_posted(caption, items)
+
+
 CARDS_DIR = os.environ.get("CARDS_DIR", "approved")
 FOOTER_FILE = os.environ.get("FOOTER_FILE", "shop_footer.txt")
 DISCLOSURE_FILE = os.environ.get("DISCLOSURE_FILE", "")  # 쿠팡 파트너스 등 대가성 문구 (있으면 무조건 첫 줄)
@@ -113,8 +208,9 @@ def build_caption(body, link_no=None):
     return caption
 
 
-def publish(creation_id):
-    """media_publish. '아직 준비 안 됨(9007)'이면 잠시 기다렸다 다시 시도."""
+def publish(creation_id, caption=None):
+    """media_publish. '아직 준비 안 됨(9007)'이면 잠시 기다렸다 다시 시도.
+    오류가 나도 실제로는 올라가는 경우가 있어(2026-11 꿀템 계정 403 사고), caption 을 주면 오류 뒤에 실제 게시 여부를 조회한다."""
     for k in range(8):
         params = {"creation_id": creation_id, "access_token": TOKEN}
         req = urllib.request.Request(f"{BASE}/{USER_ID}/media_publish", data=urllib.parse.urlencode(params).encode(), method="POST")
@@ -127,10 +223,36 @@ def publish(creation_id):
                 print("게시 준비 대기 중… 다시 시도", k + 1)
                 time.sleep(15)
                 continue
+            if caption:
+                for wait in (10, 20):  # 늦게 나타나는 경우를 위해 두 번 확인
+                    time.sleep(wait)
+                    hit = find_posted(caption, recent_media())
+                    if hit:
+                        print(f"::warning::게시 API 는 오류({e.code})였지만 실제로는 게시되어 있습니다 → 게시 완료로 기록: {hit.get('permalink')}")
+                        return {"id": hit["id"], "error_but_posted": True}
             fail(f"API 오류 {e.code} (media_publish): {body}")
+        except Exception as e:  # 시간 초과·연결 끊김: 올라갔는지 알 수 없음 → 조회로 확인
+            if caption:
+                time.sleep(20)
+                hit = find_posted(caption, recent_media())
+                if hit:
+                    print("::warning::게시 응답을 받지 못했지만 실제로는 게시되어 있습니다 → 게시 완료로 기록:", hit.get("permalink"))
+                    return {"id": hit["id"], "error_but_posted": True}
+            fail(f"게시 요청 응답 없음 (media_publish): {type(e).__name__}")
+
+
+def write_posted(folder, media_id, info, note=None):
+    rec = {"media_id": media_id, **info}
+    if note:
+        rec["note"] = note
+    json.dump(rec, open(os.path.join(folder, "posted.json"), "w"), ensure_ascii=False, indent=2)
+    lock_clear(folder, "instagram")
 
 
 def post(folder):
+    if lock_blocked(folder, "instagram"):
+        warn_blocked(folder, "instagram")
+        return
     imgs = sorted(glob.glob(os.path.join(folder, "card_*.jpg")))
     if not 2 <= len(imgs) <= 10:
         fail(f"{folder}: 캐러셀은 이미지 2~10장이 필요합니다 (현재 {len(imgs)}장)")
@@ -138,6 +260,14 @@ def post(folder):
     link_no = json.load(open(cj, encoding="utf-8")).get("link_no") if os.path.exists(cj) else None
     caption = build_caption(open(os.path.join(folder, "caption.txt"), encoding="utf-8").read(), link_no)
 
+    hit = already_posted(caption)  # 1) 같은 캡션이 이미 올라가 있으면 다시 올리지 않는다
+    if hit:
+        print(f"::warning::{folder}: 같은 게시물이 이미 계정에 있습니다 → 올리지 않고 기록만 남김: {hit.get('permalink')}")
+        write_posted(folder, hit["id"], {"permalink": hit.get("permalink"), "timestamp": hit.get("timestamp")},
+                     note="이미 게시되어 있어 기록만 남김")
+        return
+
+    lock_mark(folder, "instagram", "prepare")
     children = []
     for p in imgs:
         r = api("POST", f"{USER_ID}/media", image_url=public_url(p), is_carousel_item="true")
@@ -148,11 +278,11 @@ def post(folder):
     car = api("POST", f"{USER_ID}/media", media_type="CAROUSEL",
               children=",".join(children), caption=caption)
     wait_ready(car["id"])
-    pub = publish(car["id"])
+    lock_mark(folder, "instagram", "publish")  # 2) 여기부터는 실패해도 자동 재시도 금지
+    pub = publish(car["id"], caption)          # 3) 오류여도 실제 게시 여부 확인
     info = api("GET", pub["id"], fields="permalink,timestamp")
     print("게시 완료:", info.get("permalink"))
-    json.dump({"media_id": pub["id"], **info}, open(os.path.join(folder, "posted.json"), "w"),
-              ensure_ascii=False, indent=2)
+    write_posted(folder, pub["id"], info)
 
 
 def is_due(folder):

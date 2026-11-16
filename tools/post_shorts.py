@@ -1,6 +1,8 @@
 """shorts/approved/<폴더>/ 의 short.mp4 를 인스타 릴스 + 유튜브 쇼츠로 게시한다.
 
 - 게시 기록은 posted.json 에 대상별로 남기며, 이미 올라간 대상은 다시 올리지 않는다.
+- 중복 게시 방지(2026-11-16 추가, post_instagram.py 설명 참고): 게시 전 같은 캡션 조회, 게시 직전 attempt.json 잠금,
+  오류 뒤 실제 게시 여부 조회. 잠긴 대상은 사람이 확인하고 attempt.json 을 지우기 전에는 자동으로 다시 올리지 않는다.
 - 필요한 비밀값: IG_USER_ID, IG_ACCESS_TOKEN (인스타)
                  YT_CLIENT_ID, YT_CLIENT_SECRET, YT_REFRESH_TOKEN (유튜브, 없으면 유튜브는 건너뜀)
 """
@@ -10,6 +12,11 @@ import post_instagram as IG   # 토큰·API·캡션 조립 공용 사용
 
 
 def ig_reel(folder, caption):
+    hit = IG.already_posted(caption)  # 같은 캡션의 릴스가 이미 있으면 다시 올리지 않는다
+    if hit:
+        print(f"::warning::{folder}: 같은 릴스가 이미 계정에 있습니다 → 올리지 않고 기록만 남김: {hit.get('permalink')}")
+        return {"media_id": hit["id"], "permalink": hit.get("permalink"), "note": "이미 게시되어 있어 기록만 남김"}
+    IG.lock_mark(folder, "instagram", "prepare")
     video = IG.public_url(os.path.join(folder, "short.mp4"))
     params = dict(media_type="REELS", video_url=video, caption=caption, share_to_feed="true")
     if os.path.exists(os.path.join(folder, "cover.jpg")):
@@ -24,7 +31,8 @@ def ig_reel(folder, caption):
         time.sleep(5)
     else:
         IG.fail("릴스 처리 시간 초과")
-    pub = IG.publish(c["id"])
+    IG.lock_mark(folder, "instagram", "publish")  # 여기부터는 실패해도 자동 재시도 금지
+    pub = IG.publish(c["id"], caption)            # 오류여도 실제 게시 여부 확인
     info = IG.api("GET", pub["id"], fields="permalink")
     print("릴스 게시 완료:", info.get("permalink"))
     return {"media_id": pub["id"], "permalink": info.get("permalink")}
@@ -44,6 +52,7 @@ def yt_short(folder, cfg, description):
     if not (cid and sec and ref):
         print("::warning::유튜브 비밀값이 없어 쇼츠 업로드를 건너뜁니다.")
         return None
+    IG.lock_mark(folder, "youtube", "prepare")
     _, _, body = http("POST", "https://oauth2.googleapis.com/token", urllib.parse.urlencode(
         dict(client_id=cid, client_secret=sec, refresh_token=ref, grant_type="refresh_token")).encode())
     token = json.loads(body)["access_token"]
@@ -86,6 +95,7 @@ def yt_short(folder, cfg, description):
     if h is None:
         _, h, _ = http("POST", base + "snippet,status", json.dumps(meta).encode(), hdr)
     loc = h.get("Location") or h.get("location")
+    IG.lock_mark(folder, "youtube", "publish")  # 영상 전송 시작 → 이후 실패해도 자동 재시도 금지(중복 업로드 방지)
     _, _, body = http("PUT", loc, open(path, "rb").read(), {"Content-Type": "video/mp4", "Content-Length": str(size)})
     vid = json.loads(body)["id"]
     url = f"https://youtube.com/shorts/{vid}"
@@ -105,12 +115,21 @@ def main():
         caption = IG.build_caption(cfg["caption"], cfg.get("link_no"))
         changed = False
         if "instagram" not in rec:
-            rec["instagram"] = ig_reel(d, caption); changed = True
-            json.dump(rec, open(rec_path, "w"), ensure_ascii=False, indent=2)
+            if IG.lock_blocked(d, "instagram"):
+                IG.warn_blocked(d, "instagram")
+            else:
+                rec["instagram"] = ig_reel(d, caption); changed = True
+                json.dump(rec, open(rec_path, "w"), ensure_ascii=False, indent=2)
+                IG.lock_clear(d, "instagram")
         if "youtube" not in rec:
-            y = yt_short(d, cfg, caption)
-            if y:
-                rec["youtube"] = y; changed = True
+            if IG.lock_blocked(d, "youtube"):
+                IG.warn_blocked(d, "youtube")
+            else:
+                y = yt_short(d, cfg, caption)
+                if y:
+                    rec["youtube"] = y; changed = True
+                    json.dump(rec, open(rec_path, "w"), ensure_ascii=False, indent=2)
+                    IG.lock_clear(d, "youtube")
         if changed:
             json.dump(rec, open(rec_path, "w"), ensure_ascii=False, indent=2)
 
@@ -125,6 +144,12 @@ def due(folder):
             return False
     if not os.path.exists(os.path.join(folder, "short.mp4")):
         print("영상 없음(제작 대기):", folder)
+        return False
+    done = json.load(open(rec)) if os.path.exists(rec) else {}
+    left = [t for t in ("instagram", "youtube") if t not in done]
+    if left and all(IG.lock_blocked(folder, t) for t in left):
+        for t in left:
+            IG.warn_blocked(folder, t)
         return False
     at = json.load(open(os.path.join(folder, "script.json"), encoding="utf-8")).get("post_at")
     if at and datetime.fromisoformat(at) > datetime.now(timezone.utc):
